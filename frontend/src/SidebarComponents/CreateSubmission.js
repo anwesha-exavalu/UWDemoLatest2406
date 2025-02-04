@@ -3,13 +3,15 @@ import styles from "./CreateSubmission.module.css";
 import { Col, Row, Tooltip, Button, Radio, Form, Select } from "antd";
 import FormInput from "../components/FormInput";
 import Documents from "../layout/RightSidebar";
-import { EditOutlined, PlusCircleOutlined, SearchOutlined } from "@ant-design/icons";
+import { EditOutlined, PlusCircleOutlined, SearchOutlined,UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import { Modal } from 'antd';
+import { Modal,message,Upload } from 'antd';
 import axios from 'axios';
-function  CreateSubmission({ onNext }) {
+function CreateSubmission({ onNext }) {
     // Separate state for each widget section's form data and editing state
     const navigate = useNavigate();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [fileList, setFileList] = useState([]);
     // Separate state for each widget section's form data and editing state
     const [basicInfo, setBasicInfo] = useState({
         orgName: "Kew Garden Property Inc.",
@@ -145,88 +147,52 @@ function  CreateSubmission({ onNext }) {
             });
         }
     };
-    // useEffect(() => {
-    //     // Define the async function to make the API call
-    //     const fetchData = async () => {
-    //         try {
-    //             // Make the API request
-    //             const response = await axios.get(`https://underwriterportalbackend.onrender.com/api/v1/insured_data_by_id?submission_id=671b24567fec518a7d5f6807`);
 
-    //             if (response.status === 200) {
-    //                 // setInferences(response.data); // Assuming data is a JSON object
-    //                 const insuredData = response.data;
-    //                 setBasicInfo({
-                        
-    //                     insuredName: insuredData.insuredInfo.orgName,
-    //                     orgType: insuredData.insuredInfo.orgType,
-    //                     dba: insuredData.insuredInfo.dba,
-    //                     fein: insuredData.insuredInfo.fein,
-    //                     tin: insuredData.insuredInfo.tin,
-    //                     businessActivity: insuredData.insuredInfo.businessActivity,
-    //                     sicCode: insuredData.insuredInfo.sicCode,
-    //                     sicDescription: insuredData.insuredInfo.sicDescription,
-    //                     naics: insuredData.insuredInfo.naics,
-    //                     naicsDescription: insuredData.insuredInfo.naicsDescription,
-    //                     yearsInBusiness: insuredData.insuredInfo.yearsInBusiness,
-    //                     status: insuredData.insuredInfo.partyStatus,
-    //                 })
-    //                 setLocationInfo({
-    //                     pinCode: insuredData.insuredMailingAddress[0].pinCode,
-    //                     addressLine1: insuredData.insuredMailingAddress[0].addressLine1,
-    //                     addressLine2: insuredData.insuredMailingAddress[0].addressLine2,
-    //                     county: insuredData.insuredMailingAddress[0].county,
-    //                     city: insuredData.insuredMailingAddress[0].city,
-    //                     state: insuredData.insuredMailingAddress[0].state,
-    //                     country: insuredData.insuredMailingAddress[0].country,
-                       
-    //                 })
-    //                 setInsuredInfo({
-                        
-    //                     firstName: insuredData.insuredContactPerson.firstName,
-    //                     middleName: insuredData.insuredContactPerson.middleName,
-    //                     lastName: insuredData.insuredContactPerson.lastName,
-    //                     emailId: insuredData.insuredContactPerson.emailId,
-    //                     countryCode: insuredData.insuredContactPerson.countryCode,
-    //                     phoneNumber: insuredData.insuredContactPerson.phoneNumber,
-    //                     website: insuredData.insuredContactPerson.website,
-    //                 })
-    //                 console.log(response.data);
-    //             } else {
-    //                 //setErrorMessage("No Inferences available at this moment.");
-    //             }
-    //         } catch (err) {
-    //             // setErrorMessage("Unable to fetch Inferences: " + err.message);
-    //         }
-    //     };
-    //     // Call the function to fetch data
-    //     fetchData();
-    // }, []);
+    
+    // Function to open modal
+  const onUpload = () => {
+    setIsModalOpen(true);
+  };
+
+  // Function to handle modal close
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  // Function to handle file upload
+  const handleUpload = ({ file, fileList }) => {
+    setFileList(fileList);
+    message.success(`${file.name} uploaded successfully`);
+  };
+
 
     return (
+        <>
         <Row>
             <Col span={24}>
-           
+
                 <div className={styles.maincontainer}>
 
-                <Row gutter={16}>
+                    <Row gutter={16}>
                         <Col span={22}></Col>
                         <Col span={2}>
-                        <div style={{ justifyContent: "right",}}>
-                        <Tooltip title="Edit">
-                            <Button shape="circle" onClick={handleEditInsured} icon={<EditOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px" }} />
-                        </Tooltip>
-                        {/* <Tooltip title="Create">
-                                        <Button  shape="circle"  onClick={handleCreateNewBasicInfo} icon={<PlusCircleOutlined />} />
-                                       </Tooltip>*/}
-
-                        <Tooltip title="Search">
-                            <Button shape="circle" onClick={handleSearchClick} icon={<SearchOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px", marginLeft: "0.4rem" }} />
-                        </Tooltip>
-                    </div>
-                       </Col>
-                       
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "0.5rem" ,marginTop: "0.5rem"}}>
+                                <Button type="primary" onClick={onUpload} style={{ width: "5rem", backgroundColor: "blue" }}>
+                                    Upload
+                                </Button>
+                                <Button type="primary" onClick={onNext} style={{ width: "5rem", backgroundColor: "blue" }}>
+                                    Prefill
+                                </Button>
+                                <Tooltip title="Edit">
+                                    <Button shape="circle" onClick={handleEditInsured} icon={<EditOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px" }} />
+                                </Tooltip>
+                                <Tooltip title="Search">
+                                    <Button shape="circle" onClick={handleSearchClick} icon={<SearchOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px" }} />
+                                </Tooltip>
+                            </div>
+                        </Col>
                     </Row>
-                   
+
                     <Row gutter={16}>
                         {/* First Widget Section: Basic Information */}
                         <Col span={24}>
@@ -250,7 +216,7 @@ function  CreateSubmission({ onNext }) {
                                     <Col span={6}>
                                         <FormInput
                                             label={<span style={{ fontSize: "15px" }}>Insured Name</span>}
-                                            value= {basicInfo.orgName}
+                                            value={basicInfo.orgName}
                                             required={true}
                                             onChange={(e) => handleInputChange(e, "basicInfo", "insuredName")}
                                             readOnly={!basicInfo.isEditing} // Allow editing based on state
@@ -607,16 +573,18 @@ function  CreateSubmission({ onNext }) {
                             </div>
 
                         </Col>
+                        
 
                     </Row>
+                    
 
                     <Row gutter={16}>
                         <Col span={20}></Col>
                         <Col span={4}>
                             <div >
-                            <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button></div></Col>
+                                <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+                                    Next
+                                </Button></div></Col>
                         {/*} <Col span={4}>
             <div >
             <button type="account" style={{width: "10rem"}} onClick={() => handleClick()}><b>Go To Account</b></button>
@@ -627,7 +595,41 @@ function  CreateSubmission({ onNext }) {
             {/* <Col span={4}>
                 <Documents />
             </Col> */}
+            
         </Row>
+         {/* Upload Modal */}
+         <Modal 
+  title="Upload File" 
+  open={isModalOpen} 
+  onCancel={handleCancel} 
+  footer={[
+    <Button key="cancel" onClick={handleCancel}>
+      Close
+    </Button>
+  ]}
+  centered
+>
+  <div style={{ textAlign: "center", padding: "20px" }}>
+    <Upload.Dragger 
+      beforeUpload={() => false} // Prevents auto-upload
+      fileList={fileList}
+      onChange={handleUpload}
+      multiple={false} // Allow only one file
+      maxCount={1} // Restrict to one file
+      showUploadList={true}
+      style={{ padding: "20px", border: "2px dashed #1890ff", borderRadius: "8px" }}
+    >
+      <p className="ant-upload-drag-icon">
+        <UploadOutlined style={{ fontSize: "40px", color: "#1890ff" }} />
+      </p>
+      <p className="ant-upload-text">Click or Drag File to Upload</p>
+      <p className="ant-upload-hint">Only one file is allowed. Ensure it is in the correct format.</p>
+    </Upload.Dragger>
+  </div>
+</Modal>
+
+  </>
+        
     );
 }
 
