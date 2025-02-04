@@ -1,0 +1,40 @@
+
+{
+    "insuredContactPerson": {
+        "countryCode": "",
+        "emailId": "john@KewGarden.com",
+        "firstName": "",
+        "lastName": "",
+        "middleName": "",
+        "partyId": "",
+        "phoneNumber": "555-12-34567",
+        "website": "www.kewgardenproperty.com"
+    },
+    "insuredInfo": {
+        "businessActivity": "",
+        "dba": "",
+        "fein": "",
+        "naics": "",
+        "naicsDescription": "",
+        "orgName": "Kew Garden Property Inc.",
+        "orgType": "",
+        "partyId": "",
+        "partyStatus": "",
+        "sicCode": "",
+        "sicDescription": "",
+        "tin": "",
+        "yearsInBusiness": "10 years"
+    },
+    "insuredMailingAddress": [
+        {
+            "addressLine1": "",
+            "addressLine2": "",
+            "city": "",
+            "country": "",
+            "county": "",
+            "pinCode": "",
+            "riskLocation": "",
+            "state": ""
+        }
+    ]
+}

@@ -12,41 +12,43 @@ function CreateSubmission({ onNext }) {
     const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [fileList, setFileList] = useState([]);
+    const [formData, setFormData] = useState(null);
+    const [loading, setLoading] = useState(false);
     // Separate state for each widget section's form data and editing state
     const [basicInfo, setBasicInfo] = useState({
-        orgName: "Kew Garden Property Inc.",
-        orgType: "LLP",
+        orgName: "",
+        orgType: "",
         dba: "",
-        fein: "12-3456789",
-        tin: "901-23-5786",
-        businessActivity: "Property Management",
-        sicCode: "6513",
-        sicDescription: "Operators of Apartment Buildings",
+        fein: "",
+        tin: "",
+        businessActivity: "",
+        sicCode: "",
+        sicDescription: "",
         naics: "",
         naicsDescription: "",
-        yearsInBusiness: "10",
+        yearsInBusiness: "",
         status: "active",
         isEditing: false,
     });
 
     const [locationInfo, setLocationInfo] = useState({
-        pinCode: "11415",
-        addressLine1: "123-05 84th Avenue",
+        pinCode: "",
+        addressLine1: "",
         addressLine2: "",
-        county: "Queens",
-        city: "New York",
-        state: "New York",
-        country: "USA",
+        county: "",
+        city: "",
+        state: "",
+        country: "",
         isEditing: false,
     });
 
     const [insuredInfo, setInsuredInfo] = useState({
-        firstName: "John",
-        middleName: "Michael",
-        lastName: "Doe",
-        emailId: "john@KewGarden.com",
-        countryCode: "+1",
-        phoneNumber: "555-12-34567",
+        firstName: "",
+        middleName: "",
+        lastName: "",
+        emailId: "",
+        countryCode: "",
+        phoneNumber: "",
         website: " ",
         isEditing: false,
     });
@@ -164,6 +166,76 @@ function CreateSubmission({ onNext }) {
     setFileList(fileList);
     message.success(`${file.name} uploaded successfully`);
   };
+  const fetchInsuredData = async () => {
+    try {
+        setLoading(true);
+        const response = await fetch('/data/insuredData.json');
+        if (!response.ok) {
+            throw new Error('Failed to fetch data');
+        }
+        const insuredData = await response.json();
+        return insuredData;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        message.error('Failed to load prefill data');
+        return null;
+    } finally {
+        setLoading(false);
+    }
+};
+const handlePrefill = async () => {
+    const insuredData = await fetchInsuredData();
+    if (!insuredData) return;
+
+    try {
+        // Update basicInfo state
+        setBasicInfo(prevState => ({
+            ...prevState,
+            orgName: insuredData.insuredInfo.orgName || "",
+            orgType: insuredData.insuredInfo.orgType || "",
+            dba: insuredData.insuredInfo.dba || "",
+            fein: insuredData.insuredInfo.fein || "",
+            tin: insuredData.insuredInfo.tin || "",
+            businessActivity: insuredData.insuredInfo.businessActivity || "",
+            sicCode: insuredData.insuredInfo.sicCode || "",
+            sicDescription: insuredData.insuredInfo.sicDescription || "",
+            naics: insuredData.insuredInfo.naics || "",
+            naicsDescription: insuredData.insuredInfo.naicsDescription || "",
+            yearsInBusiness: insuredData.insuredInfo.yearsInBusiness || "",
+            status: insuredData.insuredInfo.partyStatus || "active"
+        }));
+
+        // Update locationInfo state
+        const mailingAddress = insuredData.insuredMailingAddress[0];
+        setLocationInfo(prevState => ({
+            ...prevState,
+            pinCode: mailingAddress.pinCode || "",
+            addressLine1: mailingAddress.addressLine1 || "",
+            addressLine2: mailingAddress.addressLine2 || "",
+            county: mailingAddress.county || "",
+            city: mailingAddress.city || "",
+            state: mailingAddress.state || "",
+            country: mailingAddress.country || ""
+        }));
+
+        // Update insuredInfo state
+        setInsuredInfo(prevState => ({
+            ...prevState,
+            firstName: insuredData.insuredContactPerson.firstName || "",
+            middleName: insuredData.insuredContactPerson.middleName || "",
+            lastName: insuredData.insuredContactPerson.lastName || "",
+            emailId: insuredData.insuredContactPerson.emailId || "",
+            countryCode: insuredData.insuredContactPerson.countryCode || "",
+            phoneNumber: insuredData.insuredContactPerson.phoneNumber || "",
+            website: insuredData.insuredContactPerson.website || ""
+        }));
+
+        message.success('Form prefilled successfully');
+    } catch (error) {
+        console.error('Error prefilling form:', error);
+        message.error('Failed to prefill form');
+    }
+};
 
 
     return (
@@ -180,7 +252,7 @@ function CreateSubmission({ onNext }) {
                                 <Button type="primary" onClick={onUpload} style={{ width: "5rem", backgroundColor: "blue" }}>
                                     Upload
                                 </Button>
-                                <Button type="primary" onClick={onNext} style={{ width: "5rem", backgroundColor: "blue" }}>
+                                <Button type="primary" onClick={handlePrefill}  loading={loading} style={{ width: "5rem", backgroundColor: "blue" }}>
                                     Prefill
                                 </Button>
                                 <Tooltip title="Edit">
