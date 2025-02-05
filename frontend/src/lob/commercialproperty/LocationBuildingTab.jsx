@@ -424,7 +424,7 @@ export function LocationBuildingTab() {
                         <Col span={6}>
                           <FormInput
                             label={<span style={{ fontSize: "15px" }}>Year Built</span>}
-                            value="1952"
+                            value=""
                             required={true}
                             onChange={(e) => handleInputChange("yearBuilt", e.target.value)}
 
@@ -433,7 +433,7 @@ export function LocationBuildingTab() {
                         <Col span={6}>
                           <FormInput
                             label={<span style={{ fontSize: "15px" }}>Square Footage</span>}
-                            value="45,000"
+                            value=""
                             required={true}
                             onChange={(e) => handleInputChange("squareFootage", e.target.value)}
                           />
@@ -445,7 +445,7 @@ export function LocationBuildingTab() {
                         <Col span={6}>
                           <FormInput
                             label={<span style={{ fontSize: "15px" }}>Units Count</span>}
-                            value="25"
+                            value=""
                             required={true}
                             onChange={(e) => handleInputChange("unitsCount", e.target.value)}
                           />
@@ -455,7 +455,7 @@ export function LocationBuildingTab() {
                         <Col span={6}>
                           <FormInput
                             label={<span style={{ fontSize: "15px", marginRight: "40px" }}>Stories Count</span>}
-                            value="5"
+                            value=""
                             required={true}
                             onChange={(e) => handleInputChange("storiesCount", e.target.value)}
 
@@ -465,7 +465,7 @@ export function LocationBuildingTab() {
                         <Col span={6}>
                           <FormInput
                             label={<span style={{ fontSize: "15px" }}>FreePlacesCount</span>}
-                            value="10"
+                            value=""
                             required={true}
                             onChange={(e) => handleInputChange("freePlacesCount", e.target.value)}
 

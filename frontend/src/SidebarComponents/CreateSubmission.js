@@ -6,7 +6,10 @@ import Documents from "../layout/RightSidebar";
 import { EditOutlined, PlusCircleOutlined, SearchOutlined,UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Modal,message,Upload } from 'antd';
+import pdfData from "../assets/documents/Aspyre Metro Application_print.pdf";
 import axios from 'axios';
+
+const PROD_URL = "http://44.202.148.91:5000";
 function CreateSubmission({ onNext }) {
     // Separate state for each widget section's form data and editing state
     const navigate = useNavigate();
@@ -14,6 +17,8 @@ function CreateSubmission({ onNext }) {
     const [fileList, setFileList] = useState([]);
     const [formData, setFormData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(false);
     // Separate state for each widget section's form data and editing state
     const [basicInfo, setBasicInfo] = useState({
         orgName: "",
@@ -161,81 +166,162 @@ function CreateSubmission({ onNext }) {
     setIsModalOpen(false);
   };
 
-  // Function to handle file upload
-  const handleUpload = ({ file, fileList }) => {
-    setFileList(fileList);
-    message.success(`${file.name} uploaded successfully`);
-  };
-  const fetchInsuredData = async () => {
+  
+// const pdfData = "Aspyre Metro Application_print.pdf"; // Your PDF file path
+
+const handlePrefill = async () => {
     try {
         setLoading(true);
-        const response = await fetch('/data/insuredData.json');
-        if (!response.ok) {
-            throw new Error('Failed to fetch data');
+        setError(null);
+        setSuccess(false);
+
+        const pdfResponse = await fetch(pdfData);
+        if (!pdfResponse.ok) {
+            throw new Error('Failed to load PDF file');
         }
-        const insuredData = await response.json();
-        return insuredData;
+
+        const pdfBlob = await pdfResponse.blob();
+        const file = new File([pdfBlob], "Aspyre Metro Application_print.pdf", { 
+            type: 'application/pdf' 
+        });
+
+        const formData = new FormData();
+        formData.append('file', file);
+
+        const apiResponse = await fetch(`${PROD_URL}/api/process_doc`, {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (!apiResponse.ok) {
+            const errorData = await apiResponse.json();
+            throw new Error(errorData.message || 'Failed to process PDF');
+        }
+
+        const responseData = await apiResponse.json();
+        console.log('API Response:', responseData);
+
+        if (!responseData.application_details) {
+            throw new Error('Invalid response data received');
+        }
+
+        // Update form states with response data
+        updateFormStates(responseData.application_details);
+
+        setSuccess(true);
+        message.success('Form prefilled successfully');
+
     } catch (error) {
-        console.error('Error fetching data:', error);
-        message.error('Failed to load prefill data');
-        return null;
+        console.error('Prefill Error:', error);
+        setError(error.message);
+        message.error(`Failed to prefill form: ${error.message}`);
     } finally {
         setLoading(false);
     }
 };
-const handlePrefill = async () => {
-    const insuredData = await fetchInsuredData();
-    if (!insuredData) return;
-
+const handleUpload = async ({ file }) => {
+    console.log("Starting upload for file:", file.name);
     try {
-        // Update basicInfo state
-        setBasicInfo(prevState => ({
-            ...prevState,
-            orgName: insuredData.insuredInfo.orgName || "",
-            orgType: insuredData.insuredInfo.orgType || "",
-            dba: insuredData.insuredInfo.dba || "",
-            fein: insuredData.insuredInfo.fein || "",
-            tin: insuredData.insuredInfo.tin || "",
-            businessActivity: insuredData.insuredInfo.businessActivity || "",
-            sicCode: insuredData.insuredInfo.sicCode || "",
-            sicDescription: insuredData.insuredInfo.sicDescription || "",
-            naics: insuredData.insuredInfo.naics || "",
-            naicsDescription: insuredData.insuredInfo.naicsDescription || "",
-            yearsInBusiness: insuredData.insuredInfo.yearsInBusiness || "",
-            status: insuredData.insuredInfo.partyStatus || "active"
-        }));
+        setLoading(true);
+        setError(null);
+        
+        // Basic file validation
+        if (!file || file.type !== 'application/pdf') {
+            throw new Error('Please upload a valid PDF file');
+        }
 
-        // Update locationInfo state
-        const mailingAddress = insuredData.insuredMailingAddress[0];
-        setLocationInfo(prevState => ({
-            ...prevState,
-            pinCode: mailingAddress.pinCode || "",
-            addressLine1: mailingAddress.addressLine1 || "",
-            addressLine2: mailingAddress.addressLine2 || "",
-            county: mailingAddress.county || "",
-            city: mailingAddress.city || "",
-            state: mailingAddress.state || "",
-            country: mailingAddress.country || ""
-        }));
+        const formData = new FormData();
+        formData.append('file', file);
 
-        // Update insuredInfo state
-        setInsuredInfo(prevState => ({
-            ...prevState,
-            firstName: insuredData.insuredContactPerson.firstName || "",
-            middleName: insuredData.insuredContactPerson.middleName || "",
-            lastName: insuredData.insuredContactPerson.lastName || "",
-            emailId: insuredData.insuredContactPerson.emailId || "",
-            countryCode: insuredData.insuredContactPerson.countryCode || "",
-            phoneNumber: insuredData.insuredContactPerson.phoneNumber || "",
-            website: insuredData.insuredContactPerson.website || ""
-        }));
+        console.log("Sending request to:", `${PROD_URL}/api/process_doc`);
+        
+        const response = await fetch(`${PROD_URL}/api/process_doc`, {
+            method: 'POST',
+            body: formData,
+        });
 
-        message.success('Form prefilled successfully');
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || `Upload failed with status: ${response.status}`);
+        }
+
+        const responseData = await response.json();
+        console.log('Upload API Response:', responseData);
+
+        if (!responseData.application_details) {
+            throw new Error('Invalid response format from API');
+        }
+
+        // Update form states with response data
+        updateFormStates(responseData.application_details);
+        
+        setFileList([file]);
+        message.success(`${file.name} processed successfully`);
+        setSuccess(true);
+
     } catch (error) {
-        console.error('Error prefilling form:', error);
-        message.error('Failed to prefill form');
+        console.error('Upload Error:', error);
+        message.error(`Upload failed: ${error.message}`);
+        setError(error.message);
+    } finally {
+        setLoading(false);
     }
 };
+
+const updateFormStates = (data) => {
+    if (!data) return;
+    
+    const { insuredInfo, insuredMailingAddress, insuredContactPerson } = data;
+    
+    // Update basicInfo state - handle all fields from insuredInfo
+    if (insuredInfo) {
+        setBasicInfo(prevState => ({
+            ...prevState,
+            orgName: insuredInfo.orgName || '',
+            orgType: insuredInfo.orgType || '',
+            dba: insuredInfo.dba || '',
+            fein: insuredInfo.fein || '',
+            tin: insuredInfo.tin || '',
+            businessActivity: insuredInfo.businessActivity || '',
+            sicCode: insuredInfo.sicCode || '',
+            sicDescription: insuredInfo.sicDescription || '',
+            naics: insuredInfo.naics || '',
+            naicsDescription: insuredInfo.naicsDescription || '',
+            yearsInBusiness: insuredInfo.yearsInBusiness || '',
+            status: insuredInfo.partyStatus || 'active'
+        }));
+    }
+
+    // Update locationInfo state - handle first address from insuredMailingAddress array
+    if (insuredMailingAddress && insuredMailingAddress[0]) {
+        const address = insuredMailingAddress[0];
+        setLocationInfo(prevState => ({
+            ...prevState,
+            pinCode: address.pinCode || '',
+            addressLine1: address.addressLine1 || '',
+            addressLine2: address.addressLine2 || '',
+            county: address.county || '',
+            city: address.city || '',
+            state: address.state || '',
+            country: address.country || ''
+        }));
+    }
+
+    // Update insuredInfo state - handle all fields from insuredContactPerson
+    if (insuredContactPerson) {
+        setInsuredInfo(prevState => ({
+            ...prevState,
+            firstName: insuredContactPerson.firstName || '',
+            middleName: insuredContactPerson.middleName || '',
+            lastName: insuredContactPerson.lastName || '',
+            emailId: insuredContactPerson.emailId || '',
+            countryCode: insuredContactPerson.countryCode || '',
+            phoneNumber: insuredContactPerson.phoneNumber || '',
+            website: insuredContactPerson.website || ''
+        }));
+    }
+};
+
 
 
     return (
