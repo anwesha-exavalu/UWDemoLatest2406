@@ -611,7 +611,7 @@ function CreateSubmission({ onNext }) {
                                                 label={<span style={{ fontSize: "15px", marginRight: "40px" }}>County</span>}
                                                 value={locationInfo.county}
                                                 required={true}
-                                                onChange={(e) => handleInputChange(e, "locationInfo", "country")}
+                                                onChange={(e) => handleInputChange(e, "locationInfo", "county")}
                                                 readOnly={!locationInfo.isEditing} // Allow editing based on state
                                             />
                                         </Col>
