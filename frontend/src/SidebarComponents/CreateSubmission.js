@@ -6,7 +6,7 @@ import Documents from "../layout/RightSidebar";
 import { EditOutlined,SaveOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Modal, message, Upload } from 'antd';
-import pdfData from "../assets/documents/DocumentForExtraction.pdf";
+import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
 import axios from 'axios';
 
 const PROD_URL = "http://35.170.187.180:5000";
@@ -192,7 +192,7 @@ function CreateSubmission({ onNext }) {
             }
 
             const pdfBlob = await pdfResponse.blob();
-            const file = new File([pdfBlob], "DocumentForExtraction.pdf", {
+            const file = new File([pdfBlob], "DocumentForExtraction02.pdf", {
                 type: 'application/pdf'
             });
 
