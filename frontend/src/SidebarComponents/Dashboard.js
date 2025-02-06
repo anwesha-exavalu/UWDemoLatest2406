@@ -8,6 +8,8 @@ import './Dashboard.css';
 import './Table.css';
 import { Tabs } from 'antd';
 import PortfolioInsights from './PortfolioInsights';
+import { Popover } from 'antd';
+import PriorityPopup from './PriorityPopup';
 
 const { TabPane } = Tabs;
 
@@ -32,8 +34,8 @@ const data = {
   ],
   myassignedcases: [
     { id: 'CP1003', client: 'Skyline Property Inc.', lob: 'Commercial Property', status: 'Awaiting Client Response', limit: '$900,000', date: '10-15-2024', broker: 'Marsh ', priority: 'Medium' },
-    { id: 'CP1004', client: 'Kew Garden Property Inc.', lob: 'Commercial Property', status: 'New Submission', limit: '$15,000,000', date: '11-05-2024', broker: 'Marsh ', priority: 'High' },
-   
+    // { id: 'CP1004', client: 'Kew Garden Property Inc.', lob: 'Commercial Property', status: 'New Submission', limit: '$15,000,000', date: '11-05-2024', broker: 'Marsh ', priority: 'High' },
+
   ],
   senttobroker: [
     { id: 'CP1006', client: 'Uptown Commercial Spaces', lob: 'Commercial Property', status: 'Broker Review', limit: '$450,000', date: '17-08-2024', broker: 'Marsh ', priority: 'Medium' },
@@ -125,19 +127,19 @@ const Dashboard = () => {
       type: 'doughnut',
       data: {
         labels: ['New Business', 'Renewal Premium'],
-        datasets: [{ 
+        datasets: [{
           data: [3000000, 7000000], // Updated to millions
-          backgroundColor: ['#FF69B4', '#36a2eb'] 
+          backgroundColor: ['#FF69B4', '#36a2eb']
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: { 
+        plugins: {
           legend: { display: false },
           tooltip: {
             callbacks: {
-              label: function(context) {
+              label: function (context) {
                 // Format the numbers with commas and 'M' suffix
                 const value = (context.raw / 1000000).toFixed(1) + 'M';
                 return `${context.label}: $${value}`;
@@ -243,12 +245,38 @@ const Dashboard = () => {
     { title: 'Date Submitted', dataIndex: 'date', key: 'date', sorter: (a, b) => new Date(a.date) - new Date(b.date), sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null },
     { title: 'Broker', dataIndex: 'broker', key: 'broker', ...getColumnSearchProps('broker') },
     {
-      title: 'Priority',
+      title: 'Claim Propensity',
       dataIndex: 'priority',
       key: 'priority',
-      filters: [{ text: 'High', value: 'High' }, { text: 'Medium', value: 'Medium' }, { text: 'Low', value: 'Low' }],
-      filteredValue: filteredInfo.priority || null,
-      onFilter: (value, record) => record.priority.includes(value),
+      render: (priority, record) => (
+        <Popover
+          content={<PriorityPopup predictionData={priority} record={record} />}
+          trigger="click"
+          placement="rightTop"
+          overlayStyle={{ width: 500 }}
+        >
+          <span
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+            style={{
+              padding: '4px 8px',
+              borderRadius: '4px',
+              backgroundColor:
+                priority === 'High' ? '#fff1f0' :
+                  priority === 'Medium' ? '#fffbe6' :
+                    '#f6ffed',
+              color:
+                priority === 'High' ? '#cf1322' :
+                  priority === 'Medium' ? '#d4b106' :
+                    '#389e0d',
+              cursor: 'pointer'
+            }}
+          >
+            {priority}
+          </span>
+        </Popover>
+      ),
     },
     // {
     //   title: 'Action',
@@ -365,7 +393,7 @@ const Dashboard = () => {
           </div>
         </TabPane>
         <TabPane tab="My Portfolio" key="2">
-        <PortfolioInsights />
+          <PortfolioInsights />
         </TabPane>
       </Tabs>
     </div>
