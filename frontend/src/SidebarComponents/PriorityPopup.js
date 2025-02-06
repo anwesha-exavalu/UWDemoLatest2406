@@ -4,6 +4,7 @@ import { Card, Row, Col, Typography, Progress, Spin, message } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 
 const { Title, Text } = Typography;
+const claimPropensityAPI = process.env.REACT_APP_CLAIM_PROPENSITY;
 
 const PriorityPopup = ({ priority, record }) => {
   const [predictionData, setPredictionData] = useState(null);
@@ -12,7 +13,7 @@ const PriorityPopup = ({ priority, record }) => {
   useEffect(() => {
     const fetchPredictionData = async () => {
       try {
-        const response = await axios.post('http://54.227.115.34:5000/predict',
+        const response = await axios.post(`${claimPropensityAPI}/predict`,
           {
             "Location": record?.Location || "Suburban",
             "Building Type": record?.Building_Type || "Office Building",

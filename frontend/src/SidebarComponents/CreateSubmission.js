@@ -9,7 +9,7 @@ import { Modal, message, Upload } from 'antd';
 import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
 import axios from 'axios';
 
-const PROD_URL = "http://35.170.187.180:5000";
+const PROD_URL = process.env.REACT_APP_PREFILL_URL;
 function CreateSubmission({ onNext }) {
     // Separate state for each widget section's form data and editing state
     const navigate = useNavigate();
