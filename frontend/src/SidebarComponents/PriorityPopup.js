@@ -47,11 +47,20 @@ const PriorityPopup = ({ priority, record }) => {
     fetchPredictionData();
   }, [record]);
 
+  const predicatorDetails = {
+    "Building Age": "90 years",
+    "Square Footage": "70,000 sq ft",
+    "Security Measures": "Yes (1)",
+    "Sprinkler Coverage": "No (0)",
+    "Room Count": "25 rooms"
+  };
+
   const topPredictorsData = predictionData?.["Top SHAP Values"]?.map(([predictor, impact, value]) => ({
     predictor,
     impact: Math.abs(impact) * 100,
     value,
-    displayValue: `${(Math.abs(impact) * 100).toFixed(1)}%`
+    displayValue: `${(Math.abs(impact) * 100).toFixed(1)}`,
+    details: predicatorDetails[predictor] || ''
   })) || [];
 
   const handleClick = (e) => {
@@ -156,10 +165,10 @@ const PriorityPopup = ({ priority, record }) => {
 
         <Col span={24}>
           <Card
-            title={<span style={{ fontSize: '16px', fontWeight: '600', color: '#1a365d' }}>Top Reasons</span>}
+            title={<span style={{ fontSize: '16px', fontWeight: '600', color: '#1a365d' }}>Top Reasons for High Risk</span>}
             styles={{
               body: { padding: '12px' },
-              header: { minHeight: '48px', padding: '12px 16px' }
+              header: { minHeight: '40px', padding: '12px 16px' }
             }}
             style={{
               borderRadius: '8px',
@@ -170,20 +179,37 @@ const PriorityPopup = ({ priority, record }) => {
               <BarChart
                 data={topPredictorsData}
                 layout="vertical"
-                margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+                margin={{ top: 5, right: 30, left: 5, bottom: 13 }}
                 style={{display:"flex",allignitems:"center",justifyContent:"center"}}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
                   type="number"
-                  domain={[0, 100]}
+                  domain={[0, 50]}
+                  label={{ 
+                    value: 'Impact Percentage', 
+                    position: 'insideBottom', 
+                    offset: -10,
+                    style: { 
+                      fontSize: '12px',
+                      fill: '#4b5563'
+                    }
+                  }}
                   tick={{ fontSize: 12, fill: '#4b5563' }}
                 />
                 <YAxis
                   dataKey="predictor"
                   type="category"
-                  tick={{ fontSize: 12, fill: '#4b5563' }}
-                  width={110}
+                  tick={{ 
+                    fontSize: 12, 
+                    fill: '#4b5563',
+                    style: { display: 'flex', alignItems: 'center' }
+                  }}
+                  width={100}
+                  tickFormatter={(value, index) => {
+                    const details = topPredictorsData[index]?.details;
+                    return `${value} (${details})`;
+                  }}
                 />
                 <Tooltip
                   cursor={{ fill: 'rgba(147, 197, 253, 0.1)' }}

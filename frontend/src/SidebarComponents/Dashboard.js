@@ -245,7 +245,7 @@ const Dashboard = () => {
     { title: 'Date Submitted', dataIndex: 'date', key: 'date', sorter: (a, b) => new Date(a.date) - new Date(b.date), sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null },
     { title: 'Broker', dataIndex: 'broker', key: 'broker', ...getColumnSearchProps('broker') },
     {
-      title: 'Propensity',
+      title: 'Claim Propensity',
       dataIndex: 'priority',
       key: 'priority',
       render: (priority, record) => (
