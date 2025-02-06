@@ -3,13 +3,13 @@ import styles from "./CreateSubmission.module.css";
 import { Col, Row, Tooltip, Button, Radio, Form, Select } from "antd";
 import FormInput from "../components/FormInput";
 import Documents from "../layout/RightSidebar";
-import { EditOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
+import { EditOutlined,SaveOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Modal, message, Upload } from 'antd';
 import pdfData from "../assets/documents/DocumentForExtraction.pdf";
 import axios from 'axios';
 
-const PROD_URL = "http://44.202.148.91:5000";
+const PROD_URL = "http://35.170.187.180:5000";
 function CreateSubmission({ onNext }) {
     // Separate state for each widget section's form data and editing state
     const navigate = useNavigate();
@@ -19,6 +19,7 @@ function CreateSubmission({ onNext }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [success, setSuccess] = useState(false);
+    const [isEditMode, setIsEditMode] = useState(false);
     // Separate state for each widget section's form data and editing state
     const [basicInfo, setBasicInfo] = useState({
         orgName: "",
@@ -60,18 +61,37 @@ function CreateSubmission({ onNext }) {
 
     // Toggle editing mode for Basic Information
     const handleEditInsured = () => {
-        handleEditBasicInfo();
-        handleEditLocationInfo();
-        handleEditInsuredInfo();
+        if (isEditMode) {
+            // Save functionality - you can add API calls or other save logic here
+            setBasicInfo(prev => ({ ...prev, isEditing: false }));
+            setLocationInfo(prev => ({ ...prev, isEditing: false }));
+            setInsuredInfo(prev => ({ ...prev, isEditing: false }));
+        } else {
+            // Edit functionality - existing logic
+            setBasicInfo(prev => ({ ...prev, isEditing: true }));
+            setLocationInfo(prev => ({ ...prev, isEditing: true }));
+            setInsuredInfo(prev => ({ ...prev, isEditing: true }));
+        }
+        // Toggle edit mode
+        setIsEditMode(!isEditMode);
     };
-    const handleEditBasicInfo = () => {
-        console.log("Edit icon clicked!"); // Log for debugging
-        setBasicInfo((prevState) => ({
-            ...prevState,
-            isEditing: !prevState.isEditing, // Toggle edit mode
-        }));
-        console.log("After Edit Toggle: ", !basicInfo.isEditing); // Log toggled state
-    };
+    useEffect(() => {
+        console.log("Edit Mode State:", {
+            basicInfo: basicInfo.isEditing,
+            locationInfo: locationInfo.isEditing,
+            insuredInfo: insuredInfo.isEditing
+        });
+    }, [basicInfo.isEditing, locationInfo.isEditing, insuredInfo.isEditing]);
+
+    
+    // const handleEditBasicInfo = () => {
+    //     console.log("Edit icon clicked!"); // Log for debugging
+    //     setBasicInfo((prevState) => ({
+    //         ...prevState,
+    //         isEditing: !prevState.isEditing, // Toggle edit mode
+    //     }));
+    //     console.log("After Edit Toggle: ", !basicInfo.isEditing); // Log toggled state
+    // };
 
     const handleCreateNewBasicInfo = () => {
         console.log("Edit icon clicked!"); // Log for debugging
@@ -83,12 +103,12 @@ function CreateSubmission({ onNext }) {
         });
     };
 
-    const handleEditLocationInfo = () => {
-        setLocationInfo((prevState) => ({
-            ...prevState,
-            isEditing: !prevState.isEditing, // Toggle edit mode
-        }));
-    };
+    // const handleEditLocationInfo = () => {
+    //     setLocationInfo((prevState) => ({
+    //         ...prevState,
+    //         isEditing: !prevState.isEditing, // Toggle edit mode
+    //     }));
+    // };
 
     const handleCreateNewLocationInfo = () => {
         setLocationInfo({
@@ -98,12 +118,12 @@ function CreateSubmission({ onNext }) {
         });
     };
 
-    const handleEditInsuredInfo = () => {
-        setInsuredInfo((prevState) => ({
-            ...prevState,
-            isEditing: !prevState.isEditing, // Toggle edit mode
-        }));
-    };
+    // const handleEditInsuredInfo = () => {
+    //     setInsuredInfo((prevState) => ({
+    //         ...prevState,
+    //         isEditing: !prevState.isEditing, // Toggle edit mode
+    //     }));
+    // };
 
     const handleCreateNewInsuredInfo = () => {
         setInsuredInfo({
@@ -111,23 +131,14 @@ function CreateSubmission({ onNext }) {
             isEditing: true, // Enable editing for new entries
         });
     };
-
     const handleInputChange = (e, section, field) => {
+        const value = e.target ? e.target.value : e;
         if (section === "basicInfo") {
-            setBasicInfo({
-                ...basicInfo,
-                [field]: e.target.value,
-            });
+            setBasicInfo(prev => ({ ...prev, [field]: value }));
         } else if (section === "locationInfo") {
-            setLocationInfo({
-                ...locationInfo,
-                [field]: e.target.value,
-            });
+            setLocationInfo(prev => ({ ...prev, [field]: value }));
         } else if (section === "insuredInfo") {
-            setInsuredInfo({
-                ...insuredInfo,
-                [field]: e.target.value,
-            });
+            setInsuredInfo(prev => ({ ...prev, [field]: value }));
         }
     };
     const handleClick = () => {
@@ -347,8 +358,16 @@ function CreateSubmission({ onNext }) {
                                     <Button type="primary" onClick={handlePrefill} loading={loading} style={{ width: "5rem", backgroundColor: "blue" }}>
                                         Prefill
                                     </Button>
-                                    <Tooltip title="Edit">
-                                        <Button shape="circle" onClick={handleEditInsured} icon={<EditOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px" }} />
+                                    <Tooltip title={isEditMode ? "Save" : "Edit"}>
+                                        <Button 
+                                            shape="circle" 
+                                            onClick={handleEditInsured} 
+                                            icon={isEditMode ? 
+                                                <SaveOutlined style={{ fontSize: "20px" }} /> : 
+                                                <EditOutlined style={{ fontSize: "20px" }} />
+                                            } 
+                                            style={{ fontSize: "20px" }} 
+                                        />
                                     </Tooltip>
                                     <Tooltip title="Search">
                                         <Button shape="circle" onClick={handleSearchClick} icon={<SearchOutlined style={{ fontSize: "20px" }} />} style={{ fontSize: "20px" }} />
@@ -382,8 +401,8 @@ function CreateSubmission({ onNext }) {
                                                 label={<span style={{ fontSize: "15px" }}>Insured Name</span>}
                                                 value={basicInfo.orgName}
                                                 required={true}
-                                                onChange={(e) => handleInputChange(e, "basicInfo", "insuredName")}
-                                                readOnly={!basicInfo.isEditing} // Allow editing based on state
+                                                onChange={(e) => handleInputChange(e, "basicInfo", "orgName")}
+                                                readOnly={!basicInfo.isEditing}
                                             />
                                         </Col>
                                         {/* <Col span={6}>
@@ -523,7 +542,7 @@ function CreateSubmission({ onNext }) {
                                                 label={<span style={{ fontSize: "15px" }}>Year in Business</span>}
                                                 value={basicInfo.yearsInBusiness}
                                                 required={true}
-                                                onChange={(e) => handleInputChange(e, "basicInfo", "yearInBusiness")}
+                                                onChange={(e) => handleInputChange(e, "basicInfo", "yearsInBusiness")}
                                                 readOnly={!basicInfo.isEditing} // Allow editing based on state
                                             />
                                         </Col>
