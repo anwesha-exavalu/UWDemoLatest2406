@@ -77,7 +77,7 @@ const UWQuestions = ({ onNext }) => {
 
            {/* System Recommended Decision */}
           
-          <div
+          {/* <div
             style={{
               fontSize:"21px",
               padding: '15px',
@@ -91,7 +91,7 @@ const UWQuestions = ({ onNext }) => {
             }}
           >
            Risk Score - Medium
-          </div>
+          </div> */}
 
 
          {/* Override Decision Section */}
