@@ -48,21 +48,43 @@ const PriorityPopup = ({ priority, record }) => {
     fetchPredictionData();
   }, [record]);
 
-  const predicatorDetails = {
-    "Building Age": "90 years",
-    "Square Footage": "70,000 sq ft",
-    "Security Measures": "Yes (1)",
-    "Sprinkler Coverage": "No (0)",
-    "Room Count": "25 rooms"
+  const getDisplayValue = (predictor, value) => {
+    switch (predictor) {
+      case "Building Age":
+        return `${value} years`;
+      case "Square Footage":
+        return `${value.toLocaleString()} sq ft`;
+      case "Security Measures":
+        return value === 1 ? "Yes" : "No";
+      case "Sprinkler Coverage":
+        return value === 1 ? "Yes" : "No";
+      case "Room Count":
+        return `${value} rooms`;
+      default:
+        return value;
+    }
   };
 
   const topPredictorsData = predictionData?.["Top SHAP Values"]?.map(([predictor, impact, value]) => ({
     predictor,
     impact: Math.abs(impact) * 100,
     value,
-    displayValue: `${(Math.abs(impact) * 100).toFixed(1)}`,
-    details: predicatorDetails[predictor] || ''
+    displayValue: getDisplayValue(predictor, value),
+    impactDisplay: `${(Math.abs(impact) * 100).toFixed(1)}`
   })) || [];
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload;
+      return (
+        <div className="bg-white p-2 border border-gray-200 rounded-md shadow-sm">
+          <p className="text-sm font-medium text-gray-700">{data.predictor}</p>
+          <p className="text-sm text-gray-600">{data.displayValue}</p>
+        </div>
+      );
+    }
+    return null;
+  };
 
   const handleClick = (e) => {
     e.stopPropagation();
@@ -166,7 +188,7 @@ const PriorityPopup = ({ priority, record }) => {
 
         <Col span={24}>
           <Card
-            title={<span style={{ fontSize: '16px', fontWeight: '600', color: '#1a365d' }}>Top Reasons for High Risk</span>}
+            title={<span style={{ fontSize: '16px', fontWeight: '600', color: '#1a365d' }}>Top Reasons</span>}
             styles={{
               body: { padding: '12px' },
               header: { minHeight: '40px', padding: '12px 16px' }
@@ -180,8 +202,7 @@ const PriorityPopup = ({ priority, record }) => {
               <BarChart
                 data={topPredictorsData}
                 layout="vertical"
-                margin={{ top: 5, right: 30, left: 5, bottom: 13 }}
-                style={{display:"flex",allignitems:"center",justifyContent:"center"}}
+                margin={{ top: 5, right: 100, left: 5, bottom: 13 }}
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
                 <XAxis
@@ -203,25 +224,17 @@ const PriorityPopup = ({ priority, record }) => {
                   type="category"
                   tick={{ 
                     fontSize: 12, 
-                    fill: '#4b5563',
-                    style: { display: 'flex', alignItems: 'center' }
+                    fill: '#4b5563'
                   }}
                   width={100}
-                  tickFormatter={(value, index) => {
-                    const details = topPredictorsData[index]?.details;
-                    return `${value} (${details})`;
-                  }}
                 />
                 <Tooltip
+                  content={<CustomTooltip />}
                   cursor={{ fill: 'rgba(147, 197, 253, 0.1)' }}
-                  contentStyle={{
-                    borderRadius: '6px',
-                    border: '1px solid #e5e7eb'
-                  }}
                 />
                 <Bar dataKey="impact" fill="#f59e0b" radius={[0, 4, 4, 0]}>
                   <LabelList 
-                    dataKey="displayValue" 
+                    dataKey="impactDisplay" 
                     position="right"
                     style={{ 
                       fontSize: '12px',
@@ -253,7 +266,7 @@ const PriorityPopup = ({ priority, record }) => {
                   fontWeight: '600',
                   color: '#1a365d'
                 }}>
-                  Model Metrics
+                  Model Confidence
                 </Title>
               </Col>
               <Col span={24}>
