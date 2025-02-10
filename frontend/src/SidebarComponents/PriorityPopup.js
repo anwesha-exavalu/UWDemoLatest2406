@@ -70,7 +70,7 @@ const PriorityPopup = ({ priority, record }) => {
     impact: Math.abs(impact) * 100,
     value,
     displayValue: getDisplayValue(predictor, value),
-    impactDisplay: `${(Math.abs(impact) * 100).toFixed(1)}%`
+    impactDisplay: `${(Math.abs(impact) * 100).toFixed(1)}`
   })) || [];
 
   const CustomTooltip = ({ active, payload }) => {
@@ -79,8 +79,7 @@ const PriorityPopup = ({ priority, record }) => {
       return (
         <div className="bg-white p-2 border border-gray-200 rounded-md shadow-sm">
           <p className="text-sm font-medium text-gray-700">{data.predictor}</p>
-          <p className="text-sm text-gray-600">Value: {data.displayValue}</p>
-          <p className="text-sm text-gray-600">Impact: {data.impactDisplay}</p>
+          <p className="text-sm text-gray-600">{data.displayValue}</p>
         </div>
       );
     }
