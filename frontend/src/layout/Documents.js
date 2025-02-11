@@ -6,6 +6,7 @@ import SampleInspectionReport from '../assets/documents/Sample Inspection Report
 import AspyreMetroApplicationNY from '../assets/documents/Aspyre Metro Application NY.pdf'
 import AIGLossRuns from '../assets/documents/AIG_Loss_Runs.pdf'
 import CommercialPropertySovs from '../assets/documents/Commercial_Property_Insurance_SOV.pdf'
+import DocumentForExtraction02 from '../assets/documents/DocumentForExtraction02.pdf'
 
 const Documents = () => {
   const [isDocumentMenuVisible, setDocumentMenuVisible] = useState(false);
@@ -102,7 +103,7 @@ const Documents = () => {
       >
         <h3>Documents</h3>
         <ul style={{ listStyleType: "disc", paddingLeft: "20px", fontSize: "18px" }}>
-          <li><span onClick={() => openDocument(AspyreMetroApplicationNY)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Application.pdf</span></li>
+          <li><span onClick={() => openDocument(DocumentForExtraction02)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Application.pdf</span></li>
           <li><span onClick={() => openDocument(AIGLossRuns)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Loss_Runs.pdf</span></li>
           <li><span onClick={() => openDocument(CommercialPropertySovs)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>SOVs.pdf</span></li>
           <li><span onClick={() => openDocument(riskmeter_report)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Riskmeter Corelogic Report.pdf</span></li>
