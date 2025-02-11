@@ -11,7 +11,26 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 const openAiApiKey = process.env.REACT_APP_OPENAI_API_KEY;
 
 function OverallInsights() {
-  const [insights, setInsights] = useState(null);
+  const [insights, setInsights] = useState(
+    {
+      "summary": {
+        "title": "",
+        "content": []
+      },
+      "highlights": {
+        "title": "",
+        "content": []
+      },
+      "underwriting_risks": {
+        "title": "",
+        "content": []
+      },
+      "public_data": {
+        "title": "",
+        "content": []
+      }
+    }
+  );
   const [refImages, setRefImages] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [loading, setLoading] = useState(false);
@@ -51,59 +70,86 @@ function OverallInsights() {
     You are a {Commercial Property} Insurance Underwriter's Assistant that can quickly find potential risks and issues with the building based on the inspection report.
       Please Provide Summary, Highlights, Underwriting Risks of ${query.value} of the building, refer the public data which is given as  charts and graphs provided in the image and corelate the inspection
       report with it specific data points and highlight in case anything that's not inspected with respect to underwriting a {Commercial Property} in the following format:
-      **Summary of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3>
-      - <Bullet 4>
-      - <Bullet 5>
-      ** Highlights of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3>
-      - <Bullet 4>
-      - <Bullet 5>
-      **Underwriting Risks of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3> 
-      - <Bullet 4>
-      - <Bullet 5>
-      **Comparison of ${query.label} with public risk data(top 10 causes of fire)**:
-        For each of the 5 risks, provide the following details:
-      * <Risk>
-        - <What % is the risk Number in this location (borough)>
-          -- <Answer with % of risk>
-        - <Mitigation steps to reduce this risk Number>
-          -- <Answer>
-        - <How does the building mitigate the Risks>
-          -- <Answer>
-        - <Does the Inspection document capture the mitigation steps>
-          -- <Answer How it captures>
-        - <Was the building inspected for the mitigation of risk Number>
-          -- <Answer>
+      {
+        "summary": {
+          "title": "Summary of ${query.label}",
+          "content": [
+              " <Bullet 1>",
+              " <Bullet 2>",
+              " <Bullet 3>",
+              " <Bullet 4>",
+              " <Bullet 5>"
+            ]
+          },
+        "highlights": {
+          "title": "Highlights of ${query.label}",
+          "content": [
+              " <Bullet 1>",
+              " <Bullet 2>",
+              " <Bullet 3>",
+              " <Bullet 4>",
+              " <Bullet 5>"
+            ]
+          },
+        "underwriting_risks": {
+          "title": "Underwriting Risks of ${query.label}",
+          "content": [
+              " <Bullet 1>",
+              " <Bullet 2>",
+              " <Bullet 3>",
+              " <Bullet 4>",
+              " <Bullet 5>"
+            ]
+          },
+        "public_data": {
+            "title": "Comparison of ${query.label} with public risk data(top 10 causes of fire)\nFor each of the 5 risks, provide the following details:",
+            "content": [
+                "What % is the risk Number in this location (borough)? \nAns: <Answer with % of risk>",
+                "Mitigation steps to reduce this risk Number? \nAns: <Answer with mitigation steps>",
+                "How does the building mitigate the Risks? \nAns: <Answer>",
+                "Does the Inspection document capture the mitigation steps? \nAns: <Answer How it captures>",
+                "Was the building inspected for the mitigation of risk Number? \nAns: <Answer>"
+              ]
+            }
+      }
+          no preambles, just the answers
     `,
     query: `
       You are a {Commercial Property} Insurance Underwriter's Assistant that can quickly find potential risks and issues with the building based on the inspection report.
       Please Provide Summary, Highlights, Underwriting Risks of ${query.value} of the building that would be helpful in underwriting a {Commercial Property} in the following format:
-      **Summary of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3>
-      - <Bullet 4>
-      - <Bullet 5>
-      ** Highlights of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3>
-      - <Bullet 4>
-      - <Bullet 5>
-      **Underwriting Risks of ${query.label}**:
-      - <Bullet 1>
-      - <Bullet 2>
-      - <Bullet 3> 
-      - <Bullet 4>
-      - <Bullet 5>
+      {
+        "summary": {
+            "title": "Summary of ${query.label}",
+            "content": [
+                " <Bullet 1>",
+                " <Bullet 2>",
+                " <Bullet 3>",
+                " <Bullet 4>",
+                " <Bullet 5>"
+            ]
+        },
+        "highlights": {
+            "title": "Highlights of ${query.label}",
+            "content": [
+                " <Bullet 1>",
+                " <Bullet 2>",
+                " <Bullet 3>",
+                " <Bullet 4>",
+                " <Bullet 5>"
+            ]
+        },
+        "underwriting_risks": {
+            "title": "Underwriting Risks of ${query.label}",
+            "content": [
+                " <Bullet 1>",
+                " <Bullet 2>",
+                " <Bullet 3>",
+                " <Bullet 4>",
+                " <Bullet 5>"
+            ]
+        }
+      }
+        no preambles, just the answers
     `,
     model: "gpt-4o",
   };
@@ -161,10 +207,10 @@ function OverallInsights() {
         if (response.status === 200) {
           // Assuming `response.data.results` contains an array of Base64 images
           images = Array.from(
-            new Set(response.data.results.map((imageBase64) => 
+            new Set(response.data.results.map((imageBase64) =>
               `data:image/png;base64,${imageBase64}`
             ))
-          );          
+          );
           if (publicData) {
             // Fetch images from the localStorage
             const capturedVisualizations = JSON.parse(localStorage.getItem('capturedVisualizations') || '[]');
@@ -218,7 +264,7 @@ function OverallInsights() {
           temperature: 0,
         };
 
-        const aiResponse = await axios.post(
+        let aiResponse = await axios.post(
           'https://api.openai.com/v1/chat/completions',
           data,
           {
@@ -230,10 +276,31 @@ function OverallInsights() {
         );
 
         if (aiResponse.status === 200) {
-          console.log(data)
+          let aiInsights = aiResponse.data.choices[0].message.content;
+          aiInsights = JSON.parse(aiInsights);
+          console.log("Response: ", aiInsights.highlights)
           // console.log(aiResponse.data.choices[0].message.content)
-          setInsights(aiResponse.data.choices[0].message.content);
-          // console.log(insights)
+          setInsights({
+            summary: {
+              title: aiInsights.summary.title,
+              content: aiInsights.summary.content,
+            },
+            highlights: {
+              title: aiInsights.highlights.title,
+              content: aiInsights.highlights.content,
+            },
+            underwriting_risks: {
+              title: aiInsights.underwriting_risks.title,
+              content: aiInsights.underwriting_risks.content,
+            },
+            ...(aiInsights.public_data && {
+              public_data: {
+                title: aiInsights.public_data.title,
+                content: aiInsights.public_data.content,
+              },
+            }), // Add public data if publicData is true
+          });
+          console.log("Insights: ", insights.public_data)
         } else {
           setErrorMessage("No insights available at this moment.");
         }
@@ -345,13 +412,43 @@ function OverallInsights() {
             )}
             <div style={{ flex: '1', width: '50%', maxHeight: '600px', overflowY: 'scroll', padding: '0 10px' }}>
               {insights
-                ? insights.split("\n\n").map((paragraph, index) => (
-                  <Card key={index}>
-                    {paragraph.split("\n").map((point, pointIndex) => (
-                      <p key={pointIndex}>{point}</p>
-                    ))}
-                  </Card>
-                ))
+                ? (
+                  <>
+                    <Card>
+                      {insights.summary.title && <h4>{insights.summary.title}</h4>}
+                      {insights.summary.content.map((item, index) => (
+                        <p key={index}>{item}</p>
+                      ))}
+                    </Card>
+                    <Card>
+                      {insights.highlights.title && <h4>{insights.highlights.title}</h4>}
+                      {insights.highlights.content.map((item, index) => (
+                        <p key={index}>{item}</p>
+                      ))}
+                    </Card>
+                    <Card>
+                      {insights.underwriting_risks.title && <h4>{insights.underwriting_risks.title}</h4>}
+                      {insights.underwriting_risks.content.map((item, index) => (
+                        <p key={index}>{item}</p>
+                      ))}
+                    </Card>
+                    {insights.public_data && (
+                      <Card>
+                        {insights.public_data.title && <h4 style={{ color: 'blue' }}>{insights.public_data.title}</h4>}
+                        {insights.public_data.content.map((item, index) => {
+                          const [question, answer] = item.split("\n"); // Splitting into question and answer
+
+                          return (
+                            <div key={index} style={{ marginBottom: "10px" }}>
+                              <strong style={{ color: "black" }}>Question: {question}</strong>
+                              <p style={{ marginLeft: "10px", color: "green" }}>{answer}</p>
+                            </div>
+                          );
+                        })}
+                      </Card>
+                    )}
+                  </>
+                )
                 : 'Select the document and then query from dropdown to generate Insights'}
             </div>
           </div>
