@@ -465,38 +465,7 @@ const LossInfo = ({ onNext }) => {
                   Add Loss
                 </Button> */}
                   <table style={{ marginBottom: "20px" }}>
-                    {/* <thead>
-                      <tr>
-                       
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}></th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Policy Year</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Annual Premium</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>#Claims</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>#Open Claims</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Total Insured Losses</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Total Paid Losses</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Expenses</th>
-                      </tr>
-                    </thead> */}
-                    {/* <tbody>
-                      {lossSummaries.map((loss, index) => (
-                        <tr key={index} style={{ backgroundColor: selectedLossSummary?.policyYear === loss.policyYear ? '#e6f7ff' : 'transparent' }}>
-                          <td>
-                            <Checkbox
-                              onChange={() => handleCheckboxChangspolicy(loss)}
-                              checked={selectedLossSummary?.policyYear === loss.policyYear}
-                            />
-                          </td>
-                          <td>{loss.policyYear}</td>
-                          <td>{loss.annualPremium}</td>
-                          <td>{loss.claims}</td>
-                          <td>{loss.openClaims}</td>
-                          <td>{loss.totalInsuredLosses}</td>
-                          <td>{loss.totalPaidLosses}</td>
-                          <td>{loss.expenses}</td>
-                        </tr>
-                      ))}
-                    </tbody> */}
+                   
                   </table>
 
 
@@ -567,53 +536,144 @@ const LossInfo = ({ onNext }) => {
                   <Button type="primary" onClick={showLossDetailModal} style={{ marginBottom: "10px" }}>
                     Add Loss Detail
                   </Button>
-                  <table>
-                    <thead>
-                      <tr>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>
-
-                        </th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>UW Year</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Carrier</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Claim#</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Policy Eff Date</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Policy Exp Date</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Date of Loss</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Cause of Loss</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>LOB</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>LAE</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Settlement Amount</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Total Incurred</th>
-                        <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-
-                      {lossDetails.map((claim, index) => (
-                        <tr key={index}>
-                          <td>
-                            <input
-                              type="checkbox"
-                              onChange={() => handleCheckboxChangeclaim(claim)}
-                              checked={selectedClaim?.claimNumber === claim.claimNumber}
-                            />
-                          </td>
-                          <td>{claim.uwyear}</td>
-                          <td>{claim.carrier}</td>
-                          <td>{claim.claimNumber}</td>
-                          <td>{claim.effectiveDate}</td>
-                          <td>{claim.expirationDate}</td>
-                          <td>{claim.dateofLoss}</td>
-                          <td>{claim.causeofLoss}</td>
-                          <td>{claim.lob}</td>
-                          <td>{claim.lae}</td>
-                          <td>{claim.settlementAmount}</td>
-                          <td>{claim.totalIncurred}</td>
-                          <td>{claim.status}</td>
+                  <div style={{ 
+                    overflowX: 'auto',
+                    width: '100%'
+                  }}>
+                    <table style={{ 
+                      borderCollapse: 'collapse',
+                      width: 'max-content',
+                      minWidth: '100%'
+                    }}>
+                      <thead>
+                        <tr>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px 4px',
+                            width: '40px',
+                            minWidth: '40px',
+                            maxWidth: '40px',
+                            textAlign: 'center'
+                          }}></th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '80px',
+                            whiteSpace: 'nowrap'
+                          }}>UW Year</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '80px',
+                            whiteSpace: 'nowrap'
+                          }}>Carrier</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '140px',
+                            whiteSpace: 'nowrap'
+                          }}>Claim#</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '120px',
+                            whiteSpace: 'nowrap'
+                          }}>Policy Eff Date</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '120px',
+                            whiteSpace: 'nowrap'
+                          }}>Policy Exp Date</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '120px',
+                            whiteSpace: 'nowrap'
+                          }}>Date of Loss</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '120px',
+                            whiteSpace: 'nowrap'
+                          }}>Cause of Loss</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '140px',
+                            whiteSpace: 'nowrap'
+                          }}>LOB</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '100px',
+                            whiteSpace: 'nowrap'
+                          }}>LAE</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '140px',
+                            whiteSpace: 'nowrap'
+                          }}>Settlement Amount</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '120px',
+                            whiteSpace: 'nowrap'
+                          }}>Total Incurred</th>
+                          <th style={{ 
+                            backgroundColor: "#5d9de2", 
+                            color: 'white',
+                            padding: '8px',
+                            minWidth: '80px',
+                            whiteSpace: 'nowrap'
+                          }}>Status</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {lossDetails.map((claim, index) => (
+                          <tr key={index}>
+                            <td style={{ 
+                              padding: '8px 4px',
+                              textAlign: 'center',
+                              borderBottom: '1px solid #e8e8e8'
+                            }}>
+                              <input
+                                type="checkbox"
+                                onChange={() => handleCheckboxChangeclaim(claim)}
+                                checked={selectedClaim?.claimNumber === claim.claimNumber}
+                                style={{ margin: 0 }}
+                              />
+                            </td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.uwyear}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.carrier}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.claimNumber}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.effectiveDate}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.expirationDate}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.dateofLoss}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.causeofLoss}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.lob}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.lae}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.settlementAmount}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.totalIncurred}</td>
+                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.status}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                   {/* </>
                   )} */}
                   {/* Add Loss Detail Modal */}
