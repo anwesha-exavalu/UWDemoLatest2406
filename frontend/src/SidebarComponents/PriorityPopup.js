@@ -124,13 +124,13 @@ const PriorityPopup = ({ priority, record }) => {
               fontWeight: '600',
               color: '#1a365d'
             }}>
-              Skyline Property Inc.
+              {record.client}
             </Text>
             <Text type="secondary" style={{
               fontSize: '12px',
               color: '#4b5563'
             }}>
-              Commercial Property
+              {record.lob}
             </Text>
           </div>
         </Col>
