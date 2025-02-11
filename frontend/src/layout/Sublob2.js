@@ -47,8 +47,8 @@ const Sublob2 = (props) => {
   };
 
   const buttonStyle = {
-    height: '38px',
-    minWidth: '155px',
+    height: '36px',
+    minWidth: '140px',
     flex: '0 0 auto',
     display: 'flex',
     alignItems: 'center',
