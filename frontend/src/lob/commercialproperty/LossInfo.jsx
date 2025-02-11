@@ -314,8 +314,8 @@ const LossInfo = ({ onNext }) => {
 
   return (
     <Layout style={{ backgroundColor: 'white' }}>
-      <Row gutter={16}>
-        <Col span={20}>
+      <Row  gutter={16} style={{ width: '100%', margin: 0 }}>
+        <Col span={24}>
           <div className="maincontainer" id="lossInfo">
             <div id="tabcontainstwo" className="tab">
               <Button
