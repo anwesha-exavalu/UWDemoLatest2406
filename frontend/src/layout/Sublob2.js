@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-// import './Sublob.css'; // Import the CSS file for styling
+import { Button, Row, Col } from 'antd';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import LossInfo from '../lob/commercialproperty/LossInfo';
 import UWQuestions from '../lob/commercialproperty/UWQuestions';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import LocationComponent from '../lob/commercialproperty/LocationComponent';
-import { Button, Row, Col } from 'antd';
 import CreateSubmission from '../SidebarComponents/CreateSubmission';
 import QuoteSummary from '../lob/commercialproperty/quoteSummary';
 import PremiumSummary from '../lob/commercialproperty/PremiumSummary';
@@ -36,118 +35,78 @@ const Sublob2 = (props) => {
     }
   };
 
-  return (
-    <div style={{  marginTop: '20px', position: 'relative' }}>
-      <Row gutter={[16, 16]} align="stretch" justify={'space-between'}>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'policyInfo' ? 'active' : ''}`}
-            onClick={() => showSublob('policyInfo')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-file-alt"></i> Insured Info
-          </Button>
-        </Col>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'locationInfo' ? 'active' : ''}`}
-            onClick={() => showSublob('locationInfo')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-map-marker-alt"></i> Risk
-          </Button>
-        </Col>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'lossInfo' ? 'active' : ''}`}
-            onClick={() => showSublob('lossInfo')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-exclamation-triangle"></i> Loss
-          </Button>
-        </Col>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'coverages' ? 'active' : ''}`}
-            onClick={() => showSublob('coverages')}
-            block style={{ width: '10rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-shield-alt"></i> Coverages
-          </Button>
-        </Col>
-        <Col xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'uw' ? 'active' : ''}`}
-            onClick={() => showSublob('uw')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-question-circle"></i> UW Questions
-          </Button>
-        </Col>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'premiumSummary' ? 'active' : ''}`}
-            onClick={() => showSublob('premiumSummary')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-calculator"></i> Premium Summary
-          </Button>
-        </Col>
-        <Col  xs={23} sm={12} md={7} lg={5} xl={3}>
-          <Button
-            className={`sublob-item ${activeSection === 'quoteSummary' ? 'active' : ''}`}
-            onClick={() => showSublob('quoteSummary')}
-            block style={{ width: '11rem' }}
-            // style={{ height: '3rem', fontSize: '1rem', width: '100%' }}
-          >
-            <i className="fas fa-file-signature"></i> Quote Summary
-          </Button>
-        </Col>
-      </Row>
+  const containerStyle = {
+    display: 'flex',
+    overflowX: 'auto',
+    overflowY: 'hidden',
+    padding: '12px',
+    gap: '12px',
+    backgroundColor: '#fff',
+    minHeight: '60px',
+    marginBottom: '10px'
+  };
 
-      {/* Conditional rendering based on the active section */}
-      {activeSection === 'policyInfo' && (
-        <div className="sublob-item.active" id="policyInfo">
-          <CreateSubmission onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'locationInfo' && (
-        <div className="sublob-item.active" id="locationInfo">
-          <LocationComponent onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'lossInfo' && (
-        <div className="sublob-item.active" id="lossInfo">
-          <LossInfo onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'coverages' && (
-        <div className="sublob-item.active" id="coverages">
-          <Coverages onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'uw' && (
-        <div className="sublob-item.active" id="uw">
-          <UWQuestions onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'premiumSummary' && (
-        <div className="sublob-item.active" id="premiumSummary">
-          <PremiumSummary onNext={goToNextSection} />
-        </div>
-      )}
-      {activeSection === 'quoteSummary' && (
-        <div className="sublob-item.active" id="quoteSummary">
-          <QuoteSummary onNext={goToNextSection} />
-        </div>
-      )}
-       <Documents />
+  const buttonStyle = {
+    height: '38px',
+    minWidth: '155px',
+    flex: '0 0 auto',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '8px',
+    fontSize: '14px',
+    padding: '0 16px',
+    whiteSpace: 'nowrap',
+    backgroundColor: '#fff',
+    border: '1px solid #d9d9d9',
+    borderRadius: '6px',
+    transition: 'all 0.3s',
+    marginRight: '0'
+  };
+
+  const activeButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#1890ff',
+    color: '#fff',
+    borderColor: '#1890ff'
+  };
+
+  const buttonData = [
+    { key: 'policyInfo', icon: 'file-alt', text: 'Insured Info' },
+    { key: 'locationInfo', icon: 'map-marker-alt', text: 'Risk' },
+    { key: 'lossInfo', icon: 'exclamation-triangle', text: 'Loss' },
+    { key: 'coverages', icon: 'shield-alt', text: 'Coverages' },
+    { key: 'uw', icon: 'question-circle', text: 'UW Questions' },
+    { key: 'premiumSummary', icon: 'calculator', text: 'Premium Summary' },
+    { key: 'quoteSummary', icon: 'file-signature', text: 'Quote Summary' }
+  ];
+
+  return (
+    <div className="flex flex-col w-full">
+      <div style={containerStyle}>
+        {buttonData.map(section => (
+          <Button
+            key={section.key}
+            onClick={() => showSublob(section.key)}
+            style={activeSection === section.key ? activeButtonStyle : buttonStyle}
+          >
+            <i className={`fas fa-${section.icon}`} />
+            <span className="ml-2">{section.text}</span>
+          </Button>
+        ))}
+      </div>
+
+      <div className="mt-4">
+        {activeSection === 'policyInfo' && <CreateSubmission onNext={goToNextSection} />}
+        {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
+        {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
+        {activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}
+        {activeSection === 'uw' && <UWQuestions onNext={goToNextSection} />}
+        {activeSection === 'premiumSummary' && <PremiumSummary onNext={goToNextSection} />}
+        {activeSection === 'quoteSummary' && <QuoteSummary onNext={goToNextSection} />}
+      </div>
+
+      <Documents />
     </div>
   );
 };
