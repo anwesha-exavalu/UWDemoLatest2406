@@ -442,14 +442,14 @@ function CreateSubmission({ onNext }) {
                                         />
                                     </Col>*/}
                                         <Col span={6}>
-                                            <label style={{ fontSize: "15px",marginTop: "-5px" }}>Organisation Type</label>
+                                            <label style={{ fontSize: "15px",marginTop: "10px" }}>Organisation Type</label>
                                             <Select
 
                                                 value={basicInfo.orgType}
                                                 onChange={(value) => handleInputChange({ target: { value } }, "basicInfo", "orgType")}
                                                 readOnly={!basicInfo.isEditing} // Allow editing based on state
                                                 required
-                                                style={{ fontSize: "15px", width: "15.2rem", marginTop: "11px" }}
+                                                style={{ fontSize: "15px", width: "14rem", marginTop: "11px",minWidth:"12.5rem" }}
                                                 placeholder="Select Organisation Type"
 
                                             >
