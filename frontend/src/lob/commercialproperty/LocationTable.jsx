@@ -16,7 +16,7 @@ const  LocationTable = ({ nextTab }) => {
       key: 1,
       address1: "123-05 84th Avenue",
       address2: " ",
-      state: "NY State",
+      state: "New York",
       zip: "11415",
       country: "USA"
     }

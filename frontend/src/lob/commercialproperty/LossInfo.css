@@ -1,7 +1,7 @@
 .maincontainer{
   display: flex;
   flex-direction: column;
-  width: 1330px;
+  width: 100%;
   justify-content: center;
   margin: 30px auto;
   padding: 0 20px; /* Add padding for better spacing on smaller screens */

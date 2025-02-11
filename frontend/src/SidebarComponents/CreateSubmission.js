@@ -442,7 +442,7 @@ function CreateSubmission({ onNext }) {
                                         />
                                     </Col>*/}
                                         <Col span={6}>
-                                            <label style={{ fontSize: "40px", marginRight: "40px", }}>Organisation Type</label>
+                                            <label style={{ fontSize: "15px",marginTop: "-5px" }}>Organisation Type</label>
                                             <Select
 
                                                 value={basicInfo.orgType}
