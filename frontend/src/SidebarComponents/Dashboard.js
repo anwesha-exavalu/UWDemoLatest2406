@@ -34,6 +34,8 @@ const data = {
   ],
   myassignedcases: [
     { id: 'CP1003', client: 'Skyline Property Inc.', lob: 'Commercial Property', status: 'Awaiting Client Response', limit: '$900,000', date: '10-15-2024', broker: 'Marsh ', priority: 'Medium' },
+    { id: 'CP1001', client: 'Fleet Solutions', lob: 'Commercial Property', status: 'Clearance UW', limit: '$500,000', date: '20-08-2024', broker: 'Marsh ', priority: 'High' },
+    { id: 'CP1006', client: 'Uptown Commercial Spaces', lob: 'Commercial Property', status: 'Broker Review', limit: '$450,000', date: '17-08-2024', broker: 'Marsh ', priority: 'Medium' }
     // { id: 'CP1004', client: 'Kew Garden Property Inc.', lob: 'Commercial Property', status: 'New Submission', limit: '$15,000,000', date: '11-05-2024', broker: 'Marsh ', priority: 'High' },
 
   ],
