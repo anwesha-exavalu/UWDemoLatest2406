@@ -128,7 +128,7 @@ const Dashboard = () => {
     donutChartRef.current.chartInstance = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: ['New Business', 'Renewal Premium'],
+        labels: ['Commercial Property', 'General Liability'],
         datasets: [{
           data: [3000000, 7000000], // Updated to millions
           backgroundColor: ['#FF69B4', '#36a2eb']
@@ -366,7 +366,7 @@ const Dashboard = () => {
                     marginBottom: '5px',
                   }}
                 >
-                  Premium Split by LOB(Quotes)
+                  Premium by LOB(Quotes)
                 </div>
                 <canvas
                   ref={donutChartRef}
