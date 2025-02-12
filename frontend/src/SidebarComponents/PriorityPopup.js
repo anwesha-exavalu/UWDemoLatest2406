@@ -209,7 +209,7 @@ const PriorityPopup = ({ priority, record }) => {
                   type="number"
                   domain={[0, 50]}
                   label={{ 
-                    value: 'Impact Percentage', 
+                    value: 'Impact Contributing Factor', 
                     position: 'insideBottom', 
                     offset: -10,
                     style: { 
@@ -270,7 +270,7 @@ const PriorityPopup = ({ priority, record }) => {
                 </Title>
               </Col>
               <Col span={24}>
-                <Text style={{ fontSize: '12px', color: '#4b5563', display: 'block' }}>Accuracy</Text>
+                {/* <Text style={{ fontSize: '12px', color: '#4b5563', display: 'block' }}>Accuracy</Text> */}
                 <Progress
                   percent={predictionData?.["Model Accuracy"] * 100}
                   status="active"
