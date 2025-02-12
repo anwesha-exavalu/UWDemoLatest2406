@@ -102,7 +102,7 @@ function OverallInsights() {
             ]
           },
         "public_data": {
-            "title": "Comparison of ${query.label} with public risk data(top 10 causes of fire)\nFor each of the 5 risks, provide the following details:",
+            "title": "Comparison of ${query.label} with public risk data(top 10 causes of fire):",
             "content": [
                 "What % is the risk Number in this location (borough)? \nAns: <Answer with % of risk>",
                 "Mitigation steps to reduce this risk Number? \nAns: <Answer with mitigation steps>",
@@ -415,26 +415,32 @@ function OverallInsights() {
                 ? (
                   <>
                     <Card>
-                      {insights.summary.title && <h4>{insights.summary.title}</h4>}
-                      {insights.summary.content.map((item, index) => (
-                        <p key={index}>{item}</p>
-                      ))}
+                      {insights.summary.title && <h5>{insights.summary.title}</h5>}
+                      <ul>
+                        {insights.summary.content.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
                     </Card>
                     <Card>
-                      {insights.highlights.title && <h4>{insights.highlights.title}</h4>}
-                      {insights.highlights.content.map((item, index) => (
-                        <p key={index}>{item}</p>
-                      ))}
+                      {insights.highlights.title && <h5>{insights.highlights.title}</h5>}
+                      <ul>
+                        {insights.highlights.content.map((item, index) => (
+                          <li key={index}>{item}</li>
+                        ))}
+                      </ul>
                     </Card>
                     <Card>
-                      {insights.underwriting_risks.title && <h4>{insights.underwriting_risks.title}</h4>}
+                      {insights.underwriting_risks.title && <h5>{insights.underwriting_risks.title}</h5>}
+                      <ul>
                       {insights.underwriting_risks.content.map((item, index) => (
-                        <p key={index}>{item}</p>
+                        <li key={index}>{item}</li>
                       ))}
+                      </ul>
                     </Card>
                     {insights.public_data && (
                       <Card>
-                        {insights.public_data.title && <h4 style={{ color: 'blue' }}>{insights.public_data.title}</h4>}
+                        {insights.public_data.title && <h5 style={{ color: 'blue' }}>{insights.public_data.title}</h5>}
                         {insights.public_data.content.map((item, index) => {
                           const [question, answer] = item.split("\n"); // Splitting into question and answer
 
