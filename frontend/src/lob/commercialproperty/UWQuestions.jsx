@@ -135,42 +135,60 @@ const UWQuestions = ({ onNext }) => {
 
           {/* System Recommended Decision */}
 
-          <Popover
-            content={<PriorityPopup predictionData="Medium" record={record} />}
-            trigger="click"
-            placement="topLeft"
-            overlayStyle={{ width: 500 }}
-          >
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-              style={{
-                fontSize: "21px",
-                padding: "15px",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                fontWeight: 620,
-                borderRadius: "5px",
-                color: "orange",
-                cursor: "pointer", // Added to indicate clickable
-              }}
-            >
-              Risk - Medium
-            </div>
-          </Popover>
+
 
           {/* Override Decision Section */}
           <div
             className="override-decision-container"
             style={{ marginBottom: 20 }}
           >
-            <h4>Notes</h4>
+            <h5>Notes</h5>
             <textarea
               className="notes"
               placeholder=""
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
+              style={{
+                width: "100%",
+                minHeight: "100px",
+                borderRadius: "8px",
+                padding: "10px",
+                border: "1px solid #d9d9d9",
+                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                resize: "vertical",
+              }}
             />
+            <h5 style={{ marginTop: "20px" }}>Claim Propensity</h5>
+            <div>
+              <Popover
+                content={<PriorityPopup predictionData="Medium" record={record} />}
+                trigger="click"
+                placement="topLeft"
+                overlayStyle={{ width: 500 }}
+              >
+                <Button
+                  onClick={(e) => e.stopPropagation()}
+                  style={{
+                    fontSize: "16px",
+                    width:"150px",
+                    height:"40px",
+                    padding: "5px 20px", // Balanced padding for better spacing
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.4)",
+                    fontWeight: "600",
+                    borderRadius: "4px", // Rounded corners for a modern look
+                    color: "white",
+                    backgroundColor:"#FAAF25",
+                    border: "none",
+                    cursor: "pointer",
+                    lineHeight: "1.5", // Ensures text is vertically centered
+                    display: "inline-block",
+                    textAlign: "center",
+                  }}
+                >
+                  Risk - Medium
+                </Button>
+              </Popover>
+            </div>
             <div className="decision-container">
               <ModalDesign />
             </div>

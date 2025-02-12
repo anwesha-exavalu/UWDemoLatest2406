@@ -349,7 +349,7 @@ const LossInfo = ({ onNext }) => {
                 <table>
                   <thead>
                     <tr>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>&nbsp;</th>
+                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500',width:"40px" }}>&nbsp;</th>
                       <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>UW Year</th>
                       <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Carrier</th>
                       <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Policy #</th>
@@ -363,7 +363,7 @@ const LossInfo = ({ onNext }) => {
                   <tbody>
                     {policies.map((policy, index) => (
                       <tr key={index} className="priorpoliciestdata">
-                        <td>
+                        <td style={{ width: '30px', textAlign: 'center' }}>
                           <input
                             type="checkbox"
                             checked={selectedPolicies.includes(index)}
