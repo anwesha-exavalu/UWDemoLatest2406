@@ -96,6 +96,10 @@
     width: 30%; /* Ensure labels take 30% of the width */
     text-align: left;
   }
+
+  .orgtypelabel{
+    font-size: 15px !important;
+  }
   
   .policyinput {
     margin-left: 0px;

@@ -104,11 +104,11 @@ function OverallInsights() {
         "public_data": {
             "title": "Comparison of ${query.label} with public risk data(top 10 causes of fire):",
             "content": [
-                "What % is the risk Number in this location (borough)? \nAns: <Answer with % of risk>",
-                "Mitigation steps to reduce this risk Number? \nAns: <Answer with mitigation steps>",
-                "How does the building mitigate the Risks? \nAns: <Answer>",
-                "Does the Inspection document capture the mitigation steps? \nAns: <Answer How it captures>",
-                "Was the building inspected for the mitigation of risk Number? \nAns: <Answer>"
+                "What % is the risk in this location (borough)? \nAns: <Answer with % of risk>",
+                "Mitigation steps to reduce this risk ? \nAns: <Answer with mitigation steps>",
+                "How does the building mitigate the risks? \nAns: <Answer>",
+                "Does the inspection document capture the mitigation steps? \nAns: <Answer How it captures>",
+                "Was the building inspected for the mitigation of risk? \nAns: <Answer>"
               ]
             }
       }

@@ -6,7 +6,7 @@ export function MapView() {
     <section className={styles.mapContainer}  style={{ marginLeft: '30px' }}>
       <iframe
         title="Google Map"
-        width="480px"
+        width="410px"
         height="300px"
         className={styles.mapImage}
         

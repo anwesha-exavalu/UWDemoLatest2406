@@ -46,7 +46,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Flood:</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid grey',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -98,7 +98,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Wildfire:</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid grey',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -143,7 +143,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Earthquake</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid gray',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -185,7 +185,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Storm Surge</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid gray',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -233,7 +233,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Sinkhole</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid gray',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
@@ -278,7 +278,7 @@ const LocationCard = () => {
             title={<div style={{ color: 'black' }}>Fire Station</div>}
             headStyle={{ borderBottom: '2px solid gray' }}
             style={{
-              width: 350,
+              width: 310,
               height: 230,
               border: '1px solid gray',
               boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.2)',
