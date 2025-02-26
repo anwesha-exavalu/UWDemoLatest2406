@@ -99,6 +99,7 @@
 
   .orgtypelabel{
     font-size: 15px !important;
+    font-family: "Inter", sans-serif !important; 
   }
   
   .policyinput {

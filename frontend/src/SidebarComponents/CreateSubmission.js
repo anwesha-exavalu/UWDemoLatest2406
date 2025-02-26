@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import styles from "./CreateSubmission.module.css";
-import { Col, Row, Tooltip, Button, Radio, Form, Select } from "antd";
+import { Col, Row, Tooltip, Button, Radio, Form, Select, AutoComplete } from "antd";
 import FormInput from "../components/FormInput";
 import Documents from "../layout/RightSidebar";
-import { EditOutlined,SaveOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
+import { EditOutlined, SaveOutlined, PlusCircleOutlined, SearchOutlined, UploadOutlined } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import { Modal, message, Upload } from 'antd';
 import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
@@ -83,7 +83,7 @@ function CreateSubmission({ onNext }) {
         });
     }, [basicInfo.isEditing, locationInfo.isEditing, insuredInfo.isEditing]);
 
-    
+
     // const handleEditBasicInfo = () => {
     //     console.log("Edit icon clicked!"); // Log for debugging
     //     setBasicInfo((prevState) => ({
@@ -279,10 +279,10 @@ function CreateSubmission({ onNext }) {
         }
     };
     // Function to handle file upload
-  const handleUploadFile = ({ file, fileList }) => {
-    setFileList(fileList);
-    message.success(`${file.name} uploaded successfully`);
-  };
+    const handleUploadFile = ({ file, fileList }) => {
+        setFileList(fileList);
+        message.success(`${file.name} uploaded successfully`);
+    };
 
 
     const updateFormStates = (data) => {
@@ -359,14 +359,14 @@ function CreateSubmission({ onNext }) {
                                         Prefill
                                     </Button>
                                     <Tooltip title={isEditMode ? "Save" : "Edit"}>
-                                        <Button 
-                                            shape="circle" 
-                                            onClick={handleEditInsured} 
-                                            icon={isEditMode ? 
-                                                <SaveOutlined style={{ fontSize: "20px" }} /> : 
+                                        <Button
+                                            shape="circle"
+                                            onClick={handleEditInsured}
+                                            icon={isEditMode ?
+                                                <SaveOutlined style={{ fontSize: "20px" }} /> :
                                                 <EditOutlined style={{ fontSize: "20px" }} />
-                                            } 
-                                            style={{ fontSize: "20px" }} 
+                                            }
+                                            style={{ fontSize: "20px" }}
                                         />
                                     </Tooltip>
                                     <Tooltip title="Search">
@@ -441,28 +441,54 @@ function CreateSubmission({ onNext }) {
                                             readOnly={!basicInfo.isEditing} // Allow editing based on state
                                         />
                                     </Col>*/}
-                                        <Col span={6}>
-                                            <label className="orgtypelabel" style={{ fontSize: "15px",marginTop: "10px" }}>Organisation Type</label>
-                                            
-                                            <Select
-
-                                                value={basicInfo.orgType}
-                                                onChange={(value) => handleInputChange({ target: { value } }, "basicInfo", "orgType")}
-                                                readOnly={!basicInfo.isEditing} // Allow editing based on state
-                                                required
-                                                style={{ fontSize: "15px", width: "14rem", marginTop: "11px",minWidth:"12.5rem" }}
-                                                placeholder="Select Organisation Type"
-
+                                        <Col xs={24} sm={12} md={8} lg={6} xl={6}>
+                                            <label
+                                                className="orgtypelabel"
+                                                style={{
+                                                    height: "auto",
+                                                    padding: "0px 6px",
+                                                    whiteSpace: "normal",
+                                                    textAlign: "left",
+                                                    color: "#adacb0",
+                                                    fontSize: "15px",
+                                                    fontFamily: "sans-serif",
+                                                }}
                                             >
-                                                <Select.Option value="proprietary" >Proprietary
-                                                </Select.Option>
+                                                Organisation Type
+                                            </label>
+
+                                            <Select
+                                                value={basicInfo.orgType}
+                                                onChange={(value) =>
+                                                    handleInputChange({ target: { value } }, "basicInfo", "orgType")
+                                                }
+                                                readOnly={!basicInfo.isEditing}
+                                                required
+                                                style={{
+                                                    fontSize: "14px",
+                                                    boxShadow: "0px 1.5px 4px -1px #9c9c9f",
+                                                    padding: "12px 6px",
+                                                    height: "3rem",
+                                                    width: "100%", // Makes it fully responsive
+                                                    maxWidth: "15.5rem", // Prevents it from getting too wide
+                                                    borderRadius: "6px",
+                                                    minWidth:"3rem"
+                                                }}
+                                                placeholder="Select Organisation Type"
+                                            >
+                                                <Select.Option value="proprietary">Proprietary</Select.Option>
                                                 <Select.Option value="partnership">Partnership</Select.Option>
                                                 <Select.Option value="llp">LLP</Select.Option>
-                                                <Select.Option value="privateLimitedCompany">Private Limited Company</Select.Option>
-                                                <Select.Option value="publicLimitedCompany">Public Limited Company</Select.Option>
+                                                <Select.Option value="privateLimitedCompany">
+                                                    Private Limited Company
+                                                </Select.Option>
+                                                <Select.Option value="publicLimitedCompany">
+                                                    Public Limited Company
+                                                </Select.Option>
                                                 <Select.Option value="affinityGroup">Affinity Group</Select.Option>
-                                                {/* Add more options as needed */}
-                                            </Select></Col>
+                                            </Select>
+                                        </Col>
+
 
                                         <Col span={6}>
                                             <FormInput
