@@ -1,34 +1,34 @@
 import styled from "styled-components";
-import themes from "constants/theme.json";
+import themes from "../../../constants/theme.json";
 
 export const HeraldProductWrapper = styled.div`
   .ant-card {
-     border-color: ${({ theme }) => themes[theme].searchQuoteFormBorder};
-     //box-shadow: 0px 5px 13px -5px #0a090b0d;
-     box-shadow: 0px 6px 18px -2px #18181C1A;
-     background: ${({ theme }) => themes[theme].searchQuoteCardBg} !important; 
-   }
+    border-color: ${({ theme }) => themes[theme].searchQuoteFormBorder};
+    //box-shadow: 0px 5px 13px -5px #0a090b0d;
+    box-shadow: 0px 6px 18px -2px #18181c1a;
+    background: ${({ theme }) => themes[theme].searchQuoteCardBg} !important;
+  }
 
-   .topsection {
-       padding: 40px 0px;
-       .subtext {
-         font-size: 16px;
-         font-weight: 400;
-         line-height: 22px;
-         letter-spacing: -0.181px;
-         color:${({ theme }) => themes[theme].searchQuoteSectionHeading};
-         font-family: "Inter", sans-serif;
-         margin: 12px 0px;
-       }
-}
- 
-   label {
-     font-size: 13px !important;
-     font-weight: 500;
-     line-height: 19.5px;
-     color: #adacb0 !important;
-     font-family: "Inter", sans-serif;
-   }
+  .topsection {
+    padding: 40px 0px;
+    .subtext {
+      font-size: 16px;
+      font-weight: 400;
+      line-height: 22px;
+      letter-spacing: -0.181px;
+      color: ${({ theme }) => themes[theme].searchQuoteSectionHeading};
+      font-family: "Inter", sans-serif;
+      margin: 12px 0px;
+    }
+  }
+
+  label {
+    font-size: 13px !important;
+    font-weight: 500;
+    line-height: 19.5px;
+    color: #adacb0 !important;
+    font-family: "Inter", sans-serif;
+  }
 
   h2 {
     font-size: 24px;
@@ -47,9 +47,9 @@ export const HeraldProductWrapper = styled.div`
     font-family: "Inter", sans-serif;
     margin-bottom: 24px;
   }
-.jtqgXD .ant-checkbox-group label {
+  .jtqgXD .ant-checkbox-group label {
     width: 20%;
-}
+  }
   .ant-form-item {
     margin-bottom: 16px;
   }

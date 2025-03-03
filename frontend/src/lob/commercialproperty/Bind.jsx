@@ -3,6 +3,7 @@ import { Table, Input, Typography, Button, Row, Col, Tooltip } from 'antd';
 import { FilePdfOutlined } from '@ant-design/icons';
 import { EditOutlined } from "@ant-design/icons";
 import TableComponent from '../../components/Table';
+import { TableContainer } from '../../styles/components/TableComponent';
 
 const { Title, Text } = Typography;
 
@@ -90,30 +91,31 @@ const Bind = () => {
       {/* Coverage Summary Table */}
       <Title level={5} style={{ textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', padding: '5px', borderRadius: '5px', marginTop: '20px' }}>Coverage Summary</Title>
       
-      <Table
-        dataSource={coverageData}
-        columns={coverageColumns}
-        pagination={false}
-        size="small"
-        className="custom-table-header"
-        bordered
-        summary={() => (
-          <>
-            <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={4}>Total</Table.Summary.Cell>
-              <Table.Summary.Cell>100000</Table.Summary.Cell>
-            </Table.Summary.Row>
-            <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={4}>Fees & Taxes</Table.Summary.Cell>
-              <Table.Summary.Cell>1000</Table.Summary.Cell>
-            </Table.Summary.Row>
-            <Table.Summary.Row>
-              <Table.Summary.Cell colSpan={4}>Total Payable</Table.Summary.Cell>
-              <Table.Summary.Cell>101000</Table.Summary.Cell>
-            </Table.Summary.Row>
-          </>
-        )}
-      />
+      <TableContainer >
+                                                  <Table
+                                                      columns={coverageColumns}
+                                                      dataSource={coverageData}
+                                                      pagination={false}
+                                                      rowKey="key"
+                                                      summary={() => (
+                                                        <>
+                                                          <Table.Summary.Row>
+                                                            <Table.Summary.Cell colSpan={4}>Total</Table.Summary.Cell>
+                                                            <Table.Summary.Cell>100000</Table.Summary.Cell>
+                                                          </Table.Summary.Row>
+                                                          <Table.Summary.Row>
+                                                            <Table.Summary.Cell colSpan={4}>Fees & Taxes</Table.Summary.Cell>
+                                                            <Table.Summary.Cell>1000</Table.Summary.Cell>
+                                                          </Table.Summary.Row>
+                                                          <Table.Summary.Row>
+                                                            <Table.Summary.Cell colSpan={4}>Total Payable</Table.Summary.Cell>
+                                                            <Table.Summary.Cell>101000</Table.Summary.Cell>
+                                                          </Table.Summary.Row>
+                                                        </>
+                                                      )}
+                                                  />
+                                              </TableContainer>
+     
 
       {/* Forms Table */}
       <Title level={5} style={{ textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', padding: '5px', borderRadius: '5px', marginTop: '20px' }}>Forms</Title>
@@ -128,15 +130,13 @@ const Bind = () => {
 
       {/* Invoice Details Table */}
       <Title level={5} style={{ textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', padding: '5px', borderRadius: '5px', marginTop: '20px' }}>Invoice Details</Title>
-      <Table
-        dataSource={invoiceData}
-        columns={invoiceColumns}
-        pagination={false}
-        size="small"
-        className="custom-table-header"
-        bordered
-      />
-
+      <TableComponent
+                    title={"Coverages"}
+                    columns={invoiceColumns}
+                    data={invoiceData}
+                    style={{ marginTop: 2 }}
+                  />
+      
       {/* Underwriter Notes */}
      
 

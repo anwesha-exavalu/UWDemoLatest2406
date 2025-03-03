@@ -1,12 +1,12 @@
 import styled from "styled-components";
-import themes from "constants/theme.json";
+import themes from "../../../constants/theme.json";
 
 export const FormSection = styled.div`
   .ant-card {
     border-color: ${({ theme }) => themes[theme].searchQuoteFormBorder};
     //box-shadow: 0px 5px 13px -5px #0a090b0d;
-    box-shadow: 0px 6px 18px -2px #18181C1A;
-    background: ${({ theme }) => themes[theme].searchQuoteCardBg} !important; 
+    box-shadow: 0px 6px 18px -2px #18181c1a;
+    background: ${({ theme }) => themes[theme].searchQuoteCardBg} !important;
   }
 
   label {
@@ -36,7 +36,8 @@ export const FormSection = styled.div`
     text-align: center;
     color: #fff !important;
     font-family: "Inter", sans-serif;
-    background-color:${({ theme }) => `${themes[theme].searchQuoteBtn} !important`};
+    background-color: ${({ theme }) =>
+      `${themes[theme].searchQuoteBtn} !important`};
     border: 1px solid #000 !important;
     height: 48px;
     min-width: 110px;
@@ -56,8 +57,8 @@ export const FormSection = styled.div`
     border: 1px solid #ececed !important;
   }
   img {
-    cursor:pointer;
-  }  
+    cursor: pointer;
+  }
 `;
 export const SearchPolicySection = styled.div`
   // background-color:#fff;
@@ -68,20 +69,19 @@ export const SearchPolicySection = styled.div`
       font-weight: 400;
       line-height: 22px;
       letter-spacing: -0.181px;
-      color:${({ theme }) => themes[theme].searchQuoteSectionHeading};
+      color: ${({ theme }) => themes[theme].searchQuoteSectionHeading};
       font-family: "Inter", sans-serif;
       margin: 12px 0px;
     }
-      .search-title{
-      display:flex;
-     justify-content:space-between;
-  }
-     
+    .search-title {
+      display: flex;
+      justify-content: space-between;
+    }
   }
 `;
 
 export const SearchButtonSection = styled.div`
-.generate-btn-box {
+  .generate-btn-box {
     display: flex;
     align-items: center;
     height: 100%;
@@ -90,8 +90,8 @@ export const SearchButtonSection = styled.div`
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    margin-top:30px;
-    margin-left:30px;
+    margin-top: 30px;
+    margin-left: 30px;
     letter-spacing: -0.051px;
     text-align: center;
     color: #fff !important;
@@ -101,7 +101,6 @@ export const SearchButtonSection = styled.div`
     height: 48px;
     min-width: 110px;
   }
-  
 `;
 
 export const SearchPolicyTitle = styled.h3`
@@ -111,6 +110,5 @@ export const SearchPolicyTitle = styled.h3`
   line-height: 57.6px;
   letter-spacing: -0.03em;
   font-family: "Inter", sans-serif;
-  color:${({ theme }) => themes[theme].searchQuoteTitle};
+  color: ${({ theme }) => themes[theme].searchQuoteTitle};
 `;
-

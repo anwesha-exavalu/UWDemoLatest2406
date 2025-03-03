@@ -1,28 +1,29 @@
 import styled from "styled-components";
-import themes from "constants/theme.json";
+import themes from "../../../constants/theme.json";
 
 export const FormSection = styled.div`
-.customlabel{
-padding:12px 6px; 
-display:inline-block;
-}
-.customlable{
-display:inline-block;
-padding:12px 0px;
-font-size: 13px !important;
+  .customlabel {
+    padding: 12px 6px;
+    display: inline-block;
+  }
+  .customlable {
+    display: inline-block;
+    padding: 12px 0px;
+    font-size: 13px !important;
     font-weight: 500;
     line-height: 19.5px;
     color: #adacb0 !important;
     font-family: "Inter", sans-serif;
-}
+  }
   .ant-card {
     border-color: ${({ theme }) => themes[theme].searchQuoteFormBorder};
     //box-shadow: 0px 5px 13px -5px #0a090b0d;
-    box-shadow: 0px 6px 18px -2px #18181C1A;
-    background: ${({ theme }) => themes[theme].searchQuoteCardBg}; 
+    box-shadow: 0px 6px 18px -2px #18181c1a;
+    background: ${({ theme }) => themes[theme].searchQuoteCardBg};
   }
-    .ant-col {
-    min-height:auto;}
+  .ant-col {
+    min-height: auto;
+  }
 
   input {
     // box-shadow: 0px 1.5px 4px -1px #9c9c9f;
@@ -30,7 +31,7 @@ font-size: 13px !important;
     // height: 48px;
     border: none;
   }
-  .select{
+  .select {
     box-shadow: 0px 1.5px 4px -1px #9c9c9f;
     font-family: "Inter", sans-serif;
     height: 48px;
@@ -50,7 +51,7 @@ font-size: 13px !important;
     text-align: center;
     color: #fff !important;
     font-family: "Inter", sans-serif;
-    background-color:${({ theme }) => themes[theme].searchQuoteBtn};
+    background-color: ${({ theme }) => themes[theme].searchQuoteBtn};
     border: 1px solid #000 !important;
     height: 48px;
     min-width: 110px;
@@ -78,7 +79,7 @@ export const SearchQuoteSection = styled.div`
       font-weight: 400;
       line-height: 22px;
       letter-spacing: -0.181px;
-      color:${({ theme }) => themes[theme].searchQuoteSectionHeading}; 
+      color: ${({ theme }) => themes[theme].searchQuoteSectionHeading};
       font-family: "Inter", sans-serif;
       margin: 12px 0px;
     }
@@ -91,5 +92,5 @@ export const SearchQuoteTitle = styled.h3`
   line-height: 57.6px;
   letter-spacing: -0.03em;
   font-family: "Inter", sans-serif;
-  color:${({ theme }) => themes[theme].searchQuoteTitle};
+  color: ${({ theme }) => themes[theme].searchQuoteTitle};
 `;
