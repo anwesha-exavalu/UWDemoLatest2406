@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Input, Typography, Button, Row, Col, Tooltip } from 'antd';
 import { FilePdfOutlined } from '@ant-design/icons';
 import { EditOutlined } from "@ant-design/icons";
+import TableComponent from '../../components/Table';
 
 const { Title, Text } = Typography;
 
@@ -67,27 +68,28 @@ const Bind = () => {
                     </Row>
 
       {/* Header Information */}
+
+      <TableComponent
+                    title={"Coverages"}
+                    columns={[
+                      { title: '', dataIndex: 'label', key: 'label' },
+                      { title: '', dataIndex: 'value', key: 'value' },
+                    ]}
+                    data={[
+                      { key: 'quoteNumber', label: 'Quote Number', value: '' },
+                      { key: 'effectiveDate', label: 'Policy Effective Date', value: '' },
+                      { key: 'endDate', label: 'Policy End Date', value: '' },
+                      { key: 'insuredName', label: 'Insured Name', value: '' },
+                      { key: 'mailingAddress', label: 'Mailing Address', value: '' },
+                    ]}
+                    style={{ marginTop: 2 }}
+                  />
      
-      <Table
-        dataSource={[
-          { key: 'quoteNumber', label: 'Quote Number', value: '' },
-          { key: 'effectiveDate', label: 'Policy Effective Date', value: '' },
-          { key: 'endDate', label: 'Policy End Date', value: '' },
-          { key: 'insuredName', label: 'Insured Name', value: '' },
-          { key: 'mailingAddress', label: 'Mailing Address', value: '' },
-        ]}
-        columns={[
-          { title: '', dataIndex: 'label', key: 'label' },
-          { title: '', dataIndex: 'value', key: 'value' },
-        ]}
-        pagination={false}
-        size="small"
-        className="custom-table-header"
-        bordered
-      />
+      
 
       {/* Coverage Summary Table */}
       <Title level={5} style={{ textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', padding: '5px', borderRadius: '5px', marginTop: '20px' }}>Coverage Summary</Title>
+      
       <Table
         dataSource={coverageData}
         columns={coverageColumns}

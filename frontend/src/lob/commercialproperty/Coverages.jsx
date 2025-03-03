@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Table, Input, Typography, Button, Select, Row, Col, Tooltip, Collapse } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
 import styles from './LocationComponent.module.css';
+import TableComponent from "../../components/Table"
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -148,15 +149,13 @@ const Coverages = ({ onNext }) =>{
           {/* Table for the selected location */}
           <Collapse defaultActiveKey={['1']} style={{ marginTop: '20px' }}>
           <Panel header="Building No: 123-05" key="1">
-          <Table
-            dataSource={rowData}
-            columns={columns}
-            pagination={false}
-            size="small"
-            className="custom-table-header"
-            bordered
-            style={{ marginTop: 2 }}
-          />
+             <TableComponent
+                    title={"Coverages"}
+                    columns={columns}
+                    data={rowData}
+                    style={{ marginTop: 2 }}
+                  />
+         
         
       </Panel></Collapse>
 

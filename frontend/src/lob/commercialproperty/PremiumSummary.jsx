@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Table, Input, Typography, Button, Tooltip, Row, Col, Select, Collapse } from 'antd';
 import { EditOutlined, SaveOutlined } from '@ant-design/icons';
+import TableComponent from '../../components/Table';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -133,34 +134,27 @@ const PremiumSummary = ({ onNext }) => {
       {/* Table */}
       <Collapse defaultActiveKey={['1']} style={{ marginTop: '20px' }}>
         <Panel header="Building No: 123-05" key="1">
-          <Table
-            dataSource={data}
-            columns={columns}
-            pagination={false}
-            size="small"
-            className="custom-table-header"
-            bordered
-            style={{ marginTop: 2 }}
-          />
+          <TableComponent title={"Premium Data"}
+                    columns={columns}
+                    data={data}
+                    style={{ marginTop: 2 }}
+         />
         </Panel>
       </Collapse>
 
       {/* Total Premiums */}
-      <Table
-        dataSource={[
-          { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
-          { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350,00' },
-          { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' },
-        ]}
-        columns={[
-          { title: '', dataIndex: 'label', key: 'label' },
-          { title: '', dataIndex: 'value', key: 'value' },
-        ]}
-        pagination={false}
-        size="small"
-        style={{ marginTop: '30px' }}
-        bordered
-      />
+      <TableComponent
+          columns={[
+            { title: '', dataIndex: 'label' },
+            { title: '', dataIndex: 'value' }
+          ]}
+          data={[
+            { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
+            { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350,00' },
+            { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' }
+          ]}
+        />
+      
 
       {/* Notes Section */}
       <div style={{ marginTop: '20px', marginBottom: '20px' }}>

@@ -3,6 +3,7 @@ import { Table, Input, Typography, Button, Collapse, Row, Col } from 'antd';
 import { FilePdfOutlined } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import TableComponent from '../../components/Table';
 
 const { Title } = Typography;
 const { Panel } = Collapse;
@@ -114,73 +115,47 @@ const QuoteSummary = () => {
 
       {/* Header Information */}
       <Title level={5}>Quote Summary</Title>
-      <Table
-        dataSource={[
+      
+      <TableComponent
+        title="Quote Summary"
+        columns={[
+          { title: '', dataIndex: 'label', key: 'label' },
+          { title: '', dataIndex: 'value', key: 'value' }
+        ]}
+        data={[
           { key: 'quoteNumber', label: 'Quote Number', value: 'Q0014562' },
           { key: 'effectiveDate', label: 'Policy Effective Date', value: '12/11/2024' },
           { key: 'endDate', label: 'Policy End Date', value: '12/11/2025' },
           { key: 'insuredName', label: 'Insured Name', value: 'Kew Gardens Property Inc.' },
-          { key: 'mailingAddress', label: 'Mailing Address', value: '123-05 84th Avenue, Kew Gardens, NY 11415' },
+          { key: 'mailingAddress', label: 'Mailing Address', value: '123-05 84th Avenue, Kew Gardens, NY 11415' }
         ]}
-        columns={[
-          { title: '', dataIndex: 'label', key: 'label' },
-          { title: '', dataIndex: 'value', key: 'value' },
-        ]}
-        pagination={false}
-        size="small"
-        className="custom-table-header"
-        bordered
       />
 
       <Collapse defaultActiveKey={['1', '2', '3']} style={{ marginTop: '20px' }}>
         <Panel header="Coverage Summary" key="1">
           <h6>Location- 123-05 84th Avenue, Kew Gardens, NY 11415</h6>
-          <Table
-            dataSource={coverageData}
-            columns={coverageColumns}
-            pagination={false}
-            size="small"
-            className="custom-table-header"
-            bordered
-
-          />
-          <Table
-            dataSource={[
+          <TableComponent title="Coverage Summary" columns={coverageColumns} data={coverageData} />
+       
+          <TableComponent
+            title="Payment Summary"
+            data={[
               { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
               { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350,00' },
-              { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' },
+              { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' }
             ]}
             columns={[
               { title: '', dataIndex: 'label', key: 'label' },
-              { title: '', dataIndex: 'value', key: 'value' },
+              { title: '', dataIndex: 'value', key: 'value' }
             ]}
-            pagination={false}
-            size="small"
-            style={{ marginTop: '30px' }}
-            bordered
           />
         </Panel>
 
         <Panel header="Forms" key="2">
-          <Table
-            dataSource={formData}
-            columns={formColumns}
-            pagination={false}
-            size="small"
-            className="custom-table-header"
-            bordered
-          />
+        <TableComponent title="Forms" data={formData} columns={formColumns} />
         </Panel>
 
         <Panel header="Invoice Details" key="3">
-          <Table
-            dataSource={invoiceData}
-            columns={invoiceColumns}
-            pagination={false}
-            size="small"
-            className="custom-table-header"
-            bordered
-          />
+        <TableComponent title="Invoice Details" data={invoiceData} columns={invoiceColumns} />
         </Panel>
       </Collapse>
 
