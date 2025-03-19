@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Chart } from "chart.js/auto";
-import { Table, Button, Space, Input } from "antd";
+import { Table, Button, Space, Input,Typography } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import "./Dashboard.css";
@@ -12,8 +12,10 @@ import { Popover } from "antd";
 import PriorityPopup from "./PriorityPopup";
 import { TableContainer } from "../styles/components/TableComponent";
 import useMetaData from "../context/metaData";
+import TextArea from "antd/es/input/TextArea";
 
 const { TabPane } = Tabs;
+const { Title, Text } = Typography;
 
 const MyTableComponent = ({
   columns,
@@ -48,6 +50,57 @@ const MyTableComponent = ({
         }}
       />
     </TableContainer>
+  );
+};
+// Activity Box component
+const ActivityBox = () => {
+  return (
+    <div style={{ 
+      width: 250, 
+      marginLeft: 20,
+      borderRadius: 20,
+      border: '1px solid #d9d9d9',
+      overflow: 'hidden',
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%'
+    }}>
+      {/* Header */}
+      <div style={{ 
+        padding: '10px', 
+        textAlign: 'center', 
+        borderBottom: '1px solid #d9d9d9',
+        backgroundColor: ' #1890ff',
+        color: "white"
+      }}>
+        <strong>Activity</strong>
+      </div>
+      
+      {/* Content */}
+      <div style={{ padding: '15px 20px', flex: 1 }}>
+        {/* Today section */}
+        <div style={{ marginBottom: 15 }}>
+          <Text strong>Today</Text>
+          <TextArea style={{ 
+            border: '1px solid #d9d9d9', 
+            height: 80, 
+            marginTop: 8,
+            width: '100%'
+          }}></TextArea>
+        </div>
+        
+        {/* This week section */}
+        <div>
+          <Text strong>This week</Text>
+          <TextArea style={{ 
+            border: '1px solid #d9d9d9', 
+            height: 80, 
+            marginTop: 8,
+            width: '100%'
+          }}></TextArea>
+        </div>
+      </div>
+    </div>
   );
 };
 
@@ -555,6 +608,7 @@ const Dashboard = () => {
                   handleRowClick={handleRowClick}
                   handleChange={handleChange}
                 />
+                  <ActivityBox />
               </TabPane>
               <TabPane tab="My Team Work" key="2">
                 <MyTableComponent
