@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Chart } from "chart.js/auto";
-import { Table, Button, Space, Input,Typography } from "antd";
-import { SearchOutlined } from "@ant-design/icons";
+import { Table, Button, Space, Input, Typography, Card, Row, Col, Modal, List, Divider } from "antd";
+import { SearchOutlined, MailOutlined, FileTextOutlined, HistoryOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import "./Dashboard.css";
-import "./Table.css";
+// import "./Table.css";
 import { Tabs } from "antd";
 import PortfolioInsights from "./PortfolioInsights";
 import { Popover } from "antd";
@@ -16,6 +16,118 @@ import TextArea from "antd/es/input/TextArea";
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
+
+// Quick Links Modal Component
+const QuickLinksModal = ({ visible, onClose }) => {
+  const items = [
+    "Send Email",
+    "Order report",
+    "Upload document",
+    "Create Renewal",
+    "Quote"
+  ];
+
+  return (
+    <Modal
+      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Quick links</div>}
+      open={visible}
+      onCancel={onClose}
+      footer={null}
+      width={300}
+      style={{ 
+        top: 50,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      }}
+      bodyStyle={{ padding: "10px 20px" }}
+    >
+      <List
+        size="small"
+        dataSource={items}
+        renderItem={(item) => (
+          <List.Item 
+            style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
+            onClick={() => {
+              console.log(`${item} clicked`);
+              onClose();
+            }}
+          >
+            <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
+          </List.Item>
+        )}
+      />
+    </Modal>
+  );
+};
+
+// Reports Modal Component
+const ReportsModal = ({ visible, onClose }) => {
+  const items = [
+    "Create renewal report",
+    "Cancellation report",
+    "Custom report"
+  ];
+
+  return (
+    <Modal
+      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Reports</div>}
+      open={visible}
+      onCancel={onClose}
+      footer={null}
+      width={300}
+      style={{ 
+        top: 50,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      }}
+      bodyStyle={{ padding: "10px 20px" }}
+    >
+      <List
+        size="small"
+        dataSource={items}
+        renderItem={(item) => (
+          <List.Item 
+            style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
+            onClick={() => {
+              console.log(`${item} clicked`);
+              onClose();
+            }}
+          >
+            <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
+          </List.Item>
+        )}
+      />
+    </Modal>
+  );
+};
+
+// Task History Modal Component
+const TaskHistoryModal = ({ visible, onClose }) => {
+  return (
+    <Modal
+      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Task History</div>}
+      open={visible}
+      onCancel={onClose}
+      footer={null}
+      width={300}
+      style={{ 
+        top: 50,
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      }}
+      bodyStyle={{ padding: "10px 20px" }}
+    >
+      <div style={{ padding: "10px 0" }}>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
+          Task 1 completed on 15-03-2025
+        </div>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
+          Task 2 completed on 12-03-2025
+        </div>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px" }}>
+          Task 3 completed on 08-03-2025
+        </div>
+      </div>
+    </Modal>
+  );
+};
 
 const MyTableComponent = ({
   columns,
@@ -42,65 +154,88 @@ const MyTableComponent = ({
               <th
                 {...restProps}
                 style={{
-                  color: "#fff", // Set header text color here
+                  color: "#fff", // Set header text color
+                  fontFamily: "inherit", // Use the same font as the rest of the app
                 }}
               />
             ),
           },
         }}
+        size="middle"
+        style={{ fontFamily: "inherit" }} // Use the same font as the rest of the app
       />
     </TableContainer>
   );
 };
+
 // Activity Box component
 const ActivityBox = () => {
   return (
-    <div style={{ 
-      width: 250, 
-      marginLeft: 20,
-      borderRadius: 20,
-      border: '1px solid #d9d9d9',
-      overflow: 'hidden',
-      display: 'flex',
-      flexDirection: 'column',
-      height: '100%'
-    }}>
-      {/* Header */}
-      <div style={{ 
-        padding: '10px', 
-        textAlign: 'center', 
-        borderBottom: '1px solid #d9d9d9',
-        backgroundColor: ' #1890ff',
-        color: "white"
-      }}>
-        <strong>Activity</strong>
-      </div>
-      
-      {/* Content */}
-      <div style={{ padding: '15px 20px', flex: 1 }}>
-        {/* Today section */}
-        <div style={{ marginBottom: 15 }}>
-          <Text strong>Today</Text>
-          <TextArea style={{ 
-            border: '1px solid #d9d9d9', 
-            height: 80, 
-            marginTop: 8,
-            width: '100%'
-          }}></TextArea>
+    <Card
+      style={{
+        height: "100%",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
+      bodyStyle={{ padding: "0", height: "100%" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "10px",
+            textAlign: "center",
+            borderBottom: "1px solid #d9d9d9",
+            backgroundColor: "#5D9DE2",
+            color: "white",
+            fontFamily: "inherit", // Use the same font as the rest of the app
+          }}
+        >
+          <strong>Activity</strong>
         </div>
-        
-        {/* This week section */}
-        <div>
-          <Text strong>This week</Text>
-          <TextArea style={{ 
-            border: '1px solid #d9d9d9', 
-            height: 80, 
-            marginTop: 8,
-            width: '100%'
-          }}></TextArea>
+
+        {/* Content */}
+        <div style={{ padding: "15px 20px", flex: 1 }}>
+          {/* Today section */}
+          <div style={{ marginBottom: 15 }}>
+            <Text strong style={{ fontFamily: "inherit" }}>
+              Today
+            </Text>
+            <TextArea
+              style={{
+                border: "1px solid #d9d9d9",
+                height: 80,
+                marginTop: 8,
+                width: "100%",
+                fontFamily: "inherit", // Use the same font as the rest of the app
+              }}
+            ></TextArea>
+          </div>
+
+          {/* This week section */}
+          <div>
+            <Text strong style={{ fontFamily: "inherit" }}>
+              This week
+            </Text>
+            <TextArea
+              style={{
+                border: "1px solid #d9d9d9",
+                height: 80,
+                marginTop: 8,
+                width: "100%",
+                fontFamily: "inherit", // Use the same font as the rest of the app
+              }}
+            ></TextArea>
+          </div>
         </div>
       </div>
-    </div>
+    </Card>
   );
 };
 
@@ -213,6 +348,11 @@ const Dashboard = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
+  
+  // Modal visibility states
+  const [quickLinksVisible, setQuickLinksVisible] = useState(false);
+  const [reportsVisible, setReportsVisible] = useState(false);
+  const [taskHistoryVisible, setTaskHistoryVisible] = useState(false);
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -377,22 +517,6 @@ const Dashboard = () => {
     });
   };
 
-  // const createDonutChart = () => {
-  //   const ctx = donutChartRef.current.getContext('2d');
-  //   donutChartRef.current.chartInstance = new Chart(ctx, {
-  //     type: 'doughnut',
-  //     data: {
-  //       labels: ['New Business', 'Renewal Premium'],
-  //       datasets: [{ data: [7000, 3000], backgroundColor: ['#FF6384', '#FFCE56'] }],
-  //     },
-  //     options: {
-  //       responsive: true,
-  //       maintainAspectRatio: false,
-  //       plugins: { legend: { display: false } },
-  //     },
-  //   });
-  // };
-
   const handleRowClick = (record) => {
     navigate("/accountdashboard", { state: { account: record } });
   };
@@ -499,6 +623,7 @@ const Dashboard = () => {
                   ? "#d4b106"
                   : "#389e0d",
               cursor: "pointer",
+              fontFamily: "inherit", // Use the same font as the rest of the app
             }}
           >
             {priority}
@@ -506,24 +631,6 @@ const Dashboard = () => {
         </Popover>
       ),
     },
-    // {
-    //   title: 'Action',
-    //   key: 'newSubmission',
-    //   render: (_, record) => (
-    //     <Button
-    //       type="primary"
-    //       onClick={(e) => {
-    //         e.stopPropagation();
-    //         console.log("Record data to be passed:", record); // Check if data is there
-    //         navigate('/createsubmission', { state: { record } });
-    //       }}
-    //     >
-    //       <div style={{ fontSize: '12px'}}>
-    //         Create Submission
-    //       </div>
-    //     </Button>
-    //   ),
-    // }
   ];
 
   const combinedData = [
@@ -532,8 +639,25 @@ const Dashboard = () => {
     ...data.senttobroker,
   ];
 
+  // Button style for the three action buttons
+  const actionButtonStyle = {
+    backgroundColor: "#1890ff",
+    color: "white",
+    borderRadius: "4px",
+    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.15)",
+    margin: "0 8px",
+    height: "36px",
+    border: "none",
+    fontFamily: "inherit",
+  };
+
   return (
-    <div style={{ padding: "10px" }}>
+    <div 
+      style={{ 
+        padding: "10px",
+        fontFamily: "inherit" // Use the same font as the rest of the app
+      }}
+    >
       <Tabs defaultActiveKey="1">
         <TabPane tab="My Dashboard" key="1">
           <div className="content">
@@ -554,6 +678,7 @@ const Dashboard = () => {
                     textAlign: "center",
                     fontSize: "16px",
                     marginBottom: "5px",
+                    fontFamily: "inherit", // Use the same font as the rest of the app
                   }}
                 >
                   Policies Issued(YTD)
@@ -572,6 +697,7 @@ const Dashboard = () => {
                     textAlign: "center",
                     fontSize: "16px",
                     marginBottom: "5px",
+                    fontFamily: "inherit", // Use the same font as the rest of the app
                   }}
                 >
                   Submission in Progress(YTD)
@@ -590,6 +716,7 @@ const Dashboard = () => {
                     textAlign: "center",
                     fontSize: "16px",
                     marginBottom: "5px",
+                    fontFamily: "inherit", // Use the same font as the rest of the app
                   }}
                 >
                   Premium by LOB(Quotes)
@@ -602,13 +729,65 @@ const Dashboard = () => {
             </div>
             <Tabs defaultActiveKey="1">
               <TabPane tab="My Work" key="1">
-                <MyTableComponent
-                  columns={columns}
-                  dataSource={data.myassignedcases}
-                  handleRowClick={handleRowClick}
-                  handleChange={handleChange}
+                <Row gutter={16} style={{ marginTop: "16px" }}>
+                  <Col xs={24} sm={24} md={18} lg={18} xl={18}>
+                    <MyTableComponent
+                      columns={columns}
+                      dataSource={data.myassignedcases}
+                      handleRowClick={handleRowClick}
+                      handleChange={handleChange}
+                    />
+                    
+                    {/* Action Buttons Row */}
+                    <div style={{ 
+                      display: "flex", 
+                      justifyContent: "center", 
+                      marginTop: "20px",
+                      marginBottom: "20px"
+                    }}>
+                      <Button 
+                        icon={<MailOutlined />}
+                        style={actionButtonStyle}
+                        onClick={() => setQuickLinksVisible(true)}
+                      >
+                        Quick links
+                      </Button>
+                      <Button 
+                        icon={<FileTextOutlined />}
+                        style={actionButtonStyle}
+                        onClick={() => setReportsVisible(true)}
+                      >
+                        Reports
+                      </Button>
+                      <Button 
+                        icon={<HistoryOutlined />}
+                        style={actionButtonStyle}
+                        onClick={() => setTaskHistoryVisible(true)}
+                      >
+                        Task History
+                      </Button>
+                    </div>
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
+                  <Card style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)", marginTop:"13px", height:"348px", width:"320px"}}>
+                    <ActivityBox />
+                    </Card>
+                  </Col>
+                </Row>
+                
+                {/* Modals */}
+                <QuickLinksModal 
+                  visible={quickLinksVisible} 
+                  onClose={() => setQuickLinksVisible(false)} 
                 />
-                  <ActivityBox />
+                <ReportsModal 
+                  visible={reportsVisible} 
+                  onClose={() => setReportsVisible(false)} 
+                />
+                <TaskHistoryModal 
+                  visible={taskHistoryVisible} 
+                  onClose={() => setTaskHistoryVisible(false)} 
+                />
               </TabPane>
               <TabPane tab="My Team Work" key="2">
                 <MyTableComponent
