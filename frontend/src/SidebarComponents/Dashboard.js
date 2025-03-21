@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Chart } from "chart.js/auto";
-import { Table, Button, Space, Input, Typography, Card, Row, Col, Modal, List, Divider } from "antd";
+import { Table, Button, Space, Input, Typography, Card, Row, Col, Modal, List, Divider, Checkbox, Tabs as AntTabs } from "antd";
 import { SearchOutlined, MailOutlined, FileTextOutlined, HistoryOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import "./Dashboard.css";
@@ -17,50 +17,79 @@ import TextArea from "antd/es/input/TextArea";
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
-// Quick Links Modal Component
-const QuickLinksModal = ({ visible, onClose }) => {
+// Quick Links Component for Tab
+const QuickLinksTab = () => {
   const items = [
-    "Send Email",
-    "Order report",
-    "Upload document",
-    "Create Renewal",
-    "Quote"
+    { name: "Send Email", link: "https://www.gmail.com" },
+    { name: "Order report", link: "https://www.reportportal.com" },
+    { name: "Upload document", link: "https://www.dropbox.com" },
+    { name: "Create Renewal", link: "https://www.renewals.example.com" },
+    { name: "Quote", link: "https://www.quotes.example.com" }
   ];
 
   return (
-    <Modal
-      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Quick links</div>}
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-      width={300}
-      style={{ 
-        top: 50,
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-      }}
-      bodyStyle={{ padding: "10px 20px" }}
-    >
-      <List
-        size="small"
-        dataSource={items}
-        renderItem={(item) => (
-          <List.Item 
-            style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
+    <Card
+    style={{
+      borderRadius: "8px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      marginTop: "16px"
+    }}
+  >
+    <List
+      size="small"
+      header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Quick Links</div>}
+      dataSource={items}
+      renderItem={(item) => (
+        <List.Item 
+          style={{ 
+            borderBottom: "1px solid #f0f0f0", 
+            padding: "0",
+            transition: "background-color 0.3s ease"
+          }}
+        >
+          <a 
+            href={item.link} 
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ 
+              cursor: "pointer", 
+              width: "100%", 
+              fontSize:"18px",
+              textDecoration: "none", 
+              color: "#1890ff",
+              padding: "10px 16px",
+              display: "block",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f5f5f5";
+              e.currentTarget.style.color = "#096dd9";
+              e.currentTarget.style.fontWeight = "500";
+            
+              e.currentTarget.style.textDecoration = "underline";
+
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#1890ff";
+              e.currentTarget.style.fontWeight = "normal";
+            
+            }}
             onClick={() => {
-              console.log(`${item} clicked`);
-              onClose();
+              console.log(`${item.name} clicked - redirecting to ${item.link}`);
             }}
           >
-            <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
-          </List.Item>
-        )}
-      />
-    </Modal>
+            {item.name}
+          </a>
+        </List.Item>
+      )}
+    />
+  </Card>
   );
 };
 
-// Reports Modal Component
-const ReportsModal = ({ visible, onClose }) => {
+// Reports Tab Component
+const ReportsTab = () => {
   const items = [
     "Create renewal report",
     "Cancellation report",
@@ -68,53 +97,44 @@ const ReportsModal = ({ visible, onClose }) => {
   ];
 
   return (
-    <Modal
-      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Reports</div>}
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-      width={300}
-      style={{ 
-        top: 50,
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    <Card
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "16px"
       }}
-      bodyStyle={{ padding: "10px 20px" }}
     >
       <List
         size="small"
+        header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Reports</div>}
         dataSource={items}
         renderItem={(item) => (
           <List.Item 
             style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
             onClick={() => {
               console.log(`${item} clicked`);
-              onClose();
             }}
           >
             <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
           </List.Item>
         )}
       />
-    </Modal>
+    </Card>
   );
 };
 
-// Task History Modal Component
-const TaskHistoryModal = ({ visible, onClose }) => {
+// Task History Tab Component
+const TaskHistoryTab = () => {
   return (
-    <Modal
-      title={<div style={{ textAlign: "center", fontWeight: "bold" }}>Task History</div>}
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-      width={300}
-      style={{ 
-        top: 50,
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+    <Card
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "16px"
       }}
-      bodyStyle={{ padding: "10px 20px" }}
     >
       <div style={{ padding: "10px 0" }}>
+        <div style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>Task History</div>
         <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
           Task 1 completed on 15-03-2025
         </div>
@@ -125,7 +145,7 @@ const TaskHistoryModal = ({ visible, onClose }) => {
           Task 3 completed on 08-03-2025
         </div>
       </div>
-    </Modal>
+    </Card>
   );
 };
 
@@ -134,6 +154,7 @@ const MyTableComponent = ({
   dataSource,
   handleRowClick,
   handleChange,
+  rowSelection,
 }) => {
   const { theme } = useMetaData();
   return (
@@ -144,9 +165,15 @@ const MyTableComponent = ({
         dataSource={dataSource}
         onChange={handleChange}
         onRow={(record) => ({
-          onClick: () => handleRowClick(record),
+          onClick: (e) => {
+            // Only trigger row click if not clicking on checkbox
+            if (e.target.tagName !== 'INPUT') {
+              handleRowClick(record);
+            }
+          },
           className: "clickable-row",
         })}
+        rowSelection={rowSelection}
         pagination={{ pageSize: 3 }}
         components={{
           header: {
@@ -155,14 +182,14 @@ const MyTableComponent = ({
                 {...restProps}
                 style={{
                   color: "#fff", // Set header text color
-                  fontFamily: "inherit", // Use the same font as the rest of the app
+                  fontFamily: "Inter", // Use the same font as the rest of the app
                 }}
               />
             ),
           },
         }}
         size="middle"
-        style={{ fontFamily: "inherit" }} // Use the same font as the rest of the app
+        style={{  fontFamily: "Inter"}} // Use the same font as the rest of the app
       />
     </TableContainer>
   );
@@ -242,6 +269,7 @@ const ActivityBox = () => {
 const data = {
   myteamscases: [
     {
+      key: "1",
       id: "CP1001",
       client: "Fleet Solutions",
       lob: "Commercial Property",
@@ -252,6 +280,7 @@ const data = {
       priority: "Medium",
     },
     {
+      key: "2",
       id: "CP1002",
       client: "Skyline Residences",
       lob: "Commercial Property",
@@ -264,6 +293,7 @@ const data = {
   ],
   myassignedcases: [
     {
+      key: "3",
       id: "CP1003",
       client: "Skyline Property Inc.",
       lob: "Commercial Property",
@@ -274,6 +304,7 @@ const data = {
       priority: "Medium",
     },
     {
+      key: "4",
       id: "CP1001",
       client: "Fleet Solutions",
       lob: "Commercial Property",
@@ -284,6 +315,7 @@ const data = {
       priority: "Medium",
     },
     {
+      key: "5",
       id: "CP1006",
       client: "Uptown Commercial Spaces",
       lob: "Commercial Property",
@@ -297,6 +329,7 @@ const data = {
   ],
   senttobroker: [
     {
+      key: "6",
       id: "CP1006",
       client: "Uptown Commercial Spaces",
       lob: "Commercial Property",
@@ -307,6 +340,7 @@ const data = {
       priority: "Medium",
     },
     {
+      key: "7",
       id: "CP1007",
       client: "Client F",
       lob: "Commercial Property",
@@ -319,6 +353,7 @@ const data = {
   ],
   close: [
     {
+      key: "8",
       id: "CP1009",
       client: "Client F",
       lob: "Commercial Property",
@@ -329,6 +364,7 @@ const data = {
       priority: "Low",
     },
     {
+      key: "9",
       id: "CP1010",
       client: "Client I",
       lob: "Commercial Property",
@@ -349,10 +385,12 @@ const Dashboard = () => {
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
   
-  // Modal visibility states
-  const [quickLinksVisible, setQuickLinksVisible] = useState(false);
-  const [reportsVisible, setReportsVisible] = useState(false);
-  const [taskHistoryVisible, setTaskHistoryVisible] = useState(false);
+  // State for selected rows
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  // State for action tabs visibility
+  const [showActionTabs, setShowActionTabs] = useState(false);
+  // State for active action tab
+  const [activeActionTab, setActiveActionTab] = useState("1");
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -526,6 +564,17 @@ const Dashboard = () => {
     setSortedInfo(sorter);
   };
 
+  // Handle row selection changes
+  const onSelectChange = (newSelectedRowKeys) => {
+    setSelectedRowKeys(newSelectedRowKeys);
+    setShowActionTabs(newSelectedRowKeys.length > 0);
+  };
+
+  const rowSelection = {
+    selectedRowKeys,
+    onChange: onSelectChange,
+  };
+
   const columns = [
     {
       title: "Submission Id",
@@ -639,18 +688,6 @@ const Dashboard = () => {
     ...data.senttobroker,
   ];
 
-  // Button style for the three action buttons
-  const actionButtonStyle = {
-    backgroundColor: "#1890ff",
-    color: "white",
-    borderRadius: "4px",
-    boxShadow: "0 2px 5px rgba(0, 0, 0, 0.15)",
-    margin: "0 8px",
-    height: "36px",
-    border: "none",
-    fontFamily: "inherit",
-  };
-
   return (
     <div 
       style={{ 
@@ -736,58 +773,39 @@ const Dashboard = () => {
                       dataSource={data.myassignedcases}
                       handleRowClick={handleRowClick}
                       handleChange={handleChange}
+                      rowSelection={rowSelection}
+                      style={{fontFamily: "Inter"}}
                     />
                     
-                    {/* Action Buttons Row */}
-                    <div style={{ 
-                      display: "flex", 
-                      justifyContent: "center", 
-                      marginTop: "20px",
-                      marginBottom: "20px"
-                    }}>
-                      <Button 
-                        icon={<MailOutlined />}
-                        style={actionButtonStyle}
-                        onClick={() => setQuickLinksVisible(true)}
-                      >
-                        Quick links
-                      </Button>
-                      <Button 
-                        icon={<FileTextOutlined />}
-                        style={actionButtonStyle}
-                        onClick={() => setReportsVisible(true)}
-                      >
-                        Reports
-                      </Button>
-                      <Button 
-                        icon={<HistoryOutlined />}
-                        style={actionButtonStyle}
-                        onClick={() => setTaskHistoryVisible(true)}
-                      >
-                        Task History
-                      </Button>
-                    </div>
+                    {/* Action Tabs - visible only when rows are selected */}
+                    {showActionTabs && (
+                      <div style={{ marginTop: "20px" }}>
+                        <AntTabs 
+                          activeKey={activeActionTab} 
+                          onChange={setActiveActionTab}
+                          type="card"
+                        >
+                          <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="1">
+                            <QuickLinksTab />
+                          </AntTabs.TabPane>
+                          
+                          <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="2">
+                            <ReportsTab />
+                          </AntTabs.TabPane>
+                          
+                          <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="3">
+                            <TaskHistoryTab />
+                          </AntTabs.TabPane>
+                        </AntTabs>
+                      </div>
+                    )}
                   </Col>
                   <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
-                  <Card style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)", marginTop:"13px", height:"348px", width:"320px"}}>
-                    <ActivityBox />
+                    <Card style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)", marginTop:"13px", height:"348px", width:"320px"}}>
+                      <ActivityBox />
                     </Card>
                   </Col>
                 </Row>
-                
-                {/* Modals */}
-                <QuickLinksModal 
-                  visible={quickLinksVisible} 
-                  onClose={() => setQuickLinksVisible(false)} 
-                />
-                <ReportsModal 
-                  visible={reportsVisible} 
-                  onClose={() => setReportsVisible(false)} 
-                />
-                <TaskHistoryModal 
-                  visible={taskHistoryVisible} 
-                  onClose={() => setTaskHistoryVisible(false)} 
-                />
               </TabPane>
               <TabPane tab="My Team Work" key="2">
                 <MyTableComponent
@@ -795,7 +813,31 @@ const Dashboard = () => {
                   dataSource={combinedData}
                   handleRowClick={handleRowClick}
                   handleChange={handleChange}
+                  rowSelection={rowSelection}
                 />
+                
+                {/* Action Tabs for Team Work tab too */}
+                {showActionTabs && (
+                  <div style={{ marginTop: "20px" }}>
+                    <AntTabs 
+                      activeKey={activeActionTab} 
+                      onChange={setActiveActionTab}
+                      type="card"
+                    >
+                      <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="1">
+                        <QuickLinksTab />
+                      </AntTabs.TabPane>
+                      
+                      <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="2">
+                        <ReportsTab />
+                      </AntTabs.TabPane>
+                      
+                      <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="3">
+                        <TaskHistoryTab />
+                      </AntTabs.TabPane>
+                    </AntTabs>
+                  </div>
+                )}
               </TabPane>
             </Tabs>
           </div>
