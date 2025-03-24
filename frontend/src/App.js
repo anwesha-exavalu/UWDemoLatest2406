@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Link, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link, useLocation, useNavigate } from "react-router-dom";
 
 import Dashboard from './SidebarComponents/Dashboard';
 import DocumentScreen from './SidebarComponents/DocumentScreen';
@@ -15,26 +15,68 @@ import AuditTrail from './SidebarComponents/AuditTrail';
 import AccountInfo from './SidebarComponents/AccountInfo';
 import AccountDashboard from './SidebarComponents/AccountDashboard';
 import Login from './layout/Login';
+import DashboardAdmin from './SidebarComponents/DashboardAdmin';
+
 
 const { Sider, Content, Footer } = Layout;
+const { SubMenu } = Menu;
 
 const MyMenu = ({ collapsed }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const [userRole, setUserRole] = useState('');
+  
+  // This effect loads the role and ensures default view
+  useEffect(() => {
+    const role = localStorage.getItem('userRole');
+    setUserRole(role);
+    
+    // Redirect to first appropriate page based on role if on dashboard
+    if (location.pathname === '/dashboard') {
+      if (role === 'admin') {
+        navigate('/dashboardAdmin');
+      }
+    }
+    
+    // Redirect to first submenu if on admin root path
+    if (role === 'admin' && location.pathname === '/') {
+      navigate('/dashboardAdmin');
+    }
+  }, [navigate, location.pathname]);
 
-  const pathToKey = {
-    '/dashboard': '1',
-    '/accountdashboard': '2',
-    '/accountinfo': '3',
-    '/createsubmission': '4',
-  };
+  // Create a key lookup based on pathname
+  const currentPath = location.pathname;
+  
+  // Determine which key should be selected based on current path
+  let selectedKeys = [];
+  let openKeys = [];
+  
+  if (userRole === 'underwriter') {
+    if (currentPath === '/dashboard') selectedKeys = ['1'];
+    else if (currentPath === '/accountdashboard') selectedKeys = ['2'];
+    else if (currentPath === '/accountinfo') selectedKeys = ['3'];
+    else if (currentPath === '/createsubmission') selectedKeys = ['4'];
+  } else if (userRole === 'admin') {
+    if (currentPath === '/dashboardAdmin') 
+      selectedKeys = ['5'];
+    else if (currentPath === '/accountdashboard') selectedKeys = ['6'];
+    else if (currentPath === '/accountinfo') selectedKeys = ['7'];
+    else if (currentPath === '/createsubmission') selectedKeys = ['8'];
+  }
 
   return (
     <Menu
       theme="dark"
       mode="inline"
-      selectedKeys={[pathToKey[location.pathname] || '1']}
+      selectedKeys={selectedKeys}
+      defaultOpenKeys={openKeys}
+      inlineIndent={12}
+      className="custom-sidebar-menu"
     >
-      <Menu.Item key="1" icon={<HomeOutlined />} title={"Dashboard"}>
+      {/* Show these items only for underwriter role */}
+      {userRole === 'underwriter' && (
+        <>
+          <Menu.Item key="1" icon={<HomeOutlined />} title={"Dashboard"}>
         {!collapsed ? <Link to="/dashboard" style={{ textDecoration: 'none' }}>Dashboard</Link> : <Link to="/dashboard" style={{ textDecoration: 'none' }}/>}
       </Menu.Item>
       <Menu.Item key="2" icon={<InfoCircleOutlined />} title={"Account Information"}>
@@ -46,20 +88,97 @@ const MyMenu = ({ collapsed }) => {
       <Menu.Item key="4" icon={<EditFilled />} title={"Create Submission"}>
         {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }}/>}
       </Menu.Item>
+
+        </>
+      )}
+
+      {/* Show these items only for admin role */}
+      {userRole === 'admin' && (
+        <>
+        
+          <Menu.Item key="5" icon={<HomeOutlined />}>
+            {!collapsed ? 
+              <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }}>Dashboard </Link> : 
+              <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }} />
+            }
+          </Menu.Item>
+          <Menu.Item key="6" icon={<InfoCircleOutlined />} title={"Account Information"}>
+        {!collapsed ? <Link to="/accountdashboard" style={{ textDecoration: 'none' }}>Account Information</Link> : <Link to="/accountdashboard" style={{ textDecoration: 'none' }}/>}
+      </Menu.Item>
+      <Menu.Item key="7" icon={<FileTextOutlined />} title={"Account Details"}>
+        {!collapsed ? <Link to="/accountinfo" style={{ textDecoration: 'none' }}>Account Details</Link> : <Link to="/accountinfo" style={{ textDecoration: 'none' }}/>}
+      </Menu.Item>
+      <Menu.Item key="8" icon={<EditFilled />} title={"Create Submission"}>
+        {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }}/>}
+      </Menu.Item>
+        
+        </>
+      )}
     </Menu>
   );
 };
 
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [userRole, setUserRole] = useState('');
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
   const location = useLocation();
-
+  const navigate = useNavigate();
   const isLoginPage = location.pathname === '/';
+
+  useEffect(() => {
+    // Get the user role from localStorage
+    const role = localStorage.getItem('userRole');
+    setUserRole(role);
+    
+    // If user is on the root path and already logged in as admin, redirect to dashboardAdmin
+    if (role === 'admin' && location.pathname === '/dashboard') {
+      navigate('/dashboardAdmin');
+    }
+    
+    // Add custom CSS to fix the submenu overflow issue
+    const style = document.createElement('style');
+    style.innerHTML = `
+      .custom-sidebar-menu .ant-menu-sub.ant-menu-inline {
+        background: #2457d3 !important;
+        max-width: 100% !important;
+        overflow: hidden !important;
+      }
+      
+      .custom-sidebar-menu .ant-menu-submenu-title {
+        padding-right: 16px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      
+      .custom-sidebar-menu .ant-menu-item {
+        padding-right: 16px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      
+      .custom-sidebar-menu.ant-menu-inline-collapsed .ant-menu-submenu-title {
+        text-align: center !important;
+        padding: 0 !important;
+        width: 100% !important;
+      }
+      
+      .custom-sidebar-menu .ant-menu-submenu-arrow {
+        right: 8px !important;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, [location.pathname, navigate]);
 
   return (
     <Layout>
@@ -68,7 +187,14 @@ const AppLayout = () => {
           trigger={null}
           collapsible
           collapsed={collapsed}
-          style={{ backgroundColor: '#2457d3', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+          style={{ 
+            backgroundColor: '#2457d3', 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center',
+            overflow: 'hidden'
+          }}
+          width={220} // Set a fixed width for the Sider
         >
           <Button
             type="text"
@@ -89,7 +215,9 @@ const AppLayout = () => {
             }}
           />
           <div className="demo-logo-vertical" />
-          <MyMenu collapsed={collapsed} />
+          <div style={{ width: '100%', overflow: 'hidden' }}>
+            <MyMenu collapsed={collapsed} />
+          </div>
         </Sider>
       )}
       <Layout>
@@ -103,7 +231,7 @@ const AppLayout = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-          <Routes>
+           <Routes>
             <Route exact path="/" element={<Login />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="createsubmission" element={<Sublob2 />} />
@@ -113,17 +241,21 @@ const AppLayout = () => {
             <Route path="documentscreen" element={<DocumentScreen />} />
             <Route path="clearancescreen" element={<ClearanceScreen />} />
             <Route path="searchinsured" element={<SearchInsured />} />
+            <Route path="dashboardAdmin" element={<DashboardAdmin/>} />
           </Routes>
+
+         
         </Content>
         {!isLoginPage && (
           <Footer style={{ textAlign: 'center' }}>
-            Underwriter Workbench {new Date().getFullYear()}
+            Workbench {new Date().getFullYear()}
           </Footer>
         )}
       </Layout>
     </Layout>
   );
 };
+
 
 const App = () => {
   return (

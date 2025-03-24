@@ -17,6 +17,137 @@ import TextArea from "antd/es/input/TextArea";
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
 
+// Quick Links Component for Tab
+const QuickLinksTab = () => {
+  const items = [
+    { name: "Send Email", link: "https://www.gmail.com" },
+    { name: "Order report", link: "https://www.reportportal.com" },
+    { name: "Upload document", link: "https://www.dropbox.com" },
+    { name: "Create Renewal", link: "https://www.renewals.example.com" },
+    { name: "Quote", link: "https://www.quotes.example.com" }
+  ];
+
+  return (
+    <Card
+    style={{
+      borderRadius: "8px",
+      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+      marginTop: "16px"
+    }}
+  >
+    <List
+      size="small"
+      header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Quick Links</div>}
+      dataSource={items}
+      renderItem={(item) => (
+        <List.Item 
+          style={{ 
+            borderBottom: "1px solid #f0f0f0", 
+            padding: "0",
+            transition: "background-color 0.3s ease"
+          }}
+        >
+          <a 
+            href={item.link} 
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ 
+              cursor: "pointer", 
+              width: "100%", 
+              fontSize:"18px",
+              textDecoration: "none", 
+              color: "#1890ff",
+              padding: "10px 16px",
+              display: "block",
+              transition: "all 0.3s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = "#f5f5f5";
+              e.currentTarget.style.color = "#096dd9";
+              e.currentTarget.style.fontWeight = "500";
+            
+              e.currentTarget.style.textDecoration = "underline";
+
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = "transparent";
+              e.currentTarget.style.color = "#1890ff";
+              e.currentTarget.style.fontWeight = "normal";
+            
+            }}
+            onClick={() => {
+              console.log(`${item.name} clicked - redirecting to ${item.link}`);
+            }}
+          >
+            {item.name}
+          </a>
+        </List.Item>
+      )}
+    />
+  </Card>
+  );
+};
+
+// Reports Tab Component
+const ReportsTab = () => {
+  const items = [
+    "Create renewal report",
+    "Cancellation report",
+    "Custom report"
+  ];
+
+  return (
+    <Card
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "16px"
+      }}
+    >
+      <List
+        size="small"
+        header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Reports</div>}
+        dataSource={items}
+        renderItem={(item) => (
+          <List.Item 
+            style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
+            onClick={() => {
+              console.log(`${item} clicked`);
+            }}
+          >
+            <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
+          </List.Item>
+        )}
+      />
+    </Card>
+  );
+};
+
+// Task History Tab Component
+const TaskHistoryTab = () => {
+  return (
+    <Card
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "16px"
+      }}
+    >
+      <div style={{ padding: "10px 0" }}>
+        <div style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>Task History</div>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
+          Task 1 completed on 15-03-2025
+        </div>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
+          Task 2 completed on 12-03-2025
+        </div>
+        <div style={{ backgroundColor: "#f5f5f5", padding: "10px" }}>
+          Task 3 completed on 08-03-2025
+        </div>
+      </div>
+    </Card>
+  );
+};
 
 const MyTableComponent = ({
   columns,
@@ -65,7 +196,75 @@ const MyTableComponent = ({
 };
 
 // Activity Box component
+const ActivityBox = () => {
+  return (
+    <Card
+      style={{
+        height: "100%",
+        borderRadius: "8px",
+        overflow: "hidden",
+      }}
+      bodyStyle={{ padding: "0", height: "100%" }}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
+      >
+        {/* Header */}
+        <div
+          style={{
+            padding: "10px",
+            textAlign: "center",
+            borderBottom: "1px solid #d9d9d9",
+            backgroundColor: "#5D9DE2",
+            color: "white",
+            fontFamily: "inherit", // Use the same font as the rest of the app
+          }}
+        >
+          <strong>Activity</strong>
+        </div>
 
+        {/* Content */}
+        <div style={{ padding: "15px 20px", flex: 1 }}>
+          {/* Today section */}
+          <div style={{ marginBottom: 15 }}>
+            <Text strong style={{ fontFamily: "inherit" }}>
+              Today
+            </Text>
+            <TextArea
+              style={{
+                border: "1px solid #d9d9d9",
+                height: 80,
+                marginTop: 8,
+                width: "100%",
+                fontFamily: "inherit", // Use the same font as the rest of the app
+              }}
+            ></TextArea>
+          </div>
+
+          {/* This week section */}
+          <div>
+            <Text strong style={{ fontFamily: "inherit" }}>
+              This week
+            </Text>
+            <TextArea
+              style={{
+                border: "1px solid #d9d9d9",
+                height: 80,
+                marginTop: 8,
+                width: "100%",
+                fontFamily: "inherit", // Use the same font as the rest of the app
+              }}
+            ></TextArea>
+          </div>
+        </div>
+      </div>
+    </Card>
+  );
+};
 
 const data = {
   myteamscases: [
@@ -178,7 +377,7 @@ const data = {
   ],
 };
 
-const Dashboard = () => {
+const DashboardAdmin = () => {
   const navigate = useNavigate();
   const [filteredInfo, setFilteredInfo] = useState({});
   const [sortedInfo, setSortedInfo] = useState({});
@@ -567,18 +766,47 @@ const Dashboard = () => {
             </div>
             <Tabs defaultActiveKey="1">
               <TabPane tab="My Work" key="1">
-               
+                <Row gutter={16} style={{ marginTop: "16px" }}>
+                  <Col xs={24} sm={24} md={18} lg={18} xl={18}>
                     <MyTableComponent
                       columns={columns}
                       dataSource={data.myassignedcases}
                       handleRowClick={handleRowClick}
                       handleChange={handleChange}
-                     
+                      rowSelection={rowSelection}
                       style={{fontFamily: "Inter"}}
                     />
                     
-                    
-                
+                    {/* Action Tabs - visible only when rows are selected */}
+                    {showActionTabs && (
+                      <div style={{ marginTop: "20px" }}>
+                        <AntTabs 
+                          activeKey={activeActionTab} 
+                          onChange={setActiveActionTab}
+                          type="card"
+                        >
+                          <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="1">
+                            <TaskHistoryTab />
+                          </AntTabs.TabPane>
+                          <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="2">
+                            <QuickLinksTab />
+                          </AntTabs.TabPane>
+                          
+                          <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="3">
+                            <ReportsTab />
+                          </AntTabs.TabPane>
+                          
+                          
+                        </AntTabs>
+                      </div>
+                    )}
+                  </Col>
+                  <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
+                    <Card style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)", marginTop:"13px", height:"348px", width:"320px"}}>
+                      <ActivityBox />
+                    </Card>
+                  </Col>
+                </Row>
               </TabPane>
               <TabPane tab="My Team Work" key="2">
                 <MyTableComponent
@@ -586,11 +814,31 @@ const Dashboard = () => {
                   dataSource={combinedData}
                   handleRowClick={handleRowClick}
                   handleChange={handleChange}
-                  
+                  rowSelection={rowSelection}
                 />
                 
                 {/* Action Tabs for Team Work tab too */}
-                
+                {showActionTabs && (
+                  <div style={{ marginTop: "20px" }}>
+                    <AntTabs 
+                      activeKey={activeActionTab} 
+                      onChange={setActiveActionTab}
+                      type="card"
+                    >
+                      <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="1">
+                        <QuickLinksTab />
+                      </AntTabs.TabPane>
+                      
+                      <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="2">
+                        <ReportsTab />
+                      </AntTabs.TabPane>
+                      
+                      <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="3">
+                        <TaskHistoryTab />
+                      </AntTabs.TabPane>
+                    </AntTabs>
+                  </div>
+                )}
               </TabPane>
             </Tabs>
           </div>
@@ -603,4 +851,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default DashboardAdmin;
