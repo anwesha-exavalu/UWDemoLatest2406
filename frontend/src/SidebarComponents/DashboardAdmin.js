@@ -765,7 +765,7 @@ const DashboardAdmin = () => {
               </div>
             </div>
             <Tabs defaultActiveKey="1">
-              <TabPane tab="My Work" key="1">
+              <TabPane tab="My Task" key="1">
                 <Row gutter={16} style={{ marginTop: "16px" }}>
                   <Col xs={24} sm={24} md={18} lg={18} xl={18}>
                     <MyTableComponent
@@ -808,38 +808,7 @@ const DashboardAdmin = () => {
                   </Col>
                 </Row>
               </TabPane>
-              <TabPane tab="My Team Work" key="2">
-                <MyTableComponent
-                  columns={columns}
-                  dataSource={combinedData}
-                  handleRowClick={handleRowClick}
-                  handleChange={handleChange}
-                  rowSelection={rowSelection}
-                />
-                
-                {/* Action Tabs for Team Work tab too */}
-                {showActionTabs && (
-                  <div style={{ marginTop: "20px" }}>
-                    <AntTabs 
-                      activeKey={activeActionTab} 
-                      onChange={setActiveActionTab}
-                      type="card"
-                    >
-                      <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="1">
-                        <QuickLinksTab />
-                      </AntTabs.TabPane>
-                      
-                      <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="2">
-                        <ReportsTab />
-                      </AntTabs.TabPane>
-                      
-                      <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="3">
-                        <TaskHistoryTab />
-                      </AntTabs.TabPane>
-                    </AntTabs>
-                  </div>
-                )}
-              </TabPane>
+             
             </Tabs>
           </div>
         </TabPane>
