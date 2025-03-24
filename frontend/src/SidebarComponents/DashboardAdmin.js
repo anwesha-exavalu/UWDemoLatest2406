@@ -7,12 +7,11 @@ import Highlighter from "react-highlight-words";
 import "./Dashboard.css";
 // import "./Table.css";
 import { Tabs } from "antd";
-import PortfolioInsights from "./PortfolioInsights";
 import { Popover } from "antd";
 import PriorityPopup from "./PriorityPopup";
 import { TableContainer } from "../styles/components/TableComponent";
 import useMetaData from "../context/metaData";
-import TextArea from "antd/es/input/TextArea";
+
 
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
@@ -29,62 +28,62 @@ const QuickLinksTab = () => {
 
   return (
     <Card
-    style={{
-      borderRadius: "8px",
-      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-      marginTop: "16px"
-    }}
-  >
-    <List
-      size="small"
-      header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Quick Links</div>}
-      dataSource={items}
-      renderItem={(item) => (
-        <List.Item 
-          style={{ 
-            borderBottom: "1px solid #f0f0f0", 
-            padding: "0",
-            transition: "background-color 0.3s ease"
-          }}
-        >
-          <a 
-            href={item.link} 
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ 
-              cursor: "pointer", 
-              width: "100%", 
-              fontSize:"18px",
-              textDecoration: "none", 
-              color: "#1890ff",
-              padding: "10px 16px",
-              display: "block",
-              transition: "all 0.3s ease",
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = "#f5f5f5";
-              e.currentTarget.style.color = "#096dd9";
-              e.currentTarget.style.fontWeight = "500";
-            
-              e.currentTarget.style.textDecoration = "underline";
-
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = "transparent";
-              e.currentTarget.style.color = "#1890ff";
-              e.currentTarget.style.fontWeight = "normal";
-            
-            }}
-            onClick={() => {
-              console.log(`${item.name} clicked - redirecting to ${item.link}`);
+      style={{
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        marginTop: "16px"
+      }}
+    >
+      <List
+        size="small"
+        header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Quick Links</div>}
+        dataSource={items}
+        renderItem={(item) => (
+          <List.Item
+            style={{
+              borderBottom: "1px solid #f0f0f0",
+              padding: "0",
+              transition: "background-color 0.3s ease"
             }}
           >
-            {item.name}
-          </a>
-        </List.Item>
-      )}
-    />
-  </Card>
+            <a
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                cursor: "pointer",
+                width: "100%",
+                fontSize: "18px",
+                textDecoration: "none",
+                color: "#1890ff",
+                padding: "10px 16px",
+                display: "block",
+                transition: "all 0.3s ease",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = "#f5f5f5";
+                e.currentTarget.style.color = "#096dd9";
+                e.currentTarget.style.fontWeight = "500";
+
+                e.currentTarget.style.textDecoration = "underline";
+
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = "transparent";
+                e.currentTarget.style.color = "#1890ff";
+                e.currentTarget.style.fontWeight = "normal";
+
+              }}
+              onClick={() => {
+                console.log(`${item.name} clicked - redirecting to ${item.link}`);
+              }}
+            >
+              {item.name}
+            </a>
+          </List.Item>
+        )}
+      />
+    </Card>
   );
 };
 
@@ -109,7 +108,7 @@ const ReportsTab = () => {
         header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Reports</div>}
         dataSource={items}
         renderItem={(item) => (
-          <List.Item 
+          <List.Item
             style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
             onClick={() => {
               console.log(`${item} clicked`);
@@ -189,13 +188,14 @@ const MyTableComponent = ({
           },
         }}
         size="middle"
-        style={{  fontFamily: "Inter"}} // Use the same font as the rest of the app
+        style={{ fontFamily: "Inter" }} // Use the same font as the rest of the app
       />
     </TableContainer>
   );
 };
 
 // Activity Box component
+
 const ActivityBox = () => {
   return (
     <Card
@@ -221,7 +221,7 @@ const ActivityBox = () => {
             borderBottom: "1px solid #d9d9d9",
             backgroundColor: "#5D9DE2",
             color: "white",
-            fontFamily: "inherit", // Use the same font as the rest of the app
+            fontFamily: "inherit",
           }}
         >
           <strong>Activity</strong>
@@ -234,15 +234,37 @@ const ActivityBox = () => {
             <Text strong style={{ fontFamily: "inherit" }}>
               Today
             </Text>
-            <TextArea
+            <div
               style={{
                 border: "1px solid #d9d9d9",
-                height: 80,
+                borderRadius: "2px",
+                padding: "8px 12px",
                 marginTop: 8,
+                height: 110,
                 width: "100%",
-                fontFamily: "inherit", // Use the same font as the rest of the app
+                overflowY: "auto",
+                fontFamily: "inherit",
+                backgroundColor: "#fff",
               }}
-            ></TextArea>
+            >
+              <div style={{ marginBottom: "8px" }}>
+                <span
+                  style={{
+                    animation: "blink 1s infinite",
+                    color: "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Urgent: CP1007 Client F renewal due today
+                </span>
+              </div>
+              <div style={{ marginBottom: "8px" }}>
+                Follow up on outstanding documents for CP1003
+              </div>
+              <div>
+                Call scheduled with Marsh broker at 3:00 PM
+              </div>
+            </div>
           </div>
 
           {/* This week section */}
@@ -250,18 +272,49 @@ const ActivityBox = () => {
             <Text strong style={{ fontFamily: "inherit" }}>
               This week
             </Text>
-            <TextArea
+            <div
               style={{
                 border: "1px solid #d9d9d9",
-                height: 80,
+                borderRadius: "2px",
+                padding: "8px 12px",
                 marginTop: 8,
+                height: 110,
                 width: "100%",
-                fontFamily: "inherit", // Use the same font as the rest of the app
+                overflowY: "auto",
+                fontFamily: "inherit",
+                backgroundColor: "#fff",
               }}
-            ></TextArea>
+            >
+              <div style={{ marginBottom: "8px" }}>
+                <span
+                  style={{
+                    animation: "blink 1s infinite",
+                    color: "red",
+                    fontWeight: "bold",
+                  }}
+                >
+                  Critical: Property inspection for Skyline due Wed
+                </span>
+              </div>
+              <div style={{ marginBottom: "8px" }}>
+                Team meeting on Thu at 10:00 AM
+              </div>
+              <div>
+                Complete quarterly reports by Friday
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      {/* Add the CSS for blinking effect */}
+      <style jsx>{`
+        @keyframes blink {
+          0% { opacity: 1; }
+          50% { opacity: 0.5; }
+          100% { opacity: 1; }
+        }
+      `}</style>
     </Card>
   );
 };
@@ -384,7 +437,7 @@ const DashboardAdmin = () => {
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
   const searchInput = useRef(null);
-  
+
   // State for selected rows
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   // State for action tabs visibility
@@ -451,9 +504,9 @@ const DashboardAdmin = () => {
     onFilter: (value, record) =>
       record[dataIndex]
         ? record[dataIndex]
-            .toString()
-            .toLowerCase()
-            .includes(value.toLowerCase())
+          .toString()
+          .toLowerCase()
+          .includes(value.toLowerCase())
         : "",
     onFilterDropdownOpenChange: (visible) => {
       if (visible) {
@@ -472,88 +525,9 @@ const DashboardAdmin = () => {
         text
       ),
   });
-  const policiesChartRef = useRef(null);
-  const submissionsChartRef = useRef(null);
-  const donutChartRef = useRef(null);
-  const createDonutChart = () => {
-    const ctx = donutChartRef.current.getContext("2d");
-    donutChartRef.current.chartInstance = new Chart(ctx, {
-      type: "doughnut",
-      data: {
-        labels: ["General Liability", "Commercial Property"],
-        datasets: [
-          {
-            data: [3000000, 7000000], // Updated to millions
-            backgroundColor: ["#FF69B4", "#36a2eb"],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                // Format the numbers with commas and 'M' suffix
-                const value = (context.raw / 1000000).toFixed(1) + "M";
-                return `${context.label}: $${value}`;
-              },
-            },
-          },
-        },
-      },
-    });
-  };
 
-  useEffect(() => {
-    createBarChart(
-      policiesChartRef,
-      "Policies Issued",
-      ["Commercial Property", "General Liability"],
-      [30, 25, 40, 35]
-    );
-    createBarChart(
-      submissionsChartRef,
-      "Submission in Progress",
-      ["Commercial Property", "General Liability"],
-      [15, 18, 22, 20]
-    );
 
-    return () => {
-      [policiesChartRef, submissionsChartRef, donutChartRef].forEach((ref) => {
-        if (ref.current) ref.current.chartInstance.destroy();
-      });
-    };
-  }, []);
-  useEffect(() => {
-    createDonutChart();
-    return () => {
-      if (donutChartRef.current?.chartInstance) {
-        donutChartRef.current.chartInstance.destroy();
-      }
-    };
-  }, []);
 
-  const createBarChart = (chartRef, title, labels, data) => {
-    const ctx = chartRef.current.getContext("2d");
-    chartRef.current.chartInstance = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          { label: title, data, backgroundColor: ["#36A2EB", "#ff69b4"] },
-        ],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: { y: { beginAtZero: true } },
-      },
-    });
-  };
 
   const handleRowClick = (record) => {
     navigate("/accountdashboard", { state: { account: record } });
@@ -663,14 +637,14 @@ const DashboardAdmin = () => {
                 priority === "High"
                   ? "#fff1f0"
                   : priority === "Medium"
-                  ? "#fffbe6"
-                  : "#f6ffed",
+                    ? "#fffbe6"
+                    : "#f6ffed",
               color:
                 priority === "High"
                   ? "#cf1322"
                   : priority === "Medium"
-                  ? "#d4b106"
-                  : "#389e0d",
+                    ? "#d4b106"
+                    : "#389e0d",
               cursor: "pointer",
               fontFamily: "inherit", // Use the same font as the rest of the app
             }}
@@ -689,133 +663,66 @@ const DashboardAdmin = () => {
   ];
 
   return (
-    <div 
-      style={{ 
+    <div
+      style={{
         padding: "10px",
         fontFamily: "inherit" // Use the same font as the rest of the app
       }}
     >
       <Tabs defaultActiveKey="1">
-        <TabPane tab="My Dashboard" key="1">
-          <div className="content">
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "flex-start",
-                gap: "5px",
-                flexWrap: "nowrap",
-              }}
-            >
-              <div
-                className="chart-container"
-                style={{ flex: 1, flexDirection: "column" }}
-              >
-                <div
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    marginBottom: "5px",
-                    fontFamily: "inherit", // Use the same font as the rest of the app
-                  }}
-                >
-                  Policies Issued(YTD)
+        <TabPane tab="My Task" key="1">
+          <Row gutter={16} style={{ marginTop: "16px" }}>
+            <Col xs={24} sm={24} md={18} lg={18} xl={18}>
+              <MyTableComponent
+                columns={columns}
+                dataSource={data.myassignedcases}
+                handleRowClick={handleRowClick}
+                handleChange={handleChange}
+                rowSelection={rowSelection}
+                style={{ fontFamily: "Inter" }}
+              />
+
+              {/* Action Tabs - visible only when rows are selected */}
+              {showActionTabs && (
+                <div style={{ marginTop: "20px" }}>
+                  <AntTabs
+                    activeKey={activeActionTab}
+                    onChange={setActiveActionTab}
+                    type="card"
+                  >
+                    <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="1">
+                      <TaskHistoryTab />
+                    </AntTabs.TabPane>
+                    <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="2">
+                      <QuickLinksTab />
+                    </AntTabs.TabPane>
+                    <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="3">
+                      <ReportsTab />
+                    </AntTabs.TabPane>
+                  </AntTabs>
                 </div>
-                <canvas
-                  ref={policiesChartRef}
-                  style={{ maxHeight: "200px", width: "100%" }}
-                ></canvas>
-              </div>
-              <div
-                className="chart-container"
-                style={{ flex: 1, flexDirection: "column" }}
+              )}
+            </Col>
+
+            <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
+              <Card
+                style={{
+                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)",
+                  marginTop: "13px",
+                  height: "410px",
+                  width: "320px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
               >
-                <div
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    marginBottom: "5px",
-                    fontFamily: "inherit", // Use the same font as the rest of the app
-                  }}
-                >
-                  Submission in Progress(YTD)
-                </div>
-                <canvas
-                  ref={submissionsChartRef}
-                  style={{ maxHeight: "200px", width: "100%" }}
-                ></canvas>
-              </div>
-              <div
-                className="chart-container"
-                style={{ flex: 1, flexDirection: "column" }}
-              >
-                <div
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    marginBottom: "5px",
-                    fontFamily: "inherit", // Use the same font as the rest of the app
-                  }}
-                >
-                  Premium by LOB(Quotes)
-                </div>
-                <canvas
-                  ref={donutChartRef}
-                  style={{ maxHeight: "200px", width: "100%" }}
-                ></canvas>
-              </div>
-            </div>
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="My Task" key="1">
-                <Row gutter={16} style={{ marginTop: "16px" }}>
-                  <Col xs={24} sm={24} md={18} lg={18} xl={18}>
-                    <MyTableComponent
-                      columns={columns}
-                      dataSource={data.myassignedcases}
-                      handleRowClick={handleRowClick}
-                      handleChange={handleChange}
-                      rowSelection={rowSelection}
-                      style={{fontFamily: "Inter"}}
-                    />
-                    
-                    {/* Action Tabs - visible only when rows are selected */}
-                    {showActionTabs && (
-                      <div style={{ marginTop: "20px" }}>
-                        <AntTabs 
-                          activeKey={activeActionTab} 
-                          onChange={setActiveActionTab}
-                          type="card"
-                        >
-                          <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="1">
-                            <TaskHistoryTab />
-                          </AntTabs.TabPane>
-                          <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="2">
-                            <QuickLinksTab />
-                          </AntTabs.TabPane>
-                          
-                          <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="3">
-                            <ReportsTab />
-                          </AntTabs.TabPane>
-                          
-                          
-                        </AntTabs>
-                      </div>
-                    )}
-                  </Col>
-                  <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
-                    <Card style={{ boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)", marginTop:"13px", height:"348px", width:"320px"}}>
-                      <ActivityBox />
-                    </Card>
-                  </Col>
-                </Row>
-              </TabPane>
-             
-            </Tabs>
-          </div>
-        </TabPane>
-        <TabPane tab="My Portfolio" key="2">
-          <PortfolioInsights />
+                <ActivityBox />
+              </Card>
+            </Col>
+          </Row>
         </TabPane>
       </Tabs>
+
     </div>
   );
 };
