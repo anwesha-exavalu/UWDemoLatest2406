@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, DatePicker, Button, Typography, Space, Row, Col, Table,Select } from 'antd';
 import { FileTextOutlined, CopyOutlined, PrinterOutlined } from '@ant-design/icons';
+import {
+    Tabletitle,
+  } from "../styles/components/TableComponent";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
@@ -207,15 +210,15 @@ const Report = () => {
             </div>
             <Card
                 style={{
-                    maxWidth: 800,
+                    maxWidth: 900,
                     margin: '0 auto',
                     borderRadius: '8px',
-                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)'
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
                 }}
             >
-                <Title level={4} style={{ textAlign: 'center', marginBottom: 20, fontSize: '1.2em' }}>
+                <Tabletitle level={4} style={{ textAlign: 'center', marginBottom: 20, fontSize: '1.2em' , borderRadius: "4px"}}>
                     Create Renewal Report
-                </Title>
+                </Tabletitle>
 
                 <Space direction="vertical" style={{ width: '100%' }}>
                     <Row gutter={16}>

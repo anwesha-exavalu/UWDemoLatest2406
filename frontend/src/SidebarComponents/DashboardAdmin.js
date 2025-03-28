@@ -11,6 +11,9 @@ import { Popover } from "antd";
 import PriorityPopup from "./PriorityPopup";
 import { TableContainer } from "../styles/components/TableComponent";
 import useMetaData from "../context/metaData";
+import {
+  Tabletitle,
+} from "../styles/components/TableComponent";
 
 
 const { TabPane } = Tabs;
@@ -34,9 +37,10 @@ const QuickLinksTab = () => {
         marginTop: "16px"
       }}
     >
+       <Tabletitle style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px",borderRadius:"4px" }}>Quick Links</Tabletitle>
       <List
         size="small"
-        header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Quick Links</div>}
+    
         dataSource={items}
         renderItem={(item) => (
           <List.Item
@@ -103,9 +107,10 @@ const ReportsTab = () => {
         marginTop: "16px"
       }}
     >
+       <Tabletitle style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px",borderRadius:"4px" }}>Reports</Tabletitle>
       <List
         size="small"
-        header={<div style={{ fontWeight: "bold", textAlign: "center" }}>Reports</div>}
+       
         dataSource={items}
         renderItem={(item) => (
           <List.Item
@@ -143,7 +148,7 @@ const TaskHistoryTab = () => {
       }}
     >
       <div style={{ padding: "10px 0" }}>
-        <div style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px" }}>Task History</div>
+        <Tabletitle style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px",borderRadius:"4px" }}>Task History</Tabletitle>
         <div style={{ backgroundColor: "#f5f5f5", padding: "10px", marginBottom: "10px" }}>
           Task 1 completed on 15-03-2025
         </div>
