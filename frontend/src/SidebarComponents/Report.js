@@ -1,25 +1,42 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Card, DatePicker, Button, Typography, Space, Row, Col, Table,Select } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, DatePicker, Button, Typography, Space, Row, Col, Table, Select } from 'antd';
 import { FileTextOutlined, CopyOutlined, PrinterOutlined } from '@ant-design/icons';
 import {
     Tabletitle,
-  } from "../styles/components/TableComponent";
+} from "../styles/components/TableComponent";
 
 const { Title, Text } = Typography;
 const { Option } = Select;
 
-const Report = () => {
-    const navigate = useNavigate();
+const Report = ({ reportType, onClose }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [reportGenerated, setReportGenerated] = useState(false);
     const [selectedLOB, setSelectedLOB] = useState(null);
     const [selectedAgency, setSelectedAgency] = useState('All');
-    
-    const handleGoBack = () => {
-        navigate('/dashboardAdmin');
-    };
+    const [reportTitle, setReportTitle] = useState('');
+    const [reportDescription, setReportDescription] = useState('');
+
+    useEffect(() => {
+        // Set report details based on selected report type
+        switch(reportType) {
+            case 'renewalReport':
+                setReportTitle('Renewal Report');
+                setReportDescription('View details of policies due for renewal');
+                break;
+            case 'cancellationReport':
+                setReportTitle('Cancellation Report');
+                setReportDescription('Overview of policy cancellations');
+                break;
+            case 'customReport':
+                setReportTitle('Custom Report');
+                setReportDescription('Generate a customized report');
+                break;
+            default:
+                setReportTitle('Report');
+                setReportDescription('Generate a report');
+        }
+    }, [reportType]);
 
     const handleGenerate = () => {
         if (startDate && endDate) {
@@ -28,6 +45,7 @@ const Report = () => {
             alert('Please select both start and end dates');
         }
     };
+
 
     // Columns for the Expiring Policies Table
     const columns = [
@@ -126,7 +144,7 @@ const Report = () => {
             nfipQuotAmol: '$0.0'
         }
     ];
-
+    
     const renderReportDetails = () => {
         if (!reportGenerated) return null;
 
@@ -134,55 +152,124 @@ const Report = () => {
             <>
                 <Card
                     type="inner"
-                    title="Expiring Report"
+                    title={`${reportTitle} Details`}
                     style={{ marginTop: 16 }}
                 >
-                    <Row>
-                        <Col span={12}>
-                            <Text>Line of Business</Text>
-                            <div>{selectedLOB}</div>
-                        </Col>
-                        <Col span={12}>
-                            <Text>Agency</Text>
-                            <div>{selectedAgency}</div>
-                        </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                        <Col span={12}>
-                            <Text>Begin Date</Text>
-                            <div>{startDate.format('MM/DD/YYYY')}</div>
-                        </Col>
-                        <Col span={12}>
-                            <Text>End Date</Text>
-                            <div>{endDate.format('MM/DD/YYYY')}</div>
-                        </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                        <Col span={12}>
-                            <Text>Include Renewal Policy</Text>
-                            <div>N</div>
-                        </Col>
-                        <Col span={12}>
-                            <Text>Agency Name</Text>
-                            <div>Skyline Property</div>
-                        </Col>
-                    </Row>
-                    <Row style={{ marginTop: 16 }}>
-                        <Col span={12}>
-                            <Text>Agency #</Text>
-                            <div>733299</div>
-                        </Col>
-                        <Col span={12}>
-                            <Text>Total Records</Text>
-                            <div>29</div>
-                        </Col>
-                    </Row>
+                     <div style={{
+            border: '1px solid #e0e0e0',
+            borderRadius: '4px',
+            padding: '16px',
+            marginTop: '16px',
+            backgroundColor: 'white'
+        }}>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 1fr',
+                gap: '16px'
+            }}>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Line of Business</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>{selectedLOB}</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Agency</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>{selectedAgency}</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Begin Date</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>{startDate.format('MM/DD/YYYY')}</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>End Date</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>{endDate.format('MM/DD/YYYY')}</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Include Renewal Policy</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>N</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Agency Name</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>Skyline Property</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Agency #</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>733299</div>
+                </div>
+                <div>
+                    <div style={{
+                        color: '#8c8c8c',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                    }}>Total Records</div>
+                    <div style={{
+                        color: '#262626',
+                        fontWeight: '500',
+                        fontSize: '14px'
+                    }}>29</div>
+                </div>
+            </div>
+        </div>
                 </Card>
 
-                {/* Existing Expiring Policies Card remains the same */}
                 <Card
                     type="inner"
-                    title="Expiring Policies"
+                    title={`${reportTitle} Results`}
                     style={{ marginTop: 16 }}
                 >
                     <Table 
@@ -196,17 +283,20 @@ const Report = () => {
         );
     };
 
+
     return (
         <div>
-            <div style={{
-                textAlign: 'right',
-                marginBottom: 16,
-                color: '#1890ff',
-                cursor: 'pointer',
-                fontSize: '0.9em'
-            }}
-                onClick={handleGoBack}>
-                Previous page
+            <div 
+                style={{
+                    textAlign: 'right',
+                    marginBottom: 16,
+                    color: '#1890ff',
+                    cursor: 'pointer',
+                    fontSize: '0.9em'
+                }}
+                onClick={onClose}
+            >
+                Back to Dashboard
             </div>
             <Card
                 style={{
@@ -216,9 +306,20 @@ const Report = () => {
                     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
                 }}
             >
-                <Tabletitle level={4} style={{ textAlign: 'center', marginBottom: 20, fontSize: '1.2em' , borderRadius: "4px"}}>
-                    Create Renewal Report
+                <Tabletitle 
+                    level={4} 
+                    style={{ 
+                        textAlign: 'center', 
+                        marginBottom: 20, 
+                        fontSize: '1.2em', 
+                        borderRadius: "4px"
+                    }}
+                >
+                    {reportTitle}
                 </Tabletitle>
+                <Text style={{ display: 'block', textAlign: 'center', marginBottom: 20 }}>
+                    {reportDescription}
+                </Text>
 
                 <Space direction="vertical" style={{ width: '100%' }}>
                     <Row gutter={16}>
@@ -281,7 +382,7 @@ const Report = () => {
                         }}
                         onClick={handleGenerate}
                     >
-                        Generate
+                        Generate Report
                     </Button>
 
                     {renderReportDetails()}

@@ -1,11 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState  } from "react";
 import { useNavigate } from "react-router-dom";
 import { Chart } from "chart.js/auto";
 import { Table, Button, Space, Input, Typography, Card, Row, Col, Modal, List, Divider, Checkbox, Tabs as AntTabs } from "antd";
 import { SearchOutlined, MailOutlined, FileTextOutlined, HistoryOutlined } from "@ant-design/icons";
 import Highlighter from "react-highlight-words";
 import "./Dashboard.css";
-// import "./Table.css";
 import { Tabs } from "antd";
 import { Popover } from "antd";
 import PriorityPopup from "./PriorityPopup";
@@ -16,8 +15,11 @@ import {
 } from "../styles/components/TableComponent";
 
 
+import Report from "./Report";
+
 const { TabPane } = Tabs;
 const { Title, Text } = Typography;
+
 
 // Quick Links Component for Tab
 const QuickLinksTab = () => {
@@ -92,11 +94,11 @@ const QuickLinksTab = () => {
 };
 
 // Reports Tab Component
-const ReportsTab = () => {
+const ReportsTab = ({ onReportSelect }) => {
   const items = [
-    { label: "Create renewal report", link: "/report" },
-    { label: "Cancellation report", link: "/cancellation-report" },
-    { label: "Custom report", link: "/custom-report" }
+    { label: "Create renewal report", reportType: "renewalReport" },
+    { label: "Cancellation report", reportType: "cancellationReport" },
+    { label: "Custom report", reportType: "customReport" }
   ];
 
   return (
@@ -110,21 +112,19 @@ const ReportsTab = () => {
        <Tabletitle style={{ fontWeight: "bold", textAlign: "center", marginBottom: "10px",borderRadius:"4px" }}>Reports</Tabletitle>
       <List
         size="small"
-       
         dataSource={items}
         renderItem={(item) => (
           <List.Item
             style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
+            onClick={() => onReportSelect(item.reportType)}
           >
             <a 
-              href={item.link}
-              target="_blank"
-              rel="noopener noreferrer"
               style={{
                 textDecoration: "none",
                 color: "#1890ff",
                 display: "block",
-                width: "100%"
+                width: "100%",
+                cursor: "pointer"
               }}
             >
               {item.label}
@@ -451,14 +451,13 @@ const DashboardAdmin = () => {
   const [sortedInfo, setSortedInfo] = useState({});
   const [searchText, setSearchText] = useState("");
   const [searchedColumn, setSearchedColumn] = useState("");
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [showActionTabs, setShowActionTabs] = useState(false);
+  const [activeActionTab, setActiveActionTab] = useState("1");
+  const [selectedReport, setSelectedReport] = useState(null);
   const searchInput = useRef(null);
 
-  // State for selected rows
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-  // State for action tabs visibility
-  const [showActionTabs, setShowActionTabs] = useState(false);
-  // State for active action tab
-  const [activeActionTab, setActiveActionTab] = useState("1");
+  
 
   const handleSearch = (selectedKeys, confirm, dataIndex) => {
     confirm();
@@ -542,6 +541,13 @@ const DashboardAdmin = () => {
   });
 
 
+  const handleReportSelect = (reportType) => {
+    setSelectedReport(reportType);
+  };
+
+  const handleCloseReport = () => {
+    setSelectedReport(null);
+  };
 
 
   const handleRowClick = (record) => {
@@ -566,7 +572,7 @@ const DashboardAdmin = () => {
 
   const columns = [
     {
-      title: "Submission Id",
+      title: "Task Id",
       dataIndex: "id",
       key: "id",
       ...getColumnSearchProps("id"),
@@ -681,63 +687,68 @@ const DashboardAdmin = () => {
     <div
       style={{
         padding: "10px",
-        fontFamily: "inherit" // Use the same font as the rest of the app
+        fontFamily: "inherit"
       }}
     >
       <Tabs defaultActiveKey="1">
         <TabPane tab="My Task" key="1">
-          <Row gutter={16} style={{ marginTop: "16px" }}>
-            <Col xs={24} sm={24} md={18} lg={18} xl={18}>
-              <MyTableComponent
-                columns={columns}
-                dataSource={data.myassignedcases}
-                handleRowClick={handleRowClick}
-                handleChange={handleChange}
-                rowSelection={rowSelection}
-                style={{ fontFamily: "Inter" }}
-              />
+          {!selectedReport ? (
+            <Row gutter={16} style={{ marginTop: "16px" }}>
+              <Col xs={24} sm={24} md={18} lg={18} xl={18}>
+                <MyTableComponent
+                  columns={columns}
+                  dataSource={data.myassignedcases}
+                  handleRowClick={handleRowClick}
+                  handleChange={handleChange}
+                  rowSelection={rowSelection}
+                  style={{ fontFamily: "Inter" }}
+                />
 
-              {/* Action Tabs - visible only when rows are selected */}
-              {showActionTabs && (
-                <div style={{ marginTop: "20px" }}>
-                  <AntTabs
-                    activeKey={activeActionTab}
-                    onChange={setActiveActionTab}
-                    type="card"
-                  >
-                    <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="1">
-                      <TaskHistoryTab />
-                    </AntTabs.TabPane>
-                    <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="2">
-                      <QuickLinksTab />
-                    </AntTabs.TabPane>
-                    <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="3">
-                      <ReportsTab />
-                    </AntTabs.TabPane>
-                  </AntTabs>
-                </div>
-              )}
-            </Col>
+                {showActionTabs && (
+                  <div style={{ marginTop: "20px" }}>
+                    <AntTabs
+                      activeKey={activeActionTab}
+                      onChange={setActiveActionTab}
+                      type="card"
+                    >
+                      <AntTabs.TabPane tab={<span><HistoryOutlined /> Task History</span>} key="1">
+                        <TaskHistoryTab />
+                      </AntTabs.TabPane>
+                      <AntTabs.TabPane tab={<span><MailOutlined /> Quick Links</span>} key="2">
+                        <QuickLinksTab />
+                      </AntTabs.TabPane>
+                      <AntTabs.TabPane tab={<span><FileTextOutlined /> Reports</span>} key="3">
+                        <ReportsTab onReportSelect={handleReportSelect} />
+                      </AntTabs.TabPane>
+                    </AntTabs>
+                  </div>
+                )}
+              </Col>
 
-            <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
-              <Card
-                style={{
-                  boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)",
-                  marginTop: "13px",
-                  height: "410px",
-                  width: "320px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <ActivityBox />
-              </Card>
-            </Col>
-          </Row>
+              <Col xs={24} sm={24} md={6} lg={6} xl={6} style={{ marginTop: { xs: '16px', sm: '16px', md: '0' } }}>
+                <Card
+                  style={{
+                    boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.05)",
+                    marginTop: "13px",
+                    height: "410px",
+                    width: "320px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <ActivityBox />
+                </Card>
+              </Col>
+            </Row>
+          ) : (
+            <Report 
+              reportType={selectedReport} 
+              onClose={handleCloseReport} 
+            />
+          )}
         </TabPane>
       </Tabs>
-
     </div>
   );
 };
