@@ -90,9 +90,9 @@ const QuickLinksTab = () => {
 // Reports Tab Component
 const ReportsTab = () => {
   const items = [
-    "Create renewal report",
-    "Cancellation report",
-    "Custom report"
+    { label: "Create renewal report", link: "/report" },
+    { label: "Cancellation report", link: "/cancellation-report" },
+    { label: "Custom report", link: "/custom-report" }
   ];
 
   return (
@@ -110,17 +110,27 @@ const ReportsTab = () => {
         renderItem={(item) => (
           <List.Item
             style={{ borderBottom: "1px solid #f0f0f0", padding: "10px 0" }}
-            onClick={() => {
-              console.log(`${item} clicked`);
-            }}
           >
-            <div style={{ cursor: "pointer", width: "100%" }}>{item}</div>
+            <a 
+              href={item.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                textDecoration: "none",
+                color: "#1890ff",
+                display: "block",
+                width: "100%"
+              }}
+            >
+              {item.label}
+            </a>
           </List.Item>
         )}
       />
     </Card>
   );
 };
+
 
 // Task History Tab Component
 const TaskHistoryTab = () => {

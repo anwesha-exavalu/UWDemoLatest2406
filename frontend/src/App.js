@@ -16,6 +16,7 @@ import AccountInfo from './SidebarComponents/AccountInfo';
 import AccountDashboard from './SidebarComponents/AccountDashboard';
 import Login from './layout/Login';
 import DashboardAdmin from './SidebarComponents/DashboardAdmin';
+import Report from './SidebarComponents/Report';
 
 
 const { Sider, Content, Footer } = Layout;
@@ -25,19 +26,19 @@ const MyMenu = ({ collapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [userRole, setUserRole] = useState('');
-  
+
   // This effect loads the role and ensures default view
   useEffect(() => {
     const role = localStorage.getItem('userRole');
     setUserRole(role);
-    
+
     // Redirect to first appropriate page based on role if on dashboard
     if (location.pathname === '/dashboard') {
       if (role === 'admin') {
         navigate('/dashboardAdmin');
       }
     }
-    
+
     // Redirect to first submenu if on admin root path
     if (role === 'admin' && location.pathname === '/') {
       navigate('/dashboardAdmin');
@@ -46,18 +47,18 @@ const MyMenu = ({ collapsed }) => {
 
   // Create a key lookup based on pathname
   const currentPath = location.pathname;
-  
+
   // Determine which key should be selected based on current path
   let selectedKeys = [];
   let openKeys = [];
-  
+
   if (userRole === 'underwriter') {
     if (currentPath === '/dashboard') selectedKeys = ['1'];
     else if (currentPath === '/accountdashboard') selectedKeys = ['2'];
     else if (currentPath === '/accountinfo') selectedKeys = ['3'];
     else if (currentPath === '/createsubmission') selectedKeys = ['4'];
   } else if (userRole === 'admin') {
-    if (currentPath === '/dashboardAdmin') 
+    if (currentPath === '/dashboardAdmin')
       selectedKeys = ['5'];
     else if (currentPath === '/accountdashboard') selectedKeys = ['6'];
     else if (currentPath === '/accountinfo') selectedKeys = ['7'];
@@ -77,17 +78,17 @@ const MyMenu = ({ collapsed }) => {
       {userRole === 'underwriter' && (
         <>
           <Menu.Item key="1" icon={<HomeOutlined />} title={"Dashboard"}>
-        {!collapsed ? <Link to="/dashboard" style={{ textDecoration: 'none' }}>Dashboard</Link> : <Link to="/dashboard" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-      <Menu.Item key="2" icon={<InfoCircleOutlined />} title={"Account Information"}>
-        {!collapsed ? <Link to="/accountdashboard" style={{ textDecoration: 'none' }}>Account Information</Link> : <Link to="/accountdashboard" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-      <Menu.Item key="3" icon={<FileTextOutlined />} title={"Account Details"}>
-        {!collapsed ? <Link to="/accountinfo" style={{ textDecoration: 'none' }}>Account Details</Link> : <Link to="/accountinfo" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-      <Menu.Item key="4" icon={<EditFilled />} title={"Create Submission"}>
-        {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
+            {!collapsed ? <Link to="/dashboard" style={{ textDecoration: 'none' }}>Dashboard</Link> : <Link to="/dashboard" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+          <Menu.Item key="2" icon={<InfoCircleOutlined />} title={"Account Information"}>
+            {!collapsed ? <Link to="/accountdashboard" style={{ textDecoration: 'none' }}>Account Information</Link> : <Link to="/accountdashboard" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+          <Menu.Item key="3" icon={<FileTextOutlined />} title={"Account Details"}>
+            {!collapsed ? <Link to="/accountinfo" style={{ textDecoration: 'none' }}>Account Details</Link> : <Link to="/accountinfo" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+          <Menu.Item key="4" icon={<EditFilled />} title={"Create Submission"}>
+            {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
 
         </>
       )}
@@ -95,23 +96,23 @@ const MyMenu = ({ collapsed }) => {
       {/* Show these items only for admin role */}
       {userRole === 'admin' && (
         <>
-        
+
           <Menu.Item key="5" icon={<HomeOutlined />}>
-            {!collapsed ? 
-              <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }}>Dashboard </Link> : 
+            {!collapsed ?
+              <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }}>My Workbench</Link> :
               <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }} />
             }
           </Menu.Item>
           <Menu.Item key="6" icon={<InfoCircleOutlined />} title={"Account Information"}>
-        {!collapsed ? <Link to="/accountdashboard" style={{ textDecoration: 'none' }}>Account Information</Link> : <Link to="/accountdashboard" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-      <Menu.Item key="7" icon={<FileTextOutlined />} title={"Account Details"}>
-        {!collapsed ? <Link to="/accountinfo" style={{ textDecoration: 'none' }}>Account Details</Link> : <Link to="/accountinfo" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-      <Menu.Item key="8" icon={<EditFilled />} title={"Create Submission"}>
-        {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }}/>}
-      </Menu.Item>
-        
+            {!collapsed ? <Link to="/accountdashboard" style={{ textDecoration: 'none' }}>Account Information</Link> : <Link to="/accountdashboard" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+          <Menu.Item key="7" icon={<FileTextOutlined />} title={"Account Details"}>
+            {!collapsed ? <Link to="/accountinfo" style={{ textDecoration: 'none' }}>Account Details</Link> : <Link to="/accountinfo" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+          <Menu.Item key="8" icon={<EditFilled />} title={"Create Submission"}>
+            {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }} />}
+          </Menu.Item>
+
         </>
       )}
     </Menu>
@@ -134,12 +135,12 @@ const AppLayout = () => {
     // Get the user role from localStorage
     const role = localStorage.getItem('userRole');
     setUserRole(role);
-    
+
     // If user is on the root path and already logged in as admin, redirect to dashboardAdmin
     if (role === 'admin' && location.pathname === '/dashboard') {
       navigate('/dashboardAdmin');
     }
-    
+
     // Add custom CSS to fix the submenu overflow issue
     const style = document.createElement('style');
     style.innerHTML = `
@@ -174,7 +175,7 @@ const AppLayout = () => {
       }
     `;
     document.head.appendChild(style);
-    
+
     return () => {
       document.head.removeChild(style);
     };
@@ -187,9 +188,9 @@ const AppLayout = () => {
           trigger={null}
           collapsible
           collapsed={collapsed}
-          style={{ 
-            backgroundColor: '#2457d3', 
-            display: 'flex', 
+          style={{
+            backgroundColor: '#2457d3',
+            display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             overflow: 'hidden'
@@ -231,7 +232,7 @@ const AppLayout = () => {
             borderRadius: borderRadiusLG,
           }}
         >
-           <Routes>
+          <Routes>
             <Route exact path="/" element={<Login />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="createsubmission" element={<Sublob2 />} />
@@ -241,10 +242,11 @@ const AppLayout = () => {
             <Route path="documentscreen" element={<DocumentScreen />} />
             <Route path="clearancescreen" element={<ClearanceScreen />} />
             <Route path="searchinsured" element={<SearchInsured />} />
-            <Route path="dashboardAdmin" element={<DashboardAdmin/>} />
+            <Route path="dashboardAdmin" element={<DashboardAdmin />} />
+            <Route path="report" element={<Report />} />
           </Routes>
 
-         
+
         </Content>
         {!isLoginPage && (
           <Footer style={{ textAlign: 'center' }}>

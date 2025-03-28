@@ -53,7 +53,7 @@ const Login = () => {
                   onChange={() => handleRoleSelection("admin")}
                   className="radio-input"
                 />
-                <span className="radio-text">Admin Login</span>
+                <span className="radio-text">Operator Login</span>
               </label>
             </div>
           </div>
