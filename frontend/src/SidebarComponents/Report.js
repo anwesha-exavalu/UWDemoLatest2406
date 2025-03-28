@@ -227,7 +227,7 @@ const Report = ({ reportType, onClose }) => {
                         fontSize: '14px'
                     }}>N</div>
                 </div>
-                <div>
+                {/* <div>
                     <div style={{
                         color: '#8c8c8c',
                         fontSize: '12px',
@@ -238,7 +238,7 @@ const Report = ({ reportType, onClose }) => {
                         fontWeight: '500',
                         fontSize: '14px'
                     }}>Skyline Property</div>
-                </div>
+                </div> */}
                 <div>
                     <div style={{
                         color: '#8c8c8c',
@@ -261,7 +261,7 @@ const Report = ({ reportType, onClose }) => {
                         color: '#262626',
                         fontWeight: '500',
                         fontSize: '14px'
-                    }}>29</div>
+                    }}>3</div>
                 </div>
             </div>
         </div>
