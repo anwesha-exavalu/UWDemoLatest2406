@@ -3,6 +3,7 @@ import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
 import { Button, Card, Col, Modal, Row, Input, DatePicker, Layout, Collapse } from 'antd';
 import Documents from '../../layout/Documents'
+import LossRun from "./LossRun";
 const { Panel } = Collapse;
 
 
@@ -268,22 +269,22 @@ const LossInfo = ({ onNext }) => {
   };
 
   // Function to calculate the sum of total losses
-  const calculateTotalLossesSum = () => {
-    return policies.reduce((sum, policy) => {
-      const losses = parseFloat(policy.totalLosses) || 0;
-      return sum + losses;
-    }, 0).toFixed(2);  // Fixed to two decimal places
-  };
-  const [selectedLossSummary, setSelectedLossSummary] = useState(null);
-  const handleCheckboxChangspolicy = (loss) => {
-    setSelectedLossSummary(selectedLossSummary?.policyYear === loss.policyYear ? null : loss);
-  };
-  const handleInputChangeManual = (field, value) => {
-    setNewLossDetail((prevDetails) => ({
-      ...prevDetails,
-      [field]: value,
-    }));
-  };
+  // const calculateTotalLossesSum = () => {
+  //   return policies.reduce((sum, policy) => {
+  //     const losses = parseFloat(policy.totalLosses) || 0;
+  //     return sum + losses;
+  //   }, 0).toFixed(2);  // Fixed to two decimal places
+  // };
+  // const [selectedLossSummary, setSelectedLossSummary] = useState(null);
+  // const handleCheckboxChangspolicy = (loss) => {
+  //   setSelectedLossSummary(selectedLossSummary?.policyYear === loss.policyYear ? null : loss);
+  // };
+  // const handleInputChangeManual = (field, value) => {
+  //   setNewLossDetail((prevDetails) => ({
+  //     ...prevDetails,
+  //     [field]: value,
+  //   }));
+  // };
   const [errors, setErrors] = useState({
     reportedDate: '',
     effectiveDate: '',
@@ -329,6 +330,12 @@ const LossInfo = ({ onNext }) => {
                 onClick={(event) => openMainTab(event, "Claims")}
               >
                 Loss Summary
+              </Button>
+              <Button
+                className={`tablinks ${activeTab === "Lossruns" ? "active" : ""}`}
+                onClick={(event) => openMainTab(event, "Lossruns")}
+              >
+                Loss Runs - AI Insights
               </Button>
             </div>
 
@@ -837,6 +844,12 @@ const LossInfo = ({ onNext }) => {
                       </Row>
                     </>)}
                 </div>
+              </div>
+            )}
+
+             {activeTab === "Lossruns" && (
+              <div id="Lossruns" className="tabcontent" style={{ marginTop: "20px", marginBottom: "30px" }} >
+                <LossRun/>
               </div>
             )}
           </div>

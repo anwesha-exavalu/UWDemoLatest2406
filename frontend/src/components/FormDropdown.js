@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Select } from 'antd';
-import {FormSelect} from "../styles/index";
+import {FormSelect} from "../styles/components/FormControl/index";
 
 const { Option } = Select;
 

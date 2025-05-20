@@ -11,7 +11,7 @@ import {
   AutoComplete,
 } from "antd";
 import FormInput from "../components/FormInput";
-import DropdownSelect from "../components/FormControl/DropdownSelect";
+import DropdownSelect from "../components/FormDropdown";
 import Documents from "../layout/RightSidebar";
 import {
   EditOutlined,
@@ -428,20 +428,10 @@ function CreateSubmission({ onNext }) {
                   </div>
 
                   <Row gutter={24}>
-                    {/* <Col span={6}>
-                                        <FormInput
-                                            label={<span style={{ fontSize: "15px" }}>Party ID</span>}
-                                            value={basicInfo.partyId}
-                                            required={true}
-                                            onChange={(e) => handleInputChange(e, "basicInfo", "partyId")}
-                                            disabled// Allow editing based on state
-                                        />
-                                    </Col> */}
-                    <Col span={6}>
+                  
+                  <Col xs={24} sm={12} md={8} lg={6}>
                       <FormInput
-                        label={
-                          <span style={{ fontSize: "15px" }}>Insured Name</span>
-                        }
+                        label="Insured Name"
                         value={basicInfo.orgName}
                         required={true}
                         onChange={(e) =>
@@ -450,42 +440,7 @@ function CreateSubmission({ onNext }) {
                         readOnly={!basicInfo.isEditing}
                       />
                     </Col>
-                    {/* <Col span={6}>
-                                        <FormInput
-                                            label={<span style={{ fontSize: "15px" }}>Insured Type</span>}
-                                            value={basicInfo.insuredType}
-                                            required={true}
-                                            onChange={(e) => handleInputChange(e, "basicInfo", "insuredType")}
-                                            readOnly={!basicInfo.isEditing} // Allow editing based on state
-                                        />
-                                    </Col>
-                                    <Col span={6}>
-                                        <FormInput
-                                            label={<span style={{ fontSize: "15px" }}>Insured First Name</span>}
-                                            value={basicInfo.firstName}
-                                            required={true}
-                                            onChange={(e) => handleInputChange(e, "basicInfo", "firstName")}
-                                            readOnly={!basicInfo.isEditing} // Allow editing based on state
-                                        />
-                                    </Col>
-                                    <Col span={6}>
-                                        <FormInput
-                                            label={<span style={{ fontSize: "15px" }}>Insured Middle Name</span>}
-                                            value={basicInfo.middleName}
-                                            required={true}
-                                            onChange={(e) => handleInputChange(e, "basicInfo", "middleName")}
-                                            readOnly={!basicInfo.isEditing} // Allow editing based on state
-                                        />
-                                    </Col>
-                                    <Col span={6}>
-                                        <FormInput
-                                            label={<span style={{ fontSize: "15px" }}>Insured Last Name</span>}
-                                            value={basicInfo.lastName}
-                                            required={true}
-                                            onChange={(e) => handleInputChange(e, "basicInfo", "lastName")}
-                                            readOnly={!basicInfo.isEditing} // Allow editing based on state
-                                        />
-                                    </Col>*/}
+                 
                     <Col xs={24} sm={12} md={8} lg={6} xl={6}>
                       <DropdownSelect
                         theme={theme}
@@ -516,15 +471,9 @@ function CreateSubmission({ onNext }) {
                       />
                     </Col>
 
-                    <Col span={6}>
+                    <Col xs={24} sm={12} md={8} lg={6}>
                       <FormInput
-                        label={
-                          <span
-                            style={{ fontSize: "15px", marginRight: "40px" }}
-                          >
-                            DBA
-                          </span>
-                        }
+                        label="DBA"
                         value={basicInfo.dba}
                         required={true}
                         onChange={(e) =>

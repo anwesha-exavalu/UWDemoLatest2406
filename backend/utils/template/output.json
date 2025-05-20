@@ -1,0 +1,44 @@
+{
+  "application_details": {
+    "insuredContactPerson": {
+      "countryCode": "",
+      "emailId": "john@KewGarden.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "middleName": "Michael",
+      "partyId": "",
+      "phoneNumber": "555-12-34567",
+      "website": "www.KewGardenProperty.com"
+    },
+    "insuredInfo": {
+      "businessActivity": "",
+      "dba": "",
+      "fein": "",
+      "naics": "",
+      "naicsDescription": "",
+      "orgName": "Kew Garden Property Inc",
+      "orgType": "",
+      "partyId": "",
+      "partyStatus": "",
+      "sicCode": "",
+      "sicDescription": "",
+      "tin": "",
+      "yearsInBusiness": "10"
+    },
+    "insuredMailingAddress": [
+      {
+        "addressLine1": "123-05 84th Avenue",
+        "addressLine2": "",
+        "city": "Kew Gardens",
+        "country": "USA",
+        "county": "",
+        "pinCode": "11415",
+        "riskLocation": "",
+        "state": "NY"
+      }
+    ]
+  },
+  "filename": "Filled-Aspyre-Metro.pdf",
+  "message": "Data Extracted Successfully.",
+  "submission_id": "c830c270-3a04-41b5-8f4f-08a1e73f2441"
+}
