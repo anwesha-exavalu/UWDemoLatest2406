@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./UWQuestions.css";
 import { Col, Row, Button, Popover } from "antd";
 // import Documents from "../../layout/RightSidebar";
@@ -6,7 +6,9 @@ import ModalDesign from "../../layout/Modal";
 import FormInput from "../../components/FormInput";
 import DropdownSelect from "../../components/FormDropdown";
 import PriorityPopup from "../../SidebarComponents/PriorityPopup";
-
+ 
+ 
+const PRODUCTIONURL = process.env.REACT_APP_UWQUESTIONS_URL;
 const uwquestionsData = [
   {
     question: "Is the applicant a subsidiary of another entity?",
@@ -42,7 +44,7 @@ const uwquestionsData = [
       "Any policy or coverage declined, canceled, or non-renewed during the prior 3 years?",
     response: "na",
     comment:
-      "Not applicable; no relevant history of declined or canceled policies.",
+      "can't be determined; no relevant history of declined or canceled policies.",
   },
   {
     question: "Any uncorrected fire code violations?",
@@ -58,28 +60,54 @@ const uwquestionsData = [
       "The applicant has not faced any financial setbacks in the past five years.",
   },
 ];
-
+ 
 const UWQuestions = ({ onNext }) => {
   const [questions, setQuestions] = useState(uwquestionsData);
   const [notes, setNotes] = useState(" ");
+  const [dynamicQuestions, setDynamicQuestions] = useState([]);
+ 
+ 
   // const [uwnotes, setUWNotes] = useState("");
-
+ 
   // const handleResponseChange = (index, newResponse) => {
   //   const updatedQuestions = [...questions];
   //   updatedQuestions[index].response = newResponse;
   //   setQuestions(updatedQuestions);
   // };
-
+  useEffect(() => {
+    fetch(`${PRODUCTIONURL}/api/questions`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Fetched dynamic questions:", data);
+        if (Array.isArray(data)) {
+          setDynamicQuestions(data);
+        } else {
+          console.warn("Unexpected API response:", data);
+          setDynamicQuestions([]);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching dynamic questions:", err);
+        setDynamicQuestions([]);
+      });
+  }, []);
+ 
+ 
   const handleCommentChange = (index, newComment) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].comment = newComment;
     setQuestions(updatedQuestions);
   };
+  const handleDynamicCommentChange = (index, newComment) => {
+    const updatedDynamicQuestions = [...dynamicQuestions];
+    updatedDynamicQuestions[index].Comment = newComment;
+    setDynamicQuestions(updatedDynamicQuestions);
+  };
   const record = {
     client: "Kew Gardens Property",
     lob: "Commercial Property"
   };
-
+ 
   return (
     <Row>
       <Col span={24}>
@@ -112,7 +140,7 @@ const UWQuestions = ({ onNext }) => {
                         options={[
                           { value: "yes", label: "Yes" },
                           { value: "no", label: "No" },
-                          { value: "na", label: "Not Applicable" },
+                          { value: "na", label: "can't be determined" },
                         ]}
                         required={true}
                         value={item.response}
@@ -132,11 +160,57 @@ const UWQuestions = ({ onNext }) => {
             </table>
             {/* </div> */}
           </div>
-
+          {/* ✅ Dynamic Section Below */}
+          <div className="uw-questions-section" style={{ marginTop: "40px" }}>
+            <h2>UW Questions(AI)</h2>
+            <table id="underwriting-Table">
+              <thead>
+                <tr>
+                  <th className="table-header" style={{ width: "40%" }}>
+                    Questions
+                  </th>
+                  <th className="table-header" style={{ width: "15%" }}>
+                    Response
+                  </th>
+                  <th className="table-header" style={{ width: "45%" }}>
+                    Comment
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {Array.isArray(dynamicQuestions) &&
+                  dynamicQuestions.map((item, index) => (
+                    <tr key={index}>
+                      <td>
+                        <b>{item.Question}</b>
+                      </td>
+                      <td>
+                        <DropdownSelect
+                          options={[
+                            { value: "yes", label: "Yes" },
+                            { value: "no", label: "No" },
+                            { value: "na", label: "can't be determined" },
+                          ]}
+                          required={true}
+                          value={item.Response?.toLowerCase()}
+                        />
+                      </td>
+                      <td>
+                      <FormInput
+                          value={item.Comment || ""}
+                          onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+ 
           {/* System Recommended Decision */}
-
-
-
+ 
+ 
+ 
           {/* Override Decision Section */}
           <div
             className="override-decision-container"
@@ -182,14 +256,14 @@ const UWQuestions = ({ onNext }) => {
                   onClick={(e) => e.stopPropagation()}
                   style={{
                     fontSize: "16px",
-                    width:"150px",
-                    height:"40px",
+                    width: "150px",
+                    height: "40px",
                     padding: "5px 20px", // Balanced padding for better spacing
                     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                     fontWeight: "600",
                     borderRadius: "4px", // Rounded corners for a modern look
                     color: "white",
-                    backgroundColor:"#FAAF25",
+                    backgroundColor: "#FAAF25",
                     border: "none",
                     cursor: "pointer",
                     lineHeight: "1.5", // Ensures text is vertically centered
@@ -234,5 +308,5 @@ const UWQuestions = ({ onNext }) => {
     </Row>
   );
 };
-
+ 
 export default UWQuestions;
