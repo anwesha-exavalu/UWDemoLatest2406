@@ -14,7 +14,7 @@ const PortfolioInsights = () => {
       },
       background: "transparent",
     },
-    colors: ["#0066CC", "#FF69B4"],
+    colors: ["#0066CC", "#0a63ac"],
     plotOptions: {
       bar: {
         horizontal: false,
@@ -83,7 +83,7 @@ const PortfolioInsights = () => {
       type: "pie",
       background: "transparent",
     },
-    colors: ["#0066CC", "#FF69B4"],
+    colors: ["#8acaff", "#0a63ac"],
     labels: ["Commercial Property", "General Liability"],
     legend: {
       position: "bottom",
@@ -114,7 +114,7 @@ const PortfolioInsights = () => {
       },
       background: "transparent",
     },
-    colors: ["#0066CC", "#9966FF", "#FF6666"],
+    colors: ["#8acaff", "#9966FF", "#FF6666"],
     plotOptions: {
       bar: {
         horizontal: false,
@@ -166,7 +166,7 @@ const PortfolioInsights = () => {
       type: "donut",
       background: "transparent",
     },
-    colors: ["#0066CC", "#FF69B4"],
+    colors: ["#8acaff", "#0a63ac"],
     labels: ["Commercial Property", "General Liability"],
     plotOptions: {
       pie: {
