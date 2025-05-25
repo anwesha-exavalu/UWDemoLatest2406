@@ -1,11 +1,11 @@
 import { Col, Row } from 'antd';
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Container } from 'styles/pages/Login';
-import novoLogo from 'assets/images/exavalu_white1.png';
-import { PrivateFooterbox } from 'styles/components/Footer';
-import ChatBot from 'pages/ChatBot';
-import useMetaData from "context/metaData";
+import { Container } from '../../styles/pages/Login';
+import novoLogo from '../../assets/img/exavalu_white1.png';
+import { PrivateFooterbox } from '../../styles/components/Footer';
+// import ChatBot from '../../pages/ChatBot';
+import useMetaData from "../../context/metaData";
 const PrivateFooter = () => {
   const {theme} = useMetaData();
   const location = useLocation();
@@ -55,7 +55,7 @@ const PrivateFooter = () => {
           <a className='copyright-text'> &#169; 2024 Exavalu. All Rights Reserved.</a>
         </Container>
       </div>
-      {openChat && <ChatBot toggleChat={toggleChat} />}
+      {/* {openChat && <ChatBot toggleChat={toggleChat} />} */}
     </PrivateFooterbox>
   );
 }

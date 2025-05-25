@@ -17,6 +17,8 @@ import AccountDashboard from './SidebarComponents/AccountDashboard';
 import Login from './layout/Login';
 import DashboardAdmin from './SidebarComponents/DashboardAdmin';
 import Report from './SidebarComponents/Report';
+import PrivateFooter from './components/Footer/PrivateFooter';
+
 
 
 const { Sider, Content, Footer } = Layout;
@@ -249,9 +251,8 @@ const AppLayout = () => {
 
         </Content>
         {!isLoginPage && (
-          <Footer style={{ textAlign: 'center' }}>
-            Workbench {new Date().getFullYear()}
-          </Footer>
+          <PrivateFooter >
+          </PrivateFooter>
         )}
       </Layout>
     </Layout>
