@@ -100,6 +100,7 @@ export const PublicHeader = styled.div`
 
 export const Container = styled.div`
   max-width: 1220px;
+  height:60px;
   padding: 0px 20px;
   margin: 0 auto;
 `;
@@ -241,3 +242,79 @@ export const NotificationAlertStyle = styled(NotificationStyle)`
     transform: rotate(30deg);
   }
 `;
+
+
+export const UserProfileContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+  }
+
+  .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: ${({ theme }) => (theme === 'dark' ? '#fff' : '#1f1f1f')};
+    font-family: 'Plus-Jakarta-Sans', sans-serif;
+  }
+
+  .user-role {
+    font-size: 12px;
+    color: ${({ theme }) => (theme === 'dark' ? '#ccc' : '#888')};
+    font-family: 'Plus-Jakarta-Sans', sans-serif;
+  }
+
+  .dropdown-icon {
+    font-size: 12px;
+    color: #666;
+    margin-left: 4px;
+  }
+`;
+
+export const LanguageSelector = styled.div`
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+`;
+
+export const FlagIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+`;
+
+export const LanguageText = styled.span`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => (theme === 'dark' ? '#fff' : '#2e2e48')};
+`;
+
+export const LanguageDropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+
+  &:hover {
+    background-color: #f5f5f5;
+  }
+
+  span {
+    font-size: 14px;
+  }
+`;
+

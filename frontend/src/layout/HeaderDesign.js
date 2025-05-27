@@ -11,11 +11,13 @@ import {
   Badge,
   Card,
   Modal,
-  Radio
+  Radio,
+  Dropdown
 } from "antd";
 import {
   MenuOutlined,
-  CloseCircleOutlined
+  CloseCircleOutlined,
+  DownOutlined
 } from "@ant-design/icons";
 import SearchIcon from "../../src/assets/img/search-icon.png";
 import SearchIconDark from "../../src/assets/img/share.png";
@@ -27,7 +29,13 @@ import {
   UserNameStyle,
   AccountManagementButtonStyle,
   CloseButtonStyle,
-  AvatarStyle
+  AvatarStyle,
+  LanguageDropdownItem,
+  LanguageSelector,
+  FlagIcon,
+  LanguageText,
+  UserProfileContainer
+
 } from "../styles/components/Navbar";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "../assets/svg/home";
@@ -41,6 +49,8 @@ import { BellFilled } from "@ant-design/icons";
 
 import notificationImage from '../assets/img/notification_popup.png';
 import redirect from '../assets/img/share.png';
+import USFlag from "../assets/svg/flag.svg";
+
 const { Text } = Typography;
 const { useToken } = theme;
 const { useBreakpoint } = Grid;
@@ -48,7 +58,7 @@ const { useBreakpoint } = Grid;
 
 
 export default function PrivateNavbar() {
-  const {theme} = useMetaData();
+  const { theme } = useMetaData();
   const { token } = useToken();
   const screens = useBreakpoint();
   const navigate = useNavigate();
@@ -57,6 +67,7 @@ export default function PrivateNavbar() {
   const [open, setOpen] = useState(false)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedMode, setSelectedMode] = useState("light");
+  const [selectedLanguage, setSelectedLanguage] = useState('en');
   const notifications = 1;
 
   useEffect(() => {
@@ -84,8 +95,40 @@ export default function PrivateNavbar() {
     setIsModalOpen(true);
   }
 
+  const languages = [
+    { code: 'en', name: 'Eng (US)', flag: USFlag },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+    { code: 'pt', name: 'Português', flag: '🇵🇹' },
+    { code: 'zh', name: '中文', flag: '🇨🇳' },
+    { code: 'ja', name: '日本語', flag: '🇯🇵' },
+    { code: 'ko', name: '한국어', flag: '🇰🇷' },
+  ];
+
+  const currentLanguage = languages.find(lang => lang.code === selectedLanguage);
+
+  const handleLanguageChange = (languageCode) => {
+    setSelectedLanguage(languageCode);
+    // Here you can add your language change logic
+    console.log('Language changed to:', languageCode);
+  };
+
+  const languageMenuItems = languages.map(lang => ({
+    key: lang.code,
+    label: (
+      <LanguageDropdownItem onClick={() => handleLanguageChange(lang.code)}>
+        <span>{lang.flag}</span>
+        <span>{lang.name}</span>
+      </LanguageDropdownItem>
+    ),
+  }));
+
   const content = (
+
     <div className="user-profile-Modal">
+
       <div className="profile-iamge">
         <CloseButtonStyle theme={theme}>
           <Button icon={<CloseCircleOutlined />} onClick={handlePopoverClose} />
@@ -109,7 +152,7 @@ export default function PrivateNavbar() {
           <Text>Manage your Account</Text>
         </Button>
       </AccountManagementButtonStyle>
-    
+
     </div>
   );
 
@@ -121,14 +164,14 @@ export default function PrivateNavbar() {
   const handleNotificationOpen = (newOpen) => {
     setOpen(newOpen)
   }
-  
+
   const notificationContent = (
-   
+
     <div>
       <img className="image" src={notificationImage}></img>
-      <p className={`${theme==='dark'?'sigin-title-dark':'sigin-title'}`}>Tasks/Notifications <a onClick={() => handleRedirection()}><img src={redirect} /></a></p>   
+      <p className={`${theme === 'dark' ? 'sigin-title-dark' : 'sigin-title'}`}>Tasks/Notifications <a onClick={() => handleRedirection()}><img src={redirect} /></a></p>
       <Card className="notification-card">
-        
+
       </Card>
     </div>
   )
@@ -143,9 +186,9 @@ export default function PrivateNavbar() {
       key: "dashboard",
       children: [
         {
-            label: "Commercial Property",
-            key: "commercialProperty",
-          }
+          label: "Commercial Property",
+          key: "commercialProperty",
+        }
       ]
     },
     {
@@ -156,10 +199,10 @@ export default function PrivateNavbar() {
           label: "Vacant Buildings",
           key: "vacantBuildings",
         },
-        
+
       ],
     },
-    
+
   ];
 
   const [current, setCurrent] = useState("projects");
@@ -172,10 +215,10 @@ export default function PrivateNavbar() {
     } else if (e.key == 'commercialProperty') {
       navigate('/commercialProperty');
     }
-      else if (e.key == 'vacantBuildings') {
-        navigate('/vacantBuildings');
-      } else if (e.key == 'flood') {
-        navigate('/flood');
+    else if (e.key == 'vacantBuildings') {
+      navigate('/vacantBuildings');
+    } else if (e.key == 'flood') {
+      navigate('/flood');
     } else if (e.key == 'documents') {
       navigate('/uploadDocuments');
     } else if (e.key == 'searchpolicy') {
@@ -196,7 +239,7 @@ export default function PrivateNavbar() {
       navigate('/upload-file')
     } else if (e.key == 'automaticquote') {
       navigate('/automatic-quote');
-    }else if (e.key == 'bulkquote') {
+    } else if (e.key == 'bulkquote') {
       navigate('/bulk-quote');
     }
   };
@@ -245,10 +288,9 @@ export default function PrivateNavbar() {
           <div style={styles.headercard}>
             <div style={styles.menuContainer}>
               <a href="#">
-                {
-                  theme === 'dark'? <img src={novoLogo} />:<img src={novoLogo} />
-                }
-                
+               <img src={novoLogo} alt="Logo" style={{ height: '40px', objectFit: 'contain' }} />
+
+
               </a>
               <Menu
                 style={styles.menu}
@@ -257,75 +299,75 @@ export default function PrivateNavbar() {
                 onClick={onClick}
                 selectedKeys={screens.md ? [current] : ""}
                 overflowedIndicator={
-                  <Button color="#fff" type="text" icon={<MenuOutlined style={{color: theme == 'dark' ? "#fff" : "#000"}} />}></Button>
+                  <Button color="#fff" type="text" icon={<MenuOutlined style={{ color: theme == 'dark' ? "#fff" : "#000" }} />}></Button>
                 }
               />
             </div>
-            <Space>
-              <div
-                className="search-box search"
-
+            <Space size="large" align="center">
+              <Dropdown
+                menu={{ items: languageMenuItems }}
+                trigger={['click']}
+                placement="bottomRight"
               >
-                <div className="search-feild">
-                  <span className="search-icons">
-                    {
-                      theme === 'dark'?<img src={SearchIconDark} />:<img src={SearchIcon} />
-                    }
-                    
-                  </span>
+                <LanguageSelector>
+                  <FlagIcon src={currentLanguage?.flag} alt={currentLanguage?.code} />
+                  <LanguageText>Eng&nbsp;(US)</LanguageText>
+                  <DownOutlined style={{ fontSize: '12px', color: '#bbb', marginLeft: 4 }} />
+                </LanguageSelector>
+              </Dropdown>
 
-                  <input type="text" placeholder="Search" />
-                </div>
-                <Popover theme={theme}
-                  onOpenChange={handleOpenChange}
-                  open={popOverOpen}
-                  placement="bottom"
-                  content={content}
-                  trigger="click"
-                  // overlayClassName="custom-pophover-dark"
-                  overlayClassName={theme === 'dark' ? 'custom-pophover-dark' : 'custom-pophover'}
-                >
-                  <span style={{ cursor: "pointer" }}>
-                    {userImage.length > 0 ? (
-                      <span className="usericon">
-                        {" "}
-                        <img src={userImage} />
-                      </span>
-                    ) : (
-                      <Avatar size={30}>MD</Avatar>
-                    )}
-                  </span>
-                </Popover>
-              </div>
-            </Space>
-            <Popover
-              onOpenChange={handleNotificationOpen}
-              open={open}
-              placement="bottom"
-              content={notificationContent}
-              trigger="click"
-              overlayStyle={{
-                height:150,
-                maxWidth: 450, 
-                padding: 0, 
-              }}
-              overlayClassName={theme === 'dark' ? 'custom-pophover-dark-notification' : ''}
-            >
-              {
-                notifications == 0 ? (
-                  <NotificationStyle>
-                    <Button shape="circle" icon={<BellFilled />} />
-                  </NotificationStyle>
-                ) : <>
 
-                  <NotificationAlertStyle>
-                    <Badge count={notifications} size="small" offset={[-6, 7]}>
+
+
+
+              <Popover
+                onOpenChange={handleNotificationOpen}
+                open={open}
+                placement="bottom"
+                content={notificationContent}
+                trigger="click"
+                overlayStyle={{
+                  height: 150,
+                  maxWidth: 450,
+                  padding: 0,
+                }}
+                overlayClassName={theme === 'dark' ? 'custom-pophover-dark-notification' : ''}
+              >
+                {
+                  notifications == 0 ? (
+                    <NotificationStyle>
                       <Button shape="circle" icon={<BellFilled />} />
-                    </Badge>
-                  </NotificationAlertStyle>
-                </>
-              }
-            </Popover>
+                    </NotificationStyle>
+                  ) : <>
+
+                    <NotificationAlertStyle>
+                      <Badge count={notifications} size="small" offset={[-6, 7]}>
+                        <Button shape="circle" icon={<BellFilled />} />
+                      </Badge>
+                    </NotificationAlertStyle>
+                  </>
+                }
+              </Popover>
+              <Popover
+                theme={theme}
+                onOpenChange={handleOpenChange}
+                open={popOverOpen}
+                placement="bottom"
+                content={content}
+                trigger="click"
+                overlayClassName={theme === 'dark' ? 'custom-pophover-dark' : 'custom-pophover'}
+              >
+                <UserProfileContainer>
+                  <img src={userImage} alt="avatar" className="avatar" />
+                  <div className="user-info">
+                    <span className="user-name">Haydenson</span>
+                    <span className="user-role">Admin</span>
+                  </div>
+                  <DownOutlined className="dropdown-icon" />
+                </UserProfileContainer>
+              </Popover>
+
+            </Space>
           </div>
         </nav>
       </Container>

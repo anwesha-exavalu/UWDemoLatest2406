@@ -152,3 +152,35 @@ export const HeaderTitle = styled.div`
   color: royalblue;
   text-align: center;
 `;
+export const LanguageDropdownItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;
+export const LanguageText = styled.span`
+  font-size: 14px;
+  color: #444;
+  font-weight: 500;
+`;
+export const FlagIcon = styled.span`
+  font-size: 16px;
+`;
+
+export const LanguageSelector = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: #f5f5f5;
+  }
+`;

@@ -1,17 +1,23 @@
 import React, { useState } from 'react';
-import { Button, Row, Col } from 'antd';
+import { Button } from 'antd';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+
 import LossInfo from '../lob/commercialproperty/LossInfo';
 import UWQuestions from '../lob/commercialproperty/UWQuestions';
 import LocationComponent from '../lob/commercialproperty/LocationComponent';
 import CreateSubmission from '../SidebarComponents/CreateSubmission';
 import QuoteSummary from '../lob/commercialproperty/quoteSummary';
 import PremiumSummary from '../lob/commercialproperty/PremiumSummary';
-import Bind from '../lob/commercialproperty/Bind';
 import Coverages from '../lob/commercialproperty/Coverages';
 import Documents from './Documents';
 
-const Sublob2 = (props) => {
+import {
+  SublobTabContainer,
+  SublobTab,
+  SublobTabIcon
+} from '../styles/components/Sublob';
+
+const Sublob2 = () => {
   const sections = [
     'policyInfo',
     'locationInfo',
@@ -21,7 +27,7 @@ const Sublob2 = (props) => {
     'premiumSummary',
     'quoteSummary'
   ];
- 
+
   const [activeSection, setActiveSection] = useState(sections[0]);
 
   const showSublob = (sectionId) => {
@@ -35,68 +41,34 @@ const Sublob2 = (props) => {
     }
   };
 
-  const containerStyle = {
-    display: 'flex',
-    overflowX: 'auto',
-    overflowY: 'hidden',
-    padding: '12px',
-    gap: '12px',
-    backgroundColor: '#fff',
-    minHeight: '60px',
-    marginBottom: '10px'
-  };
-
-  const buttonStyle = {
-    height: '36px',
-    minWidth: '140px',
-    flex: '0 0 auto',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    fontSize: '14px',
-    padding: '0 16px',
-    whiteSpace: 'nowrap',
-    backgroundColor: '#fff',
-    border: '1px solid #d9d9d9',
-    borderRadius: '6px',
-    transition: 'all 0.3s',
-    marginRight: '0'
-  };
-
-  const activeButtonStyle = {
-    ...buttonStyle,
-    backgroundColor: '#1890ff',
-    color: '#fff',
-    borderColor: '#1890ff'
-  };
-
   const buttonData = [
     { key: 'policyInfo', icon: 'file-alt', text: 'Insured Info' },
     { key: 'locationInfo', icon: 'map-marker-alt', text: 'Risk' },
-    { key: 'lossInfo', icon: 'exclamation-triangle', text: 'Loss' },
-    { key: 'coverages', icon: 'shield-alt', text: 'Coverages' },
-    { key: 'uw', icon: 'question-circle', text: 'UW Questions' },
-    { key: 'premiumSummary', icon: 'calculator', text: 'Premium Summary' },
-    { key: 'quoteSummary', icon: 'file-signature', text: 'Quote Summary' }
+    { key: 'lossInfo', icon: 'chart-bar', text: 'Loss' },
+    { key: 'coverages', icon: 'users', text: 'Coverages' },
+    { key: 'uw', icon: 'comment-dots', text: 'UW Questions' },
+    { key: 'premiumSummary', icon: 'th-large', text: 'Premium Summary' },
+    { key: 'quoteSummary', icon: 'file-alt', text: 'Quote Summary' }
   ];
 
   return (
-    <div className="flex flex-col w-full">
-      <div style={containerStyle}>
+    <div style={{ width: '100%' }}>
+      <SublobTabContainer>
         {buttonData.map(section => (
-          <Button
+          <SublobTab
             key={section.key}
+            className={activeSection === section.key ? 'active' : ''}
             onClick={() => showSublob(section.key)}
-            style={activeSection === section.key ? activeButtonStyle : buttonStyle}
           >
-            <i className={`fas fa-${section.icon}`} />
-            <span className="ml-2">{section.text}</span>
-          </Button>
+            <SublobTabIcon>
+              <i className={`fas fa-${section.icon}`} />
+            </SublobTabIcon>
+            {section.text}
+          </SublobTab>
         ))}
-      </div>
+      </SublobTabContainer>
 
-      <div className="mt-4">
+      <div>
         {activeSection === 'policyInfo' && <CreateSubmission onNext={goToNextSection} />}
         {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
         {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}

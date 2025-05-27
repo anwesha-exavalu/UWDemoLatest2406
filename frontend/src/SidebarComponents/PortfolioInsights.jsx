@@ -1,280 +1,215 @@
 import React from "react";
 import ReactApexChart from "react-apexcharts";
 import "./PortfolioInsights.css";
+import { FileText, Shield, DollarSign, AlertTriangle } from "lucide-react";
 
 const PortfolioInsights = () => {
-  // Written Premium By Year Chart
-  const premiumChartOptions = {
-    chart: {
-      type: "bar",
-      height: 350,
-      stacked: true,
-      toolbar: {
-        show: false,
-      },
-      background: "transparent",
-    },
-    colors: ["#0066CC", "#0a63ac"],
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        columnWidth: "55%",
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    stroke: {
-      show: true,
-      width: 2,
-      colors: ["transparent"],
-    },
-    xaxis: {
-      categories: ["2019", "2020", "2021", "2022", "2023", "2024"],
-    },
-    yaxis: [
-      {
-        title: {
-          text: "Written Premium",
-        },
-        labels: {
-          formatter: (value) => `$${value.toLocaleString()}`,
-        },
-      },
-      {
-        opposite: true,
-        title: {
-          text: "Margin (%)",
-        },
-        labels: {
-          formatter: (value) => `${value}%`,
-        },
-      },
-    ],
-    markers: {
-      size: 5,
-    },
-    stroke: {
-      curve: "smooth",
-    },
-  };
-
-  const premiumChartSeries = [
-    {
-      name: "Written Premium",
-      type: "bar",
-      data: [12000000, 13000000, 15000000, 11000000, 19000000, 25000000],
-    },
-    {
-      name: "Margin",
-      type: "line",
-      data: [34, 44, 30, 14, 24, 19.2],
-    },
-    {
-      name: "Target",
-      type: "line",
-      data: [30, 30, 30, 30, 30, 30],
-    },
-  ];
-
-  // Product Distribution Pie Chart
-  const productChartOptions = {
-    chart: {
-      type: "pie",
-      background: "transparent",
-    },
-    colors: ["#8acaff", "#0a63ac"],
-    labels: ["Commercial Property", "General Liability"],
-    legend: {
-      position: "bottom",
-    },
-    responsive: [
-      {
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200,
-          },
-          legend: {
-            position: "bottom",
-          },
-        },
-      },
-    ],
-  };
-
-  const productChartSeries = [55, 45];
-
-  // Policy Count Chart
-  const policyCountOptions = {
-    chart: {
-      type: "bar",
-      toolbar: {
-        show: false,
-      },
-      background: "transparent",
-    },
-    colors: ["#8acaff", "#9966FF", "#FF6666"],
-    plotOptions: {
-      bar: {
-        horizontal: false,
-        barHeight: "45%",
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-    xaxis: {
-      categories: ["Marsh Brokers",
-        "New York Choice Brokerages",
-        "Ariston Brokerage Corp."],
-        labels: {
-          style: {
-            fontSize: '12px'
-          }
-        }
-    },
-    yaxis: {
-      title: {
-        text: "Revenue ($M)",
-        style: {
-          fontSize: '12px'
-        }
-      },
-      labels: {
-        formatter: function(value) {
-          return value.toFixed(0);
-        }
-      }
-    },
-    grid: {
-      borderColor: '#E7E7E7',
-      strokeDashArray: 4
-    }
-  };
-
-  const policyCountSeries = [
-    {
-      name: "Revenue",
-      data: [5, 10, 15]
-    },
-  ];
-
-  // New Claim History Donut Chart
-  const claimHistoryOptions = {
-    chart: {
-      type: "donut",
-      background: "transparent",
-    },
-    colors: ["#8acaff", "#0a63ac"],
-    labels: ["Commercial Property", "General Liability"],
-    plotOptions: {
-      pie: {
-        donut: {
-          size: "75%",
-          labels: {
-            show: true,
-            total: {
-              show: true,
-              label: "Claim Amount",
-              formatter: () => "$ 500,000",
-            },
-          },
-        },
-      },
-    },
-    legend: {
-      position: "right",
-      formatter: function (val, opts) {
-        return val + " - " + opts.w.globals.series[opts.seriesIndex] + "%";
-      },
-    },
-    dataLabels: {
-      enabled: false,
-    },
-  };
-
-  const claimHistorySeries = [60, 40];
-
   return (
     <div className="dashboard">
-      <div className="charts-grid">
+      {/* Top Row */}
+      <div className="top-row">
+        {/* Book of Business Card */}
         <div className="card business-card">
-          <h2 className="card-header">Book Of Business (YTD)</h2>
-          <div className="business-stats">
-            <div className="stats-row">
-              <div className="stat-item">
-                <p className="stat-value">$25 M</p>
-                <p className="stat-label">Written Premium</p>
+          <h3 className="card-title">Book Of Business (YTD)</h3>
+          <div className="stats-grid">
+            <div className="stat-item">
+              <div className="stat-icon blue">
+                <FileText size={16} />
               </div>
-              <div className="stat-item">
-                <p className="stat-value">5000</p>
-                <p className="stat-label">Policy Count</p>
+              <div className="stat-content">
+                <div className="stat-value">$25 M</div>
+                <div className="stat-label">Written Premium</div>
               </div>
             </div>
-            <div className="stats-row">
-              <div className="stat-item">
-                <p className="stat-value">$500,000</p>
-                <p className="stat-label">Claim Amount</p>
+            
+            <div className="stat-item">
+              <div className="stat-icon green">
+                <Shield size={16} />
               </div>
-              <div className="stat-item">
-                <p className="stat-value">5</p>
-                <p className="stat-label">Claim Count</p>
+              <div className="stat-content">
+                <div className="stat-value">5000</div>
+                <div className="stat-label">Policy Count</div>
+              </div>
+            </div>
+            
+            <div className="stat-item">
+              <div className="stat-icon purple">
+                <DollarSign size={16} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">$500,000</div>
+                <div className="stat-label">Claim Amount</div>
+              </div>
+            </div>
+            
+            <div className="stat-item">
+              <div className="stat-icon teal">
+                <AlertTriangle size={16} />
+              </div>
+              <div className="stat-content">
+                <div className="stat-value">5</div>
+                <div className="stat-label">Claim Count</div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="card product-chart">
-          <h2 className="card-header">Written Premium By Product (YTD)</h2>
-          <div className="chart-container">
-            <ReactApexChart
-              options={productChartOptions}
-              series={productChartSeries}
-              type="pie"
-              height={250}
-            />
+        {/* Written Premium By Product */}
+        <div className="card">
+          <h3 className="card-title">Written Premium By Product (YTD)</h3>
+          <div className="donut-chart-container">
+            <div className="donut-chart">
+              <svg width="120" height="120" viewBox="0 0 120 120">
+                <circle 
+                  cx="60" 
+                  cy="60" 
+                  r="50" 
+                  fill="none" 
+                  stroke="#e5e7eb" 
+                  strokeWidth="20"
+                />
+                <circle 
+                  cx="60" 
+                  cy="60" 
+                  r="50" 
+                  fill="none" 
+                  stroke="#3b82f6" 
+                  strokeWidth="20"
+                  strokeDasharray="188.5 314.2"
+                  strokeDashoffset="0"
+                  transform="rotate(-90 60 60)"
+                />
+                <circle 
+                  cx="60" 
+                  cy="60" 
+                  r="50" 
+                  fill="none" 
+                  stroke="#1e40af" 
+                  strokeWidth="20"
+                  strokeDasharray="125.7 314.2"
+                  strokeDashoffset="-188.5"
+                  transform="rotate(-90 60 60)"
+                />
+              </svg>
+            </div>
+            <div className="donut-legend">
+              <div className="legend-item">
+                <div className="legend-dot" style={{backgroundColor: '#3b82f6'}}></div>
+                <span>Commercial Property</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-dot" style={{backgroundColor: '#1e40af'}}></div>
+                <span>General Liability</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="card policy-chart">
-          <h2 className="card-header">Revenue by Brokerages (YTD)</h2>
-          <div className="chart-container">
-            <ReactApexChart
-              options={policyCountOptions}
-              series={policyCountSeries}
-              type="bar"
-              height={300}
-            />
+        {/* Revenue by Brokerages */}
+        <div className="card">
+          <h3 className="card-title">Revenue by Brokerages (YTD)</h3>
+          <div className="status-indicator">
+            <span className="status-dot green"></span>
+            <span className="status-text">On track</span>
+            <span className="status-percentage">+24%</span>
+          </div>
+          <div className="bar-chart">
+            <div className="bar-group">
+              <div className="bar" style={{height: '25px', backgroundColor: '#3b82f6'}}></div>
+              <div className="bar-label">Marsh Brokers</div>
+            </div>
+            <div className="bar-group">
+              <div className="bar" style={{height: '40px', backgroundColor: '#3b82f6'}}></div>
+              <div className="bar-label">New York Choice Brokerages</div>
+            </div>
+            <div className="bar-group">
+              <div className="bar" style={{height: '55px', backgroundColor: '#3b82f6'}}></div>
+              <div className="bar-label">Ariston Brokerage Corp.</div>
+            </div>
           </div>
         </div>
       </div>
-      <div className="charts-grid">
-        <div className="card premium-chart">
-          <h2 className="card-header">Written Premium By Year</h2>
-          <div className="chart-container">
-            <ReactApexChart
-              options={premiumChartOptions}
-              series={premiumChartSeries}
-              type="line"
-              height={320}
-              width={500}
-            />
+
+      {/* Bottom Row */}
+      <div className="bottom-row">
+        {/* Written Premium By Year */}
+        <div className="card large-card">
+          <h3 className="card-title">
+            Total Report
+            <br />
+            Written Premium By Year
+          </h3>
+          <div className="line-chart">
+            <div className="y-axis">
+              <div className="y-label">40</div>
+              <div className="y-label">30</div>
+              <div className="y-label">20</div>
+              <div className="y-label">10</div>
+              <div className="y-label">0</div>
+            </div>
+            <div className="chart-area">
+              <div className="chart-bars">
+                <div className="chart-column">
+                  <div className="bar-item" style={{height: '40px', backgroundColor: '#e5e7eb'}}></div>
+                  <div className="x-label">2019</div>
+                </div>
+                <div className="chart-column">
+                  <div className="bar-item" style={{height: '50px', backgroundColor: '#e5e7eb'}}></div>
+                  <div className="x-label">2020</div>
+                </div>
+                <div className="chart-column">
+                  <div className="bar-item" style={{height: '60px', backgroundColor: '#e5e7eb'}}></div>
+                  <div className="x-label">2021</div>
+                </div>
+                <div className="chart-column">
+                  <div className="bar-item" style={{height: '35px', backgroundColor: '#e5e7eb'}}></div>
+                  <div className="x-label">2022</div>
+                </div>
+                <div className="chart-column">
+                  <div className="bar-item" style={{height: '75px', backgroundColor: '#e5e7eb'}}></div>
+                  <div className="x-label">2023</div>
+                </div>
+                <div className="chart-column active">
+                  <div className="bar-item" style={{height: '100px', backgroundColor: '#3b82f6'}}></div>
+                  <div className="x-label">2024</div>
+                  <div className="bar-value">$19</div>
+                </div>
+              </div>
+              <div className="target-line">
+                <div className="dashed-line"></div>
+                <div className="target-label">Target</div>
+              </div>
+            </div>
           </div>
         </div>
-        <div className="card claim-history">
-          <h2 className="card-header">Claim History</h2>
-          <div className="chart-container">
-            <ReactApexChart
-              options={claimHistoryOptions}
-              series={claimHistorySeries}
-              type="donut"
-              height={320}
-              width={400}
-            />
+
+        {/* Claim History */}
+        <div className="card">
+          <h3 className="card-title">Claim History</h3>
+          <div className="claim-circles">
+            <div className="claim-circle">
+              <div className="circle-chart blue">
+                <div className="circle-fill" style={{strokeDasharray: '251.3 314.2'}}></div>
+                <div className="circle-percentage">83%</div>
+              </div>
+              <div className="circle-label">General Liability</div>
+            </div>
+            <div className="claim-circle">
+              <div className="circle-chart green">
+                <div className="circle-fill" style={{strokeDasharray: '207.3 314.2'}}></div>
+                <div className="circle-percentage">66%</div>
+              </div>
+              <div className="circle-label">Commercial Property</div>
+            </div>
+          </div>
+          <div className="claim-amount">
+            <div className="amount-label">Claim Amount</div>
+            <div className="amount-value">$500,000</div>
           </div>
         </div>
       </div>
+
+
     </div>
   );
 };
