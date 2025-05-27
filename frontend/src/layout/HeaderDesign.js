@@ -17,7 +17,11 @@ import {
 import {
   MenuOutlined,
   CloseCircleOutlined,
-  DownOutlined
+  DownOutlined,
+  HomeOutlined,
+  InfoCircleOutlined,
+  FileTextOutlined,
+  EditFilled
 } from "@ant-design/icons";
 import SearchIcon from "../../src/assets/img/search-icon.png";
 import SearchIconDark from "../../src/assets/img/share.png";
@@ -68,11 +72,16 @@ export default function PrivateNavbar() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedMode, setSelectedMode] = useState("light");
   const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [userRole, setUserRole] = useState('');
   const notifications = 1;
 
   useEffect(() => {
     setUserImage(ProfileIcon);
+    // Get user role from localStorage
+    const role = localStorage.getItem('userRole');
+    setUserRole(role);
   }, []);
+
   const redirectURL = () => {
     handlePopoverClose();
     navigate("/account-settings");
@@ -176,71 +185,58 @@ export default function PrivateNavbar() {
     </div>
   )
 
+  // Updated menu items based on App.js routes and user role
   const menuItems = [
+   
     {
-      key: "home",
-      icon: <HomeIcon />,
-    },
-    {
-      label: "Product",
       key: "dashboard",
-      children: [
-        {
-          label: "Commercial Property",
-          key: "commercialProperty",
-        }
-      ]
+      
+      label: "Dashboard"
     },
     {
-      label: "Programs",
-      key: "SubMenu",
-      children: [
-        {
-          label: "Vacant Buildings",
-          key: "vacantBuildings",
-        },
-
-      ],
+      key: "accountdashboard", 
+     
+      label: "Account Management"
     },
-
+    {
+      key: "accountinfo",
+     
+      label: "Account Details"
+    },
+    {
+      key: "createsubmission",
+      
+      label: "Create Submission"
+    }
   ];
 
-  const [current, setCurrent] = useState("projects");
+  const [current, setCurrent] = useState("dashboard");
+  
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
 
-    if (e.key == 'dashboard' || e.key == 'home') {
-      navigate('/');
-    } else if (e.key == 'commercialProperty') {
-      navigate('/commercialProperty');
-    }
-    else if (e.key == 'vacantBuildings') {
-      navigate('/vacantBuildings');
-    } else if (e.key == 'flood') {
-      navigate('/flood');
-    } else if (e.key == 'documents') {
-      navigate('/uploadDocuments');
-    } else if (e.key == 'searchpolicy') {
-      navigate('/search-policy')
-    } else if (e.key == 'reportingAnalytics') {
-      navigate('/reporting-analytics')
-    } else if (e.key == 'customer') {
-      navigate('/customer-details')
-    } else if (e.key == 'claim') {
-      navigate('/search-claim')
-    } else if (e.key == 'commissions') {
-      navigate('/commissions')
-    } else if (e.key == 'admin') {
-      navigate('/admin')
-    } else if (e.key == 'homeowners') {
-      navigate('/home-owners')
-    } else if (e.key == 'cyber') {
-      navigate('/upload-file')
-    } else if (e.key == 'automaticquote') {
-      navigate('/automatic-quote');
-    } else if (e.key == 'bulkquote') {
-      navigate('/bulk-quote');
+    // Navigation logic based on App.js routes and user role
+    if (e.key === 'home') {
+      // Navigate to appropriate home based on user role
+      if (userRole === 'admin') {
+        navigate('/dashboardAdmin');
+      } else {
+        navigate('/dashboard');
+      }
+    } else if (e.key === 'dashboard') {
+      // Navigate to appropriate dashboard based on user role
+      if (userRole === 'admin') {
+        navigate('/dashboardAdmin');
+      } else {
+        navigate('/dashboard');
+      }
+    } else if (e.key === 'accountdashboard') {
+      navigate('/accountdashboard');
+    } else if (e.key === 'accountinfo') {
+      navigate('/accountinfo');
+    } else if (e.key === 'createsubmission') {
+      navigate('/createsubmission');
     }
   };
 
@@ -289,8 +285,6 @@ export default function PrivateNavbar() {
             <div style={styles.menuContainer}>
               <a href="#">
                <img src={novoLogo} alt="Logo" style={{ height: '40px', objectFit: 'contain' }} />
-
-
               </a>
               <Menu
                 style={styles.menu}
@@ -315,10 +309,6 @@ export default function PrivateNavbar() {
                   <DownOutlined style={{ fontSize: '12px', color: '#bbb', marginLeft: 4 }} />
                 </LanguageSelector>
               </Dropdown>
-
-
-
-
 
               <Popover
                 onOpenChange={handleNotificationOpen}

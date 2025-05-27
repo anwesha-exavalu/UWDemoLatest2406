@@ -21,7 +21,7 @@ import PrivateFooter from './components/Footer/PrivateFooter';
 
 
 
-const { Sider, Content, Footer } = Layout;
+const { Content, Footer } = Layout;
 const { SubMenu } = Menu;
 
 const MyMenu = ({ collapsed }) => {
@@ -185,7 +185,7 @@ const AppLayout = () => {
 
   return (
     <Layout>
-      {!isLoginPage && (
+      {/* {!isLoginPage && (
         <Sider
           trigger={null}
           collapsible
@@ -222,7 +222,7 @@ const AppLayout = () => {
             <MyMenu collapsed={collapsed} />
           </div>
         </Sider>
-      )}
+      )} */}
       <Layout>
         {!isLoginPage && <HeaderDesign />}
         <Content
