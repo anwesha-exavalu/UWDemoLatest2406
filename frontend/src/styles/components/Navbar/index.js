@@ -1,7 +1,9 @@
 import styled from "styled-components";
+
 export const NavbarHeader = styled.div`
   border-bottom: 1px solid #f0efef;
   box-shadow: 0px 4px 10px 0px #0000000f;
+  
   .search-box {
     display: flex;
     align-items: center;
@@ -30,7 +32,7 @@ export const NavbarHeader = styled.div`
         border-radius: 50%;
       }
     }
-   input {
+    input {
       border-radius: 25px;
       border: ${({ theme }) => (theme === 'dark' ? '1px solid #A2A1A1' : '1px solid #f3f2f2')};
       padding: 13px 20px 13px 45px;
@@ -39,15 +41,24 @@ export const NavbarHeader = styled.div`
       background-color: ${({ theme }) => (theme === 'dark' ? '#3F3F3F' : '')};
     }
   }
+  
   .ant-menu-title-content {
     color: #9c9c9f;
     font-size: 14px;
     font-weight: 500;
-    font-family:Plus-Jakarta-Sans;
+    font-family: Plus-Jakarta-Sans;
   }
+  
   .ant-menu-item {
-    padding: 0 10px;
+    padding: 0 20px;
+    height: 48px;
+    line-height: 48px;
+    font-weight: 500;
+    position: relative;
+    transition: all 0.3s ease;
   }
+  
+  /* Remove default Ant Design underlines */
   .ant-menu-submenu,
   .ant-menu-item,
   .ant-menu-item-selected {
@@ -58,7 +69,58 @@ export const NavbarHeader = styled.div`
       content: none !important;
     }
   }
+  
+  /* Custom underline effect for horizontal menu items */
+  .ant-menu-horizontal > .ant-menu-item {
+    position: relative;
+    transition: all 0.3s ease;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 2px;
+      background-color: ${({ theme }) => (theme === 'dark' ? '#1890ff' : '#1890ff')};
+      transition: all 0.3s ease;
+      transform: translateX(-50%);
+    }
+    
+    &:hover::before {
+      width: 80%;
+    }
+    
+    &:hover {
+      color: ${({ theme }) => (theme === 'dark' ? '#1890ff' : '#1890ff')} !important;
+    }
+  }
+  
+  .ant-menu-horizontal > .ant-menu-item-selected {
+    color: ${({ theme }) => (theme === 'dark' ? '#1890ff' : '#1890ff')} !important;
+    background-color: transparent !important;
+    
+    &::before {
+      width: 80%;
+    }
+  }
+  
+  .ant-menu-horizontal {
+    border-bottom: none !important;
+  }
+  
+  .ant-menu-horizontal > .ant-menu-item {
+    border-bottom: none !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .ant-menu-horizontal > .ant-menu-item {
+      padding: 0 12px;
+    }
+  }
 `;
+
 export const PublicHeader = styled.div`
   // background-color: #fff;
   border-bottom: 1px solid #f0efef;
@@ -243,7 +305,6 @@ export const NotificationAlertStyle = styled(NotificationStyle)`
   }
 `;
 
-
 export const UserProfileContainer = styled.div`
   display: flex;
   align-items: center;
@@ -317,4 +378,3 @@ export const LanguageDropdownItem = styled.div`
     font-size: 14px;
   }
 `;
-
