@@ -7,10 +7,14 @@ import LocationCard from './LocationCard';
 import styles from './LocationComponent.module.css';
 import '../../components/TableStyles.css';
 import Documents from '../../layout/Documents'
+import {
+  WorkSection
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
+import RiskCard from './LocationCard';
 
 const { Option } = Select;
 
-const  LocationTable = ({ nextTab }) => {
+const LocationTable = ({ nextTab }) => {
   const [data, setData] = useState([
     {
       key: 1,
@@ -20,7 +24,7 @@ const  LocationTable = ({ nextTab }) => {
       zip: "11415",
       country: "USA"
     }
-   
+
   ]);
   const [currentRowIndex, setCurrentRowIndex] = useState(0);
   const [selectionType] = useState('radio');
@@ -36,13 +40,13 @@ const  LocationTable = ({ nextTab }) => {
   const [activeTab, setActiveTab] = useState("LocationTable");
 
   const usStates = [
-    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 
-    'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 
-    'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 
-    'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 
-    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 
-    'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota', 
-    'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut',
+    'Delaware', 'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa',
+    'Kansas', 'Kentucky', 'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan',
+    'Minnesota', 'Mississippi', 'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire',
+    'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio',
+    'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina', 'South Dakota',
+    'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia',
     'Wisconsin', 'Wyoming'
   ];
 
@@ -217,52 +221,132 @@ const  LocationTable = ({ nextTab }) => {
 
   return (
     <div className={`${styles.container} tableContainer`} id='LocationTable'>
-      <Row gutter={16} style={{ marginBottom: 8, marginTop: 8 }}>
-        <Col span={24}>
+      <Row justify="end" style={{ marginBottom: 8, marginTop: 8, marginRight: 35 }}>
+        <Col >
           <Button type="primary" onClick={showModal}>
             Add Location
           </Button>
         </Col>
       </Row>
-      <Row gutter={16} style={{ flexGrow: 1, width: "100%" }}>
-        <Col span={selectedRow ? 14 : 24} style={{ width: '100%' }}>
-          <Table
-            rowSelection={{ ...rowSelection }}
-            columns={columns}
-            dataSource={data}
-            onChange={handleChange}
-            style={{ width: '100%' }}
-            pagination={{ pageSize: 4 }}
-            className="custom-table-header"
-            tableLayout="fixed"
-          />
+
+
+
+      <Row gutter={16} style={{ marginTop: 16 }}>
+        <Col span={selectedRow ? 12 : 24}>
+          <WorkSection>
+            <div className="work-header">Enter Location Details</div>
+            <div className="work-content">
+              <div className="modern-table">
+                <Table
+                  rowSelection={{ ...rowSelection }}
+                  columns={columns}
+                  dataSource={data}
+                  onChange={handleChange}
+                  style={{ width: '100%' }}
+                  pagination={{ pageSize: 4 }}
+                  className="custom-table-header"
+                  tableLayout="fixed"
+                />
+              </div>
+            </div>
+          </WorkSection>
         </Col>
 
         {selectedRow && (
-          <>
-            <Col span={10}>
-              <MapView />
-            </Col>
-            <Col span={24} style={{ marginTop: 16 }}>
-              <LocationCard />
-            </Col>
-          </>
+          <Col span={12}>
+            <WorkSection>
+              <div style={{ height: '320px' }}>
+                {/* <div style={{ background: '#fff', borderRadius: 12, padding: 16 }}> */}
+                <div className="work-header" >Location map</div>
+                <MapView />
+              </div>
+            </WorkSection>
+          </Col>
         )}
       </Row>
+
+
+      {selectedRow && (
+        <div style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'center', // center the cards
+          gap: '35px', // reduce gap between cards
+          margin: '35px auto',
+          maxWidth: '1200px', // limit total width
+        }}>
+          {[
+            {
+              riskFactorTitle: 'Flood',
+              riskFactorDetails: {
+                'Flood Risk Score': '60',
+                'Flood Zone': 'AE',
+                'Elevation Variance': '-1.1ft',
+                'Property Elevation': '5.9ft',
+              }
+            },
+            {
+              riskFactorTitle: 'WildFire',
+              riskFactorDetails: {
+                'Wildfire Risk Score': '60',
+                'Risk Description': 'Urban',
+                'Number of Past Fires': '0',
+              }
+            },
+            {
+              riskFactorTitle: 'Earthquake',
+              riskFactorDetails: {
+                'USA Earthquake Risk Score': '60',
+              }
+            },
+            {
+              riskFactorTitle: 'StormSurge',
+              riskFactorDetails: {
+                'Storm Surge': '70',
+                'Hail Probability': 'Very low',
+                'Tornado Exposure': '5-Very High',
+                'Wind Pool Eligibility': 'Out',
+              }
+            },
+            {
+              riskFactorTitle: 'Sinkhole',
+              riskFactorDetails: {
+                'Sinkhole Risk': 'Extreme',
+                'Sinkhole Score': '20',
+              }
+            },
+            {
+              riskFactorTitle: 'FireStation',
+              riskFactorDetails: {
+                'Fire Protected Class': 'Fully Protected',
+                'Distance from Fire Station': '2.1 Miles',
+              }
+            }
+          ].map((risk, idx) => (
+            <div key={idx} style={{
+              flex: '0 1 30%', display: 'flex',
+              minHeight: '260px'
+            }}>
+              <RiskCard card={risk} />
+            </div>
+          ))}
+        </div>
+      )}
+
 
       <Row gutter={16}>
         <Col span={20}></Col>
         <Col span={4}>
           <div>
-          <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button>
+            <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+              Next
+            </Button>
           </div>
         </Col>
       </Row>
       <Documents />
-      
-      
+
+
       <Row justify="center" style={{ marginTop: '30px', padding: '10px 0' }}>
         <Col span={24} style={{ textAlign: 'center' }}>
           <div
