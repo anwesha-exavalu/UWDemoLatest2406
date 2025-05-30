@@ -41,7 +41,7 @@ import {
   UserProfileContainer
 
 } from "../styles/components/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import HomeIcon from "../assets/svg/home";
 
 import {
@@ -187,31 +187,45 @@ export default function PrivateNavbar() {
 
   // Updated menu items based on App.js routes and user role
   const menuItems = [
-   
+
     {
       key: "dashboard",
-      
+
       label: "Dashboard"
     },
     {
-      key: "accountdashboard", 
-     
+      key: "accountdashboard",
+
       label: "Account Management"
     },
     {
       key: "accountinfo",
-     
+
       label: "Account Details"
     },
     {
       key: "createsubmission",
-      
+
       label: "Create Submission"
     }
   ];
 
-  const [current, setCurrent] = useState("dashboard");
-  
+  const location = useLocation();
+  const pathToKeyMap = {
+    "/dashboard": "dashboard",
+    "/dashboardAdmin": "dashboard",
+    "/accountdashboard": "accountdashboard",
+    "/accountinfo": "accountinfo",
+    "/createsubmission": "createsubmission"
+  };
+
+  const [current, setCurrent] = useState(pathToKeyMap[location.pathname] || "dashboard");
+
+  useEffect(() => {
+    setCurrent(pathToKeyMap[location.pathname] || "dashboard");
+  }, [location.pathname]);
+
+
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
@@ -284,7 +298,7 @@ export default function PrivateNavbar() {
           <div style={styles.headercard}>
             <div style={styles.menuContainer}>
               <a href="#">
-               <img src={novoLogo} alt="Logo" style={{ height: '40px', objectFit: 'contain' }} />
+                <img src={novoLogo} alt="Logo" style={{ height: '40px', objectFit: 'contain' }} />
               </a>
               <Menu
                 style={styles.menu}
