@@ -10,6 +10,7 @@ import QuoteSummary from '../lob/commercialproperty/quoteSummary';
 import PremiumSummary from '../lob/commercialproperty/PremiumSummary';
 import Coverages from '../lob/commercialproperty/Coverages';
 import Documents from './Documents';
+import { Container } from '../styles/components/Layout';
 
 import {
   SublobTabContainer,
@@ -52,6 +53,7 @@ const Sublob2 = () => {
   ];
 
   return (
+    <Container>
     <div style={{ width: '100%' }}>
       <SublobTabContainer>
         {buttonData.map(section => (
@@ -80,6 +82,7 @@ const Sublob2 = () => {
 
       <Documents />
     </div>
+   </Container>
   );
 };
 
