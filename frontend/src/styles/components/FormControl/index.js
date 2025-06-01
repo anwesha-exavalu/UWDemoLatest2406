@@ -188,12 +188,17 @@ export const FormSelect = styled.div`
     border: none;
     font-size: 14px;
     border-radius: 8px;
+  
+   
     background: ${({ theme }) =>
       theme === "dark" ? "#5A5A5A !important" : "white"};
     color: ${({ theme }) => (theme === "dark" ? "#FFFFFF" : "black")};
   }
   .ant-select-selector {
     height: 43px !important; /* Adjust height */
+   
+    padding: 12px 6px !important; /* Adjust padding */
+    width: 100% !important; /* Ensure full width */
     box-shadow: 0px 1.5px 4px -1px #9c9c9f;
   }
 
@@ -223,6 +228,7 @@ export const FormSelect = styled.div`
   
   /* Ensure control is full width */
   .ant-form-item-control {
+   min-width: 280px !important; /* Ensure minimum width */
     width: 100% !important;
   }
 `;

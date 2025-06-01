@@ -7,7 +7,8 @@ import LocationTable from './LocationTable';
 import LocationBuildingTab from "./LocationBuildingTab";
 import OverallInsights from "./OverallInsights";
 import PublicData from './PublicData';
-
+import { Container } from '../../styles/components/Layout';
+import { MainContainer } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 const LocationTab = () => {
   const [activeTab, setActiveTab] = useState("Tab1");
 
@@ -28,7 +29,9 @@ const LocationTab = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <Container>
+      <MainContainer>
+   
       {/* Tab Buttons */}
       <div className="tab">
         <Button
@@ -81,7 +84,9 @@ const LocationTab = () => {
           <PublicData />
         </div>
       )}
-    </div>
+   
+    </MainContainer>
+    </Container>
   );
 };
 

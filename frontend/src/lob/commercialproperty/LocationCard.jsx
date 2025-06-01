@@ -1,4 +1,4 @@
-import { Card, Button, Modal } from 'antd';
+import { Card, Button, Modal, Row, Col } from 'antd';
 import { useState } from 'react';
 import riskmeter_report from '../../assets/documents/riskmeter_report.pdf';
 import flood from '../../assets/img/flooded-house.png';
@@ -9,6 +9,7 @@ import stormsurge from '../../assets/img/strom.png';
 import wildfire from '../../assets/img/wildlife-01.png';
 import risk from '../../assets/img/risk.png';
 import view_more from '../../assets/img/view_more.png';
+import { Container } from '../../styles/components/Layout';
 
 const RiskCard = ({ card }) => {
   const [isVisible, setISVisible] = useState(false);
@@ -90,18 +91,18 @@ const RiskCard = ({ card }) => {
           }}
         />
 
-        <div style={{ 
-          position: 'relative', 
+        <div style={{
+          position: 'relative',
           zIndex: 1,
           height: '100%',
           display: 'flex',
           flexDirection: 'column'
         }}>
           {/* Header */}
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: 8, 
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: 8,
             marginBottom: 12,
             flexShrink: 0 // Prevent header from shrinking
           }}>
@@ -118,33 +119,37 @@ const RiskCard = ({ card }) => {
               </div>
             ))}
           </div>
-
-          {/* View More Button - Always at bottom right */}
-          <div style={{ 
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
-            flexShrink: 0, // Prevent button area from shrinking
-            marginTop: 'auto', // Push to bottom
-            textAlign: 'right'
-          }}>
-            <Button
-              type="text"
-              style={{
-                fontWeight: 'bold',
-                color: '#000',
-                padding: '4px 8px',
-                height: 'auto',
+          <Row gutter={24}>
+            <Col span={12}></Col>
+            <Col span={12} >
+              {/* View More Button - Always at bottom right */}
+              <div style={{
                 display: 'flex',
-                alignItems: 'center',
-                gap: 4
-              }}
-              onClick={() => openDocument(riskmeter_report)}
-            >
-              View more 
-              <img src={view_more} alt="view more" style={{ width: 16, height: 16 }} />
-            </Button>
-          </div>
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
+                flexShrink: 0, // Prevent button area from shrinking
+                marginTop: 'auto', // Push to bottom
+                textAlign: 'right'
+              }}>
+                <Button
+                  type="text"
+                  style={{
+                    fontWeight: 'bold',
+                    color: '#000',
+                    padding: '4px 8px',
+                    height: 'auto',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 4
+                  }}
+                  onClick={() => openDocument(riskmeter_report)}
+                >
+                  View more
+                  <img src={view_more} alt="view more" style={{ width: 16, height: 16 }} />
+                </Button>
+              </div>
+            </Col>
+          </Row>
         </div>
       </Card>
 
