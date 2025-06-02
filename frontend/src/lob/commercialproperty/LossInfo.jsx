@@ -2,11 +2,17 @@ import React, { useState } from "react";
 import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
 import { Button, Card, Col, Modal, Row, Input, DatePicker, Layout, Collapse, Table } from 'antd';
-import Documents from '../../layout/Documents'
+import Documents from '../../layout/Documents';
+import NextArrow from "../../assets/img/nextArrow.png";
 import LossRun from "./LossRun";
 import {
   WorkSection
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
+import { Container } from "../../styles/components/Layout";
+import {
+  MainContainer, NextButtonContainer,
+  NextButton,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 const { Panel } = Collapse;
 
 
@@ -93,6 +99,21 @@ const LossInfo = ({ onNext }) => {
     { title: 'Total Loss Amount', dataIndex: 'totalLosses', key: 'totalLosses' }
   ];
 
+  const lossDetailColumns = [
+    { title: 'UW Year', dataIndex: 'uwyear', key: 'uwyear' },
+    { title: 'Carrier', dataIndex: 'carrier', key: 'carrier' },
+    { title: 'Claim #', dataIndex: 'claimNumber', key: 'claimNumber' },
+    { title: 'Policy Eff Date', dataIndex: 'effectiveDate', key: 'effectiveDate' },
+    { title: 'Policy Exp Date', dataIndex: 'expirationDate', key: 'expirationDate' },
+    { title: 'Date of Loss', dataIndex: 'dateofLoss', key: 'dateofLoss' },
+    { title: 'Cause of Loss', dataIndex: 'causeofLoss', key: 'causeofLoss' },
+    { title: 'LOB', dataIndex: 'lob', key: 'lob' },
+    { title: 'LAE', dataIndex: 'lae', key: 'lae' },
+    { title: 'Settlement Amount', dataIndex: 'settlementAmount', key: 'settlementAmount' },
+    { title: 'Total Incurred', dataIndex: 'totalIncurred', key: 'totalIncurred' },
+    { title: 'Status', dataIndex: 'status', key: 'status' }
+  ];
+
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [selectedClaim, setSelectedClaim] = useState(null);
   const [lossSummaries, setLossSummaries] = useState(lossdata);
@@ -101,6 +122,11 @@ const LossInfo = ({ onNext }) => {
     onChange: (selectedRowKeys) => setSelectedPolicies(selectedRowKeys)
   };
 
+  const rowSelectionClaims = {
+    type: 'radio',
+    selectedRowKeys: selectedClaim ? [selectedClaim.claimNumber] : [],
+    onChange: (selectedRowKeys, selectedRows) => setSelectedClaim(selectedRows[0])
+  };
   const claimsData = [
     {
 
@@ -331,537 +357,426 @@ const LossInfo = ({ onNext }) => {
 
 
   return (
-    <Layout style={{ backgroundColor: 'white' }}>
-      <Row gutter={16} style={{ width: '100%', margin: 0 }}>
-        <Col span={24}>
-          <div className="maincontainer" id="lossInfo">
-            <div id="tabcontainstwo" className="tab">
-              <Button
-                className={`tablinks ${activeTab === "PriorPolicies" ? "active" : ""}`}
-                onClick={(event) => openMainTab(event, "PriorPolicies")}
-              >
-                Prior Policies
-              </Button>
-              <Button
-                className={`tablinks ${activeTab === "Claims" ? "active" : ""}`}
-                onClick={(event) => openMainTab(event, "Claims")}
-              >
-                Loss Summary
-              </Button>
-              <Button
-                className={`tablinks ${activeTab === "Lossruns" ? "active" : ""}`}
-                onClick={(event) => openMainTab(event, "Lossruns")}
-              >
-                Loss Runs - AI Insights
-              </Button>
-            </div>
-
-            {activeTab === "PriorPolicies" && (
-              <div id="PriorPolicies" className="tabcontent" style={{ marginBottom: "20px" }} >
-                <Button type="primary" onClick={showAddPolicyModal} style={{ marginBottom: "10px", marginTop: '8px' }}>
-                  Add Policy
-                </Button>
-                {selectedPolicies.length > 0 && (
-                  <Button
-                    type="primary"
-                    onClick={handleDelete}
-                    style={{ marginBottom: "20px", marginLeft: "10px" }}
-                  >
-                    Delete
-                  </Button>
-                )}
-                <WorkSection>
-                  <div className="work-header">Prior Policies Details</div>
-                  <div className="work-content">
-                    <div className="modern-table">
-                      <Table
-                        rowSelection={rowSelection}
-                        columns={priorPolicyColumns}
-                        dataSource={policies.map((item, index) => ({ key: index, ...item }))}
-                        pagination={{ pageSize: 4 }}
-                        style={{ width: '100%' }}
-                        className="custom-table-header"
-                        tableLayout="fixed"
-                        summary={(pageData) => {
-                          const total = pageData.reduce((sum, row) => {
-                            const cleaned = parseFloat((row.totalLosses || '').replace(/[^0-9.-]+/g, '')) || 0;
-                            return sum + cleaned;
-                          }, 0);
-                          return (
-                            <Table.Summary.Row>
-                              <Table.Summary.Cell index={0} colSpan={8} style={{ textAlign: 'right', fontWeight: 600 }}>
-                                Sum:
-                              </Table.Summary.Cell>
-                              <Table.Summary.Cell index={8}>
-                                ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                              </Table.Summary.Cell>
-                            </Table.Summary.Row>
-                          );
-                        }}
-                      />
-
-                    </div>
-                  </div>
-                </WorkSection>
-
-                <Row gutter={16}>
-                  <Col span={20}></Col>
-                  <Col span={4}>
-                    <div>
-                      <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
-                        Next
-                      </Button>
-                    </div>
-                  </Col>
-                </Row>
-                <Documents />
-                <Modal
-                  title="Add New Policy"
-                  visible={isModalVisible}
-                  onOk={handleModalOk}
-                  onCancel={handleModalCancel}
+    <Container>
+      <MainContainer>
+        <Row gutter={16} style={{ width: '100%', margin: 0 }}>
+          <Col span={24}>
+            <div id="lossInfo">
+              <div id="tabcontainstwo" className="tab">
+                <Button
+                  className={`tablinks ${activeTab === "PriorPolicies" ? "active" : ""}`}
+                  onClick={(event) => openMainTab(event, "PriorPolicies")}
                 >
-                  <Input
-                    placeholder="Carrier"
-                    name="carrier"
-                    value={newPolicy.carrier}
-                    onChange={(e) => handleInputChange(e, setNewPolicy)}
-                    style={{ marginBottom: "10px" }}
-                  />
-                  <Input
-                    placeholder="Policy #"
-                    name="policyNumber"
-                    value={newPolicy.policyNumber}
-                    onChange={(e) => handleInputChange(e, setNewPolicy)}
-                    style={{ marginBottom: "10px" }}
-                  />
-                  <DatePicker
-                    placeholder="Effective Date"
-                    style={{ width: "100%", marginBottom: "10px" }}
-                    onChange={(date) => handleDateChange("effectiveDate", date, setNewPolicy)}
-                  />
-                  <DatePicker
-                    placeholder="Expiration Date"
-                    style={{ width: "100%", marginBottom: "10px" }}
-                    onChange={(date) => handleDateChange("effectiveDate", date, setNewPolicy)}
-                  />
-                  <Input
-                    placeholder="Annual Premium"
-                    name="annualPremium"
-                    value={newPolicy.annualPremium}
-                    onChange={(e) => handleInputChange(e, setNewPolicy)}
-                    style={{ marginBottom: "10px" }}
-                  />
-                  <Input
-                    placeholder="# Losses"
-                    name="losses"
-                    value={newPolicy.losses}
-                    onChange={(e) => handleInputChange(e, setNewPolicy)}
-                    style={{ marginBottom: "10px" }}
-                  />
-                  <Input
-                    placeholder="Total Losses"
-                    name="totalLosses"
-                    value={newPolicy.totalLosses}
-                    onChange={(e) => handleInputChange(e, setNewPolicy)}
-                    style={{ marginBottom: "10px" }}
-                  />
-                </Modal>
+                  Prior Policies
+                </Button>
+                <Button
+                  className={`tablinks ${activeTab === "Claims" ? "active" : ""}`}
+                  onClick={(event) => openMainTab(event, "Claims")}
+                >
+                  Loss Summary
+                </Button>
+                <Button
+                  className={`tablinks ${activeTab === "Lossruns" ? "active" : ""}`}
+                  onClick={(event) => openMainTab(event, "Lossruns")}
+                >
+                  Loss Runs - AI Insights
+                </Button>
               </div>
-            )}
 
-            {activeTab === "Claims" && (
-              <div id="Claims" className="tabcontent">
-                <div style={{ marginTop: "20px" }}>
-                  {/* <h3>Loss Summary Details</h3> */}
-                  {/* <Button type="primary" onClick={showLossSummaryModal} style={{ marginBottom: "10px" }}>
-                  Add Loss
-                </Button> */}
-                  <table style={{ marginBottom: "20px" }}>
+              {activeTab === "PriorPolicies" && (
+                <div id="PriorPolicies" className="tabcontent" style={{ marginBottom: "20px" }} >
+                  <Button type="primary" onClick={showAddPolicyModal} style={{ marginBottom: "10px", marginTop: '8px' }}>
+                    Add Policy
+                  </Button>
+                  {selectedPolicies.length > 0 && (
+                    <Button
+                      type="primary"
+                      onClick={handleDelete}
+                      style={{ marginBottom: "20px", marginLeft: "10px" }}
+                    >
+                      Delete
+                    </Button>
+                  )}
+                  <WorkSection>
+                    <div className="work-header">Prior Policies Details</div>
+                    <div className="work-content">
+                      <div className="modern-table">
+                        <Table
+                          rowSelection={rowSelection}
+                          columns={priorPolicyColumns}
+                          dataSource={policies.map((item, index) => ({ key: index, ...item }))}
+                          pagination={{ pageSize: 4 }}
+                          scroll={{ x: 'max-content' }}
+                          style={{ width: '100%' }}
+                          className="custom-table-header"
+                          tableLayout="fixed"
+                          summary={(pageData) => {
+                            const total = pageData.reduce((sum, row) => {
+                              const cleaned = parseFloat((row.totalLosses || '').replace(/[^0-9.-]+/g, '')) || 0;
+                              return sum + cleaned;
+                            }, 0);
+                            return (
+                              <Table.Summary.Row>
+                                <Table.Summary.Cell index={0} colSpan={8} style={{ textAlign: 'right', fontWeight: 600 }}>
+                                  Sum:
+                                </Table.Summary.Cell>
+                                <Table.Summary.Cell index={8}>
+                                  ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                                </Table.Summary.Cell>
+                              </Table.Summary.Row>
+                            );
+                          }}
+                        />
 
-                  </table>
+                      </div>
+                    </div>
+                  </WorkSection>
 
-
-
-
-                  {/* Add Loss Summary Modal */}
+                  <Row gutter={16}>
+                    <Col span={20}></Col>
+                    <Col span={4}>
+                     <NextButtonContainer>
+                        <NextButton onClick={onNext}>
+                          <div className="step-content-box">
+                            {"Next "}
+                            <img
+                              src={NextArrow}
+                              alt="Exavalu"
+                              title="Exavalu"
+                              className="logobox"
+                            />
+                          </div>
+                        </NextButton>
+                      </NextButtonContainer>
+                    </Col>
+                  </Row>
+                  <Documents />
                   <Modal
-                    title="Add Loss Summary"
-                    visible={isLossSummaryModalVisible}
-                    onOk={handleLossSummaryModalOk}
-                    onCancel={handleLossSummaryModalCancel}
+                    title="Add New Policy"
+                    visible={isModalVisible}
+                    onOk={handleModalOk}
+                    onCancel={handleModalCancel}
                   >
                     <Input
-                      placeholder="Policy Year"
-                      name="policyYear"
-                      value={newLossSummary.policyYear}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                      placeholder="Carrier"
+                      name="carrier"
+                      value={newPolicy.carrier}
+                      onChange={(e) => handleInputChange(e, setNewPolicy)}
                       style={{ marginBottom: "10px" }}
+                    />
+                    <Input
+                      placeholder="Policy #"
+                      name="policyNumber"
+                      value={newPolicy.policyNumber}
+                      onChange={(e) => handleInputChange(e, setNewPolicy)}
+                      style={{ marginBottom: "10px" }}
+                    />
+                    <DatePicker
+                      placeholder="Effective Date"
+                      style={{ width: "100%", marginBottom: "10px" }}
+                      onChange={(date) => handleDateChange("effectiveDate", date, setNewPolicy)}
+                    />
+                    <DatePicker
+                      placeholder="Expiration Date"
+                      style={{ width: "100%", marginBottom: "10px" }}
+                      onChange={(date) => handleDateChange("effectiveDate", date, setNewPolicy)}
                     />
                     <Input
                       placeholder="Annual Premium"
                       name="annualPremium"
-                      value={newLossSummary.annualPremium}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                      value={newPolicy.annualPremium}
+                      onChange={(e) => handleInputChange(e, setNewPolicy)}
                       style={{ marginBottom: "10px" }}
                     />
                     <Input
-                      placeholder="Claims"
-                      name="claims"
-                      value={newLossSummary.claims}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                      placeholder="# Losses"
+                      name="losses"
+                      value={newPolicy.losses}
+                      onChange={(e) => handleInputChange(e, setNewPolicy)}
                       style={{ marginBottom: "10px" }}
                     />
                     <Input
-                      placeholder="Open Claims"
-                      name="openClaims"
-                      value={newLossSummary.openClaims}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                      placeholder="Total Losses"
+                      name="totalLosses"
+                      value={newPolicy.totalLosses}
+                      onChange={(e) => handleInputChange(e, setNewPolicy)}
                       style={{ marginBottom: "10px" }}
                     />
-                    <Input
-                      placeholder="Total Insured Losses"
-                      name="totalInsuredLosses"
-                      value={newLossSummary.totalInsuredLosses}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
-                      style={{ marginBottom: "10px" }}
-                    />
-
-                    <Input
-                      placeholder="Total paid Losses"
-                      name="totalPaidLosses"
-                      value={newLossSummary.totalPaidLosses}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="expenses"
-                      name="expenses"
-                      value={newLossSummary.expenses}
-                      onChange={(e) => handleInputChange(e, setNewLossSummary)}
-                      style={{ marginBottom: "10px" }}
-                    />
-
                   </Modal>
-                  {/* {selectedLossSummary && (
-                    <> */}
-                  <h3>Loss Details</h3>
-                  <Button type="primary" onClick={showLossDetailModal} style={{ marginBottom: "10px" }}>
-                    Add Loss Detail
-                  </Button>
-                  <div style={{
-                    overflowX: 'auto',
-                    width: '100%'
-                  }}>
-                    <table style={{
-                      borderCollapse: 'collapse',
-                      width: 'max-content',
-                      minWidth: '100%'
-                    }}>
-                      <thead>
-                        <tr>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px 4px',
-                            width: '40px',
-                            minWidth: '40px',
-                            maxWidth: '40px',
-                            textAlign: 'center'
-                          }}></th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '80px',
-                            whiteSpace: 'nowrap'
-                          }}>UW Year</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '80px',
-                            whiteSpace: 'nowrap'
-                          }}>Carrier</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '140px',
-                            whiteSpace: 'nowrap'
-                          }}>Claim#</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '120px',
-                            whiteSpace: 'nowrap'
-                          }}>Policy Eff Date</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '120px',
-                            whiteSpace: 'nowrap'
-                          }}>Policy Exp Date</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '120px',
-                            whiteSpace: 'nowrap'
-                          }}>Date of Loss</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '120px',
-                            whiteSpace: 'nowrap'
-                          }}>Cause of Loss</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '140px',
-                            whiteSpace: 'nowrap'
-                          }}>LOB</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '100px',
-                            whiteSpace: 'nowrap'
-                          }}>LAE</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '140px',
-                            whiteSpace: 'nowrap'
-                          }}>Settlement Amount</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '120px',
-                            whiteSpace: 'nowrap'
-                          }}>Total Incurred</th>
-                          <th style={{
-                            backgroundColor: "#5d9de2",
-                            color: 'white',
-                            padding: '8px',
-                            minWidth: '80px',
-                            whiteSpace: 'nowrap'
-                          }}>Status</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {lossDetails.map((claim, index) => (
-                          <tr key={index}>
-                            <td style={{
-                              padding: '8px 4px',
-                              textAlign: 'center',
-                              borderBottom: '1px solid #e8e8e8'
-                            }}>
-                              <input
-                                type="checkbox"
-                                onChange={() => handleCheckboxChangeclaim(claim)}
-                                checked={selectedClaim?.claimNumber === claim.claimNumber}
-                                style={{ margin: 0 }}
-                              />
-                            </td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.uwyear}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.carrier}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.claimNumber}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.effectiveDate}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.expirationDate}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.dateofLoss}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.causeofLoss}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.lob}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.lae}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.settlementAmount}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.totalIncurred}</td>
-                            <td style={{ padding: '8px', whiteSpace: 'nowrap', borderBottom: '1px solid #e8e8e8' }}>{claim.status}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                  {/* </>
-                  )} */}
-                  {/* Add Loss Detail Modal */}
-                  <Modal
-                    title="Add Loss Detail"
-                    visible={isLossDetailModalVisible}
-                    onOk={handleLossDetailModalOk}
-                    onCancel={handleLossDetailModalCancel}
-                  >
-                    <Input
-                      placeholder="Claim Number"
-                      name="claimNumber"
-                      value={newLossDetail.claimNumber}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    {/* <DatePicker
-                    placeholder="Effective Date"
-                    style={{ width: "100%", marginBottom: "10px" }}
-                    onChange={(date) => handleDateChange("effectiveDate", date, setNewLossDetail)}
-                  /> */}
-                    {/* <DatePicker
-                    placeholder="Effective Date"
-                    style={{ width: "100%", marginBottom: "10px" }}
-                    onChange={(date) => handleDateChange("effectiveDate", date, setNewLossDetail)}
-                  /> */}
-                    <Input
-                      placeholder="Effective Date (MM-DD-YYYY)"
-                      value={newLossDetail.effectiveDate}
-                      onChange={(e) => handleDateChangeError('effectiveDate', e.target.value)}
-                      style={{ marginBottom: "10px" }}
-                      maxLength={10}
-                    />
-                    {errors.effectiveDate && (
-                      <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
-                        {errors.effectiveDate}
-                      </p>
-                    )}
-                    <Input
-                      placeholder="Expiration Date (MM-DD-YYYY)"
-                      value={newLossDetail.expirationDate}
-                      onChange={(e) => handleDateChangeError('expirationDate', e.target.value)}
-                      style={{ marginBottom: "10px" }}
-                      maxLength={10}
-                    />
-                    {errors.expirationDate && (
-                      <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
-                        {errors.expirationDate}
-                      </p>
-                    )}
-
-                    <Input
-                      placeholder="Carrier"
-                      name="carrier"
-                      value={newLossDetail.carrier}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Lob"
-                      name="lob"
-                      value={newLossDetail.lob}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Accident Description"
-                      name="accidentDescription"
-                      value={newLossDetail.accidentDescription}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Reported Date: MM-DD-YYYY"
-                      value={newLossDetail.reportedDate}
-                      onChange={(e) => handleDateChangeError('reportedDate', e.target.value)}
-                      style={{ marginBottom: "10px" }}
-                      maxLength={10} // Limits input to 10 characters
-                    />
-                    {errors.reportedDate && (
-                      <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
-                        {errors.reportedDate}
-                      </p>
-                    )}
-
-
-                    <Input
-                      placeholder="Status"
-                      name="status"
-                      value={newLossDetail.status}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Class"
-                      name="class"
-                      value={newLossDetail.class}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Total Paid"
-                      name="totalPaid"
-                      value={newLossDetail.totalPaid}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-                    <Input
-                      placeholder="Total Incurred"
-                      name="totalIncurred"
-                      value={newLossDetail.totalIncurred}
-                      onChange={(e) => handleInputChange(e, setNewLossDetail)}
-                      style={{ marginBottom: "10px" }}
-                    />
-
-                  </Modal>
-                  {lossDetails && (
-                    <>
-                      <h3>Notes</h3>
-                      <Card
-                        title="Claim Notes History"
-                        style={{
-                          marginBottom: "2rem",
-                          borderRadius: "12px",
-                          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                        }}
-                      >
-                        {selectedClaim ? (
-                          <Collapse accordion defaultActiveKey={['1']}>
-                            {selectedClaim.notes.map((note, index) => (
-                              <Panel header={`Notes: (Dated) - ${note.noteDate}`} key={index}>
-                                <div style={{ display: "flex", justifyContent: 'space-between' }}>
-                                  <p>Accident Date: {note.accidentDate}</p>
-                                  <p>Report Date: {note.reportedDate}</p>
-                                  <p>Expenses Reserve: {note.expenseReserve}</p>
-                                </div>
-                                <textarea
-                                  className="notes"
-                                  placeholder="Note"
-                                  value={note.note}
-                                  readOnly
-                                />
-                              </Panel>
-                            ))}
-                          </Collapse>
-                        ) : (
-                          <p>Please first select any row to see the history</p>
-                        )}
-
-
-                      </Card>
-                      <Row gutter={16}>
-                        <Col span={20}></Col>
-                        <Col span={4}>
-                          <div>
-                            <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
-                              Next
-                            </Button>
-                          </div>
-                        </Col>
-                      </Row>
-                    </>)}
                 </div>
-              </div>
-            )}
+              )}
 
-            {activeTab === "Lossruns" && (
-              <div id="Lossruns" className="tabcontent" style={{ marginTop: "20px", marginBottom: "30px" }} >
-                <LossRun />
-              </div>
-            )}
-          </div>
-        </Col>
-      </Row>
-    </Layout>
+              {activeTab === "Claims" && (
+                <div id="Claims" className="tabcontent">
+                  <div style={{ marginTop: "20px" }}>
+                    {/* <h3>Loss Summary Details</h3> */}
+                    {/* <Button type="primary" onClick={showLossSummaryModal} style={{ marginBottom: "10px" }}>
+                  Add Loss
+                </Button> */}
+                    <table style={{ marginBottom: "20px" }}>
+
+                    </table>
+
+
+
+
+                    {/* Add Loss Summary Modal */}
+                    <Modal
+                      title="Add Loss Summary"
+                      visible={isLossSummaryModalVisible}
+                      onOk={handleLossSummaryModalOk}
+                      onCancel={handleLossSummaryModalCancel}
+                    >
+                      <Input
+                        placeholder="Policy Year"
+                        name="policyYear"
+                        value={newLossSummary.policyYear}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Annual Premium"
+                        name="annualPremium"
+                        value={newLossSummary.annualPremium}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Claims"
+                        name="claims"
+                        value={newLossSummary.claims}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Open Claims"
+                        name="openClaims"
+                        value={newLossSummary.openClaims}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Total Insured Losses"
+                        name="totalInsuredLosses"
+                        value={newLossSummary.totalInsuredLosses}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+
+                      <Input
+                        placeholder="Total paid Losses"
+                        name="totalPaidLosses"
+                        value={newLossSummary.totalPaidLosses}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="expenses"
+                        name="expenses"
+                        value={newLossSummary.expenses}
+                        onChange={(e) => handleInputChange(e, setNewLossSummary)}
+                        style={{ marginBottom: "10px" }}
+                      />
+
+                    </Modal>
+                    {/* {selectedLossSummary && (
+                    <> */}
+                    <Button type="primary" onClick={showLossDetailModal} style={{ marginBottom: "10px" }}>
+                      Add Loss Detail
+                    </Button>
+                    <WorkSection>
+                      <div className="work-header">Loss Details</div>
+                      <div className="work-content">
+                        <div className="modern-table">
+                          <Table
+                            rowSelection={rowSelectionClaims}
+                            columns={lossDetailColumns}
+                            dataSource={lossDetails.map((item) => ({ key: item.claimNumber, ...item }))}
+                            pagination={{ pageSize: 4 }}
+                            style={{ width: '100%' }}
+                            className="custom-table-header"
+                            tableLayout="fixed"
+                          />
+                        </div>
+                      </div>
+                    </WorkSection>
+
+                    {/* </>
+                  )} */}
+                    {/* Add Loss Detail Modal */}
+                    <Modal
+                      title="Add Loss Detail"
+                      visible={isLossDetailModalVisible}
+                      onOk={handleLossDetailModalOk}
+                      onCancel={handleLossDetailModalCancel}
+                    >
+                      <Input
+                        placeholder="Claim Number"
+                        name="claimNumber"
+                        value={newLossDetail.claimNumber}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      {/* <DatePicker
+                    placeholder="Effective Date"
+                    style={{ width: "100%", marginBottom: "10px" }}
+                    onChange={(date) => handleDateChange("effectiveDate", date, setNewLossDetail)}
+                  /> */}
+                      {/* <DatePicker
+                    placeholder="Effective Date"
+                    style={{ width: "100%", marginBottom: "10px" }}
+                    onChange={(date) => handleDateChange("effectiveDate", date, setNewLossDetail)}
+                  /> */}
+                      <Input
+                        placeholder="Effective Date (MM-DD-YYYY)"
+                        value={newLossDetail.effectiveDate}
+                        onChange={(e) => handleDateChangeError('effectiveDate', e.target.value)}
+                        style={{ marginBottom: "10px" }}
+                        maxLength={10}
+                      />
+                      {errors.effectiveDate && (
+                        <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
+                          {errors.effectiveDate}
+                        </p>
+                      )}
+                      <Input
+                        placeholder="Expiration Date (MM-DD-YYYY)"
+                        value={newLossDetail.expirationDate}
+                        onChange={(e) => handleDateChangeError('expirationDate', e.target.value)}
+                        style={{ marginBottom: "10px" }}
+                        maxLength={10}
+                      />
+                      {errors.expirationDate && (
+                        <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
+                          {errors.expirationDate}
+                        </p>
+                      )}
+
+                      <Input
+                        placeholder="Carrier"
+                        name="carrier"
+                        value={newLossDetail.carrier}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Lob"
+                        name="lob"
+                        value={newLossDetail.lob}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Accident Description"
+                        name="accidentDescription"
+                        value={newLossDetail.accidentDescription}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Reported Date: MM-DD-YYYY"
+                        value={newLossDetail.reportedDate}
+                        onChange={(e) => handleDateChangeError('reportedDate', e.target.value)}
+                        style={{ marginBottom: "10px" }}
+                        maxLength={10} // Limits input to 10 characters
+                      />
+                      {errors.reportedDate && (
+                        <p style={{ color: 'red', marginTop: '-8px', marginBottom: '10px' }}>
+                          {errors.reportedDate}
+                        </p>
+                      )}
+
+
+                      <Input
+                        placeholder="Status"
+                        name="status"
+                        value={newLossDetail.status}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Class"
+                        name="class"
+                        value={newLossDetail.class}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Total Paid"
+                        name="totalPaid"
+                        value={newLossDetail.totalPaid}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+                      <Input
+                        placeholder="Total Incurred"
+                        name="totalIncurred"
+                        value={newLossDetail.totalIncurred}
+                        onChange={(e) => handleInputChange(e, setNewLossDetail)}
+                        style={{ marginBottom: "10px" }}
+                      />
+
+                    </Modal>
+                    {lossDetails && (
+                      <>
+                        <h3>Notes</h3>
+                        <Card
+                          title="Claim Notes History"
+                          style={{
+                            marginBottom: "2rem",
+                            borderRadius: "12px",
+                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
+                          }}
+                        >
+                          {selectedClaim ? (
+                            <Collapse accordion defaultActiveKey={['1']}>
+                              {selectedClaim.notes.map((note, index) => (
+                                <Panel header={`Notes: (Dated) - ${note.noteDate}`} key={index}>
+                                  <div style={{ display: "flex", justifyContent: 'space-between' }}>
+                                    <p>Accident Date: {note.accidentDate}</p>
+                                    <p>Report Date: {note.reportedDate}</p>
+                                    <p>Expenses Reserve: {note.expenseReserve}</p>
+                                  </div>
+                                  <textarea
+                                    className="notes"
+                                    placeholder="Note"
+                                    value={note.note}
+                                    readOnly
+                                  />
+                                </Panel>
+                              ))}
+                            </Collapse>
+                          ) : (
+                            <p>Please first select any row to see the history</p>
+                          )}
+
+
+                        </Card>
+                        <Row gutter={16}>
+                          <Col span={20}></Col>
+                          <Col span={4}>
+                            <div>
+                              <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+                                Next
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      </>)}
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "Lossruns" && (
+                <div id="Lossruns" className="tabcontent" style={{ marginTop: "20px", marginBottom: "30px" }} >
+                  <LossRun />
+                </div>
+              )}
+            </div>
+          </Col>
+        </Row>
+      </MainContainer>
+    </Container>
   );
 };
 export default LossInfo;
