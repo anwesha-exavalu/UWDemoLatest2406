@@ -220,3 +220,40 @@ export const FormCheckBoxStyled = styled.div`
     border-color: #1677ff;
   }
 `;
+
+
+
+export const RoundedAddButton = styled.button`
+  background-color: #1E4BD1;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0 16px;
+  height: 36px;
+  width: 151.5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  font-family: "Inter", sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background-color: #204FC2;
+  }
+
+  .icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+`;
+
+export const RightAlignedContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`;

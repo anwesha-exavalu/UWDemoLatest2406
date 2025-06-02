@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
-import { Button, Card, Col, Modal, Row, Input, DatePicker, Layout, Collapse, Table } from 'antd';
+import { Button, Card, Col, Modal, Row, Input, DatePicker, Collapse, Table } from 'antd';
 import Documents from '../../layout/Documents';
 import NextArrow from "../../assets/img/nextArrow.png";
 import LossRun from "./LossRun";
@@ -13,6 +13,7 @@ import {
   MainContainer, NextButtonContainer,
   NextButton,
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import { RoundedAddButton } from "../../styles/index"
 const { Panel } = Collapse;
 
 
@@ -385,9 +386,16 @@ const LossInfo = ({ onNext }) => {
 
               {activeTab === "PriorPolicies" && (
                 <div id="PriorPolicies" className="tabcontent" style={{ marginBottom: "20px" }} >
-                  <Button type="primary" onClick={showAddPolicyModal} style={{ marginBottom: "10px", marginTop: '8px' }}>
-                    Add Policy
-                  </Button>
+                  <Row style={{ width: '100%' }} justify="end">
+                    <Col>
+                      <RoundedAddButton onClick={showAddPolicyModal}>
+                        <span className="icon">+</span>
+                        Add Policy
+                      </RoundedAddButton>
+                    </Col>
+                  </Row>
+
+
                   {selectedPolicies.length > 0 && (
                     <Button
                       type="primary"
@@ -435,7 +443,7 @@ const LossInfo = ({ onNext }) => {
                   <Row gutter={16}>
                     <Col span={20}></Col>
                     <Col span={4}>
-                     <NextButtonContainer>
+                      <NextButtonContainer>
                         <NextButton onClick={onNext}>
                           <div className="step-content-box">
                             {"Next "}
@@ -508,14 +516,12 @@ const LossInfo = ({ onNext }) => {
 
               {activeTab === "Claims" && (
                 <div id="Claims" className="tabcontent">
-                  <div style={{ marginTop: "20px" }}>
+                  <div >
                     {/* <h3>Loss Summary Details</h3> */}
                     {/* <Button type="primary" onClick={showLossSummaryModal} style={{ marginBottom: "10px" }}>
                   Add Loss
                 </Button> */}
-                    <table style={{ marginBottom: "20px" }}>
-
-                    </table>
+                    
 
 
 
@@ -581,9 +587,15 @@ const LossInfo = ({ onNext }) => {
                     </Modal>
                     {/* {selectedLossSummary && (
                     <> */}
-                    <Button type="primary" onClick={showLossDetailModal} style={{ marginBottom: "10px" }}>
-                      Add Loss Detail
-                    </Button>
+                    
+                    <Row style={{ width: '100%' }} justify="end">
+                    <Col>
+                      <RoundedAddButton onClick={showLossDetailModal}>
+                        <span className="icon">+</span>
+                        Add Loss Details
+                      </RoundedAddButton>
+                    </Col>
+                  </Row>
                     <WorkSection>
                       <div className="work-header">Loss Details</div>
                       <div className="work-content">
@@ -718,57 +730,48 @@ const LossInfo = ({ onNext }) => {
 
                     </Modal>
                     {lossDetails && (
-                      <>
-                        <h3>Notes</h3>
-                        <Card
-                          title="Claim Notes History"
-                          style={{
-                            marginBottom: "2rem",
-                            borderRadius: "12px",
-                            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)",
-                          }}
-                        >
+                      <WorkSection>
+                        <div className="work-header">Claim Notes History</div>
+                        <div className="work-content">
                           {selectedClaim ? (
                             <Collapse accordion defaultActiveKey={['1']}>
                               {selectedClaim.notes.map((note, index) => (
                                 <Panel header={`Notes: (Dated) - ${note.noteDate}`} key={index}>
-                                  <div style={{ display: "flex", justifyContent: 'space-between' }}>
-                                    <p>Accident Date: {note.accidentDate}</p>
-                                    <p>Report Date: {note.reportedDate}</p>
-                                    <p>Expenses Reserve: {note.expenseReserve}</p>
+                                  <div style={{ display: "flex", justifyContent: 'space-between', flexWrap: 'wrap' }}>
+                                    <p><strong>Accident Date:</strong> {note.accidentDate}</p>
+                                    <p><strong>Report Date:</strong> {note.reportedDate}</p>
+                                    <p><strong>Expense Reserve:</strong> {note.expenseReserve}</p>
                                   </div>
                                   <textarea
-                                    className="notes"
                                     placeholder="Note"
                                     value={note.note}
                                     readOnly
+                                    style={{
+                                      width: '100%',
+                                      minHeight: '80px',
+                                      marginTop: '10px',
+                                      padding: '8px',
+                                      borderRadius: '4px',
+                                      border: '1px solid #ccc',
+                                      resize: 'vertical'
+                                    }}
                                   />
                                 </Panel>
                               ))}
                             </Collapse>
                           ) : (
-                            <p>Please first select any row to see the history</p>
+                            <p style={{ padding: '10px' }}>Please first select any row to see the history</p>
                           )}
+                        </div>
+                      </WorkSection>
+                    )}
 
-
-                        </Card>
-                        <Row gutter={16}>
-                          <Col span={20}></Col>
-                          <Col span={4}>
-                            <div>
-                              <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
-                                Next
-                              </Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      </>)}
                   </div>
                 </div>
               )}
 
               {activeTab === "Lossruns" && (
-                <div id="Lossruns" className="tabcontent" style={{ marginTop: "20px", marginBottom: "30px" }} >
+                <div id="Lossruns" className="tabcontent" style={{ marginTop: "0px", marginBottom: "30px" }} >
                   <LossRun />
                 </div>
               )}

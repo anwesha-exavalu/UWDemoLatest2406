@@ -198,8 +198,8 @@ export const WorkSection = styled.div`
   border: 2px solid #E8E8E8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-left: 40px;
-  margin-right: 40px;
+  margin-left: 0px;
+  margin-right: 0px;
   
 
  
