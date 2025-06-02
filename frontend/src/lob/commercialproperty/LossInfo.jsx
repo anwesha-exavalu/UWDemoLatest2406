@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
-import { Button, Card, Col, Modal, Row, Input, DatePicker, Layout, Collapse } from 'antd';
+import { Button, Card, Col, Modal, Row, Input, DatePicker, Layout, Collapse, Table } from 'antd';
 import Documents from '../../layout/Documents'
 import LossRun from "./LossRun";
+import {
+  WorkSection
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
 const { Panel } = Collapse;
 
 
@@ -79,26 +82,40 @@ const LossInfo = ({ onNext }) => {
       totalLosses: "$25,000.00"
     },
   ]);
+  const priorPolicyColumns = [
+    { title: 'UW Year', dataIndex: 'uwyear', key: 'uwyear' },
+    { title: 'Carrier', dataIndex: 'carrier', key: 'carrier' },
+    { title: 'Policy #', dataIndex: 'policyNumber', key: 'policyNumber' },
+    { title: 'Effective Date', dataIndex: 'effectiveDate', key: 'effectiveDate' },
+    { title: 'Expiration Date', dataIndex: 'expirationDate', key: 'expirationDate' },
+    { title: 'Annual Premium', dataIndex: 'annualPremium', key: 'annualPremium' },
+    { title: '# Losses', dataIndex: 'losses', key: 'losses' },
+    { title: 'Total Loss Amount', dataIndex: 'totalLosses', key: 'totalLosses' }
+  ];
+
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [selectedClaim, setSelectedClaim] = useState(null);
   const [lossSummaries, setLossSummaries] = useState(lossdata);
-
+  const rowSelection = {
+    selectedRowKeys: selectedPolicies,
+    onChange: (selectedRowKeys) => setSelectedPolicies(selectedRowKeys)
+  };
 
   const claimsData = [
     {
-     
-                          uwyear: "2022",
-                          carrier: "AIG",
-                          claimNumber: "40051070-2022",
-                          effectiveDate: "01-01-2022",
-                          expirationDate: "12-31-2022",
-                          dateofLoss: "06-30-2022",
-                          causeofLoss: "Fire Damage",
-                          lob: "Commercial Property",
-                          lae: "$2,250.00",
-                          settlementAmount: "$61,750.00",
-                          totalIncurred: "$64,000.00",
-                          status: "Paid",
+
+      uwyear: "2022",
+      carrier: "AIG",
+      claimNumber: "40051070-2022",
+      effectiveDate: "01-01-2022",
+      expirationDate: "12-31-2022",
+      dateofLoss: "06-30-2022",
+      causeofLoss: "Fire Damage",
+      lob: "Commercial Property",
+      lae: "$2,250.00",
+      settlementAmount: "$61,750.00",
+      totalIncurred: "$64,000.00",
+      status: "Paid",
       notes: [
         {
           noteDate: "07-01-2022",
@@ -315,7 +332,7 @@ const LossInfo = ({ onNext }) => {
 
   return (
     <Layout style={{ backgroundColor: 'white' }}>
-      <Row  gutter={16} style={{ width: '100%', margin: 0 }}>
+      <Row gutter={16} style={{ width: '100%', margin: 0 }}>
         <Col span={24}>
           <div className="maincontainer" id="lossInfo">
             <div id="tabcontainstwo" className="tab">
@@ -353,58 +370,47 @@ const LossInfo = ({ onNext }) => {
                     Delete
                   </Button>
                 )}
-                <table>
-                  <thead>
-                    <tr>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500',width:"40px" }}>&nbsp;</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>UW Year</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Carrier</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Policy #</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Effective Date</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Expiration Date</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Annual Premium</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}># Losses</th>
-                      <th style={{ backgroundColor: "#5d9de2", height: '10%', color: 'white', fontWeight: '500', }}>Total Loss Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {policies.map((policy, index) => (
-                      <tr key={index} className="priorpoliciestdata">
-                        <td style={{ width: '30px', textAlign: 'center' }}>
-                          <input
-                            type="checkbox"
-                            checked={selectedPolicies.includes(index)}
-                            onChange={() => handleCheckboxChange(index)}
-                          />
-                        </td>
-                        <td>{policy.uwyear}</td>
-                        <td>{policy.carrier}</td>
-                        <td>{policy.policyNumber}</td>
-                        <td>{policy.effectiveDate}</td>
-                        <td>{policy.expirationDate}</td>
-                        <td>{policy.annualPremium}</td>
-                        <td>{policy.losses}</td>
-                        <td>{policy.totalLosses}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="8">Sum:</td>
-                      <td>
-                        <input type="text" value="$1,21,000" readOnly />
-                        {/* {`$${calculateTotalLossesSum()}`} */}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
+                <WorkSection>
+                  <div className="work-header">Prior Policies Details</div>
+                  <div className="work-content">
+                    <div className="modern-table">
+                      <Table
+                        rowSelection={rowSelection}
+                        columns={priorPolicyColumns}
+                        dataSource={policies.map((item, index) => ({ key: index, ...item }))}
+                        pagination={{ pageSize: 4 }}
+                        style={{ width: '100%' }}
+                        className="custom-table-header"
+                        tableLayout="fixed"
+                        summary={(pageData) => {
+                          const total = pageData.reduce((sum, row) => {
+                            const cleaned = parseFloat((row.totalLosses || '').replace(/[^0-9.-]+/g, '')) || 0;
+                            return sum + cleaned;
+                          }, 0);
+                          return (
+                            <Table.Summary.Row>
+                              <Table.Summary.Cell index={0} colSpan={8} style={{ textAlign: 'right', fontWeight: 600 }}>
+                                Sum:
+                              </Table.Summary.Cell>
+                              <Table.Summary.Cell index={8}>
+                                ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                              </Table.Summary.Cell>
+                            </Table.Summary.Row>
+                          );
+                        }}
+                      />
+
+                    </div>
+                  </div>
+                </WorkSection>
+
                 <Row gutter={16}>
                   <Col span={20}></Col>
                   <Col span={4}>
                     <div>
-                    <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button>
+                      <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+                        Next
+                      </Button>
                     </div>
                   </Col>
                 </Row>
@@ -472,7 +478,7 @@ const LossInfo = ({ onNext }) => {
                   Add Loss
                 </Button> */}
                   <table style={{ marginBottom: "20px" }}>
-                   
+
                   </table>
 
 
@@ -543,19 +549,19 @@ const LossInfo = ({ onNext }) => {
                   <Button type="primary" onClick={showLossDetailModal} style={{ marginBottom: "10px" }}>
                     Add Loss Detail
                   </Button>
-                  <div style={{ 
+                  <div style={{
                     overflowX: 'auto',
                     width: '100%'
                   }}>
-                    <table style={{ 
+                    <table style={{
                       borderCollapse: 'collapse',
                       width: 'max-content',
                       minWidth: '100%'
                     }}>
                       <thead>
                         <tr>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px 4px',
                             width: '40px',
@@ -563,85 +569,85 @@ const LossInfo = ({ onNext }) => {
                             maxWidth: '40px',
                             textAlign: 'center'
                           }}></th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '80px',
                             whiteSpace: 'nowrap'
                           }}>UW Year</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '80px',
                             whiteSpace: 'nowrap'
                           }}>Carrier</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '140px',
                             whiteSpace: 'nowrap'
                           }}>Claim#</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '120px',
                             whiteSpace: 'nowrap'
                           }}>Policy Eff Date</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '120px',
                             whiteSpace: 'nowrap'
                           }}>Policy Exp Date</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '120px',
                             whiteSpace: 'nowrap'
                           }}>Date of Loss</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '120px',
                             whiteSpace: 'nowrap'
                           }}>Cause of Loss</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '140px',
                             whiteSpace: 'nowrap'
                           }}>LOB</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '100px',
                             whiteSpace: 'nowrap'
                           }}>LAE</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '140px',
                             whiteSpace: 'nowrap'
                           }}>Settlement Amount</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '120px',
                             whiteSpace: 'nowrap'
                           }}>Total Incurred</th>
-                          <th style={{ 
-                            backgroundColor: "#5d9de2", 
+                          <th style={{
+                            backgroundColor: "#5d9de2",
                             color: 'white',
                             padding: '8px',
                             minWidth: '80px',
@@ -652,7 +658,7 @@ const LossInfo = ({ onNext }) => {
                       <tbody>
                         {lossDetails.map((claim, index) => (
                           <tr key={index}>
-                            <td style={{ 
+                            <td style={{
                               padding: '8px 4px',
                               textAlign: 'center',
                               borderBottom: '1px solid #e8e8e8'
@@ -836,9 +842,9 @@ const LossInfo = ({ onNext }) => {
                         <Col span={20}></Col>
                         <Col span={4}>
                           <div>
-                          <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button>
+                            <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+                              Next
+                            </Button>
                           </div>
                         </Col>
                       </Row>
@@ -847,9 +853,9 @@ const LossInfo = ({ onNext }) => {
               </div>
             )}
 
-             {activeTab === "Lossruns" && (
+            {activeTab === "Lossruns" && (
               <div id="Lossruns" className="tabcontent" style={{ marginTop: "20px", marginBottom: "30px" }} >
-                <LossRun/>
+                <LossRun />
               </div>
             )}
           </div>
