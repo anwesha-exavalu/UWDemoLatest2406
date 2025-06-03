@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Radio, Modal, Typography, Row, Col, Checkbox } from 'antd';
+import { Container } from '../../styles/components/Layout';
+import { MainContainer } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 
 const { Text } = Typography;
 
@@ -49,7 +51,9 @@ function Rpa() {
   };
 
   return (
-    <div style={{ padding: '20px' }}>
+    <Container>
+      <MainContainer>
+    <div >
       <div style={{ fontSize: '16px', marginBottom: '20px' }}>Search Address</div>
       <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
         
@@ -103,6 +107,8 @@ function Rpa() {
         </Modal>
       </div>
     </div>
+    </MainContainer>
+    </Container>
   );
 }
 

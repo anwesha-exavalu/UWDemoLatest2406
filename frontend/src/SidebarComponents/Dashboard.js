@@ -335,16 +335,7 @@ const Dashboard = () => {
     ...data.senttobroker
   ];
 
-  // Portfolio component content
-  // const MyPortfolioContent = () => (
-  //   <div style={{ padding: '40px', textAlign: 'center', backgroundColor: '#FFFFFF', margin: '24px', borderRadius: '12px', border: '1px solid #E8E8E8' }}>
-  //     <Title level={3} style={{ color: '#262626', marginBottom: '16px' }}>My Portfolio</Title>
-  //     <Text style={{ color: '#8C8C8C', fontSize: '16px' }}>
-  //       Portfolio content will be displayed here. This is where you can view and manage your portfolio data.
-  //     </Text>
-  //     {/* Add your portfolio component content here */}
-  //   </div>
-  // );
+  
 
   // Dashboard content component
   const DashboardContent = () => (

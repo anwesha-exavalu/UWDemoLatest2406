@@ -6,10 +6,19 @@ import MapView from './Map';
 import LocationCard from './LocationCard';
 import styles from './LocationComponent.module.css';
 import '../../components/TableStyles.css';
-import Documents from '../../layout/Documents'
+import Documents from '../../layout/Documents';
+import { RoundedAddButton } from "../../styles/index";
+import NextArrow from "../../assets/img/nextArrow.png";
 import {
-  WorkSection
+  WorkSection,
+ 
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
+import {
+  
+  NextButtonContainer,
+  NextButton,
+  
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle'; 
 import RiskCard from './LocationCard';
 
 const { Option } = Select;
@@ -223,9 +232,11 @@ const LocationTable = ({ nextTab }) => {
     <div className={`${styles.container} tableContainer`} id='LocationTable'>
       <Row justify="end" style={{ marginBottom: 8, marginTop: 8, marginRight: 35 }}>
         <Col >
-          <Button type="primary" onClick={showModal}>
-            Add Location
-          </Button>
+          
+          <RoundedAddButton onClick={showModal}>
+                                      <span className="icon">+</span>
+                                       Add Location
+                                    </RoundedAddButton>
         </Col>
       </Row>
 
@@ -337,11 +348,24 @@ const LocationTable = ({ nextTab }) => {
       <Row gutter={16}>
         <Col span={20}></Col>
         <Col span={4}>
-          <div>
+          {/* <div>
             <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
               Next
             </Button>
-          </div>
+          </div> */}
+           <NextButtonContainer>
+                      <NextButton onClick={nextTab}>
+                        <div className="step-content-box">
+                          {"Next "}
+                          <img
+                            src={NextArrow}
+                            alt="Exavalu"
+                            title="Exavalu"
+                            className="logobox"
+                          />
+                        </div>
+                      </NextButton>
+                    </NextButtonContainer>
         </Col>
       </Row>
       <Documents />

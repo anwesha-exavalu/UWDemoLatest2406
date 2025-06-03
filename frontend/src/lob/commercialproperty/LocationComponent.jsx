@@ -11,25 +11,21 @@ import Tableantd
  from "../../layout/Tableantd";
 import LocationTable from "./LocationTable";
 import LocationTab from "./LocationTab";
+import { Container } from "../../styles/components/Layout";
+import { MainContainer } from "../../styles/pages/CreateSubmission/InsuredInfoStyle";
 
 export function LocationComponent() {
   return (
-    <Row>
-      <Col span={24}>
-        <main className={styles.mainContainer}>
+   <Container>
+    <MainContainer>
           <LocationTab/>
+          </MainContainer>
+         </Container>
+          
          
-          {/* <LocationTable/> */}
-          {/* <LocationHeader />
-          <Tableantd/>
-           <LocationForm/>  */}
-        </main>
-      </Col>
-      {/* <Col span={4}>
-        <Documents />
-       
-      </Col> */}
-    </Row>
+     
+     
+   
   );
 }
 

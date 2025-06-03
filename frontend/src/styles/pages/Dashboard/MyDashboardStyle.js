@@ -70,7 +70,29 @@ export const WelcomeSection = styled.div`
  
   padding: 14px;
  
-  
+    .filters-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+    padding: 16px;
+    background-color: ${({ theme }) => (theme === 'dark' ? '#464646' : '#f8f9fa')};
+    border-radius: 6px;
+    flex-wrap: wrap;
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: ${({ theme }) => (theme === 'dark' ? '#FFFFFF' : '#05004E')};
+    white-space: nowrap;
+  }
   .welcome-title {
     font-size: 24px !important;
     font-weight: 600 !important;
