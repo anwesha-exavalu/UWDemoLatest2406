@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Collapse, Table } from 'antd';
 
 export const FormDatePickerBox = styled.div`
   label::after {
@@ -220,7 +221,50 @@ export const FormCheckBoxStyled = styled.div`
     border-color: #1677ff;
   }
 `;
+export const StyledCollapse = styled(Collapse)`
+  border-radius: 8px;
+  overflow: hidden;
+  .ant-collapse-header {
+    background-color:#054F7D;
+    color: white !important;
+    font-weight: 600;
+    font-size: 16px;
+    padding: 12px 16px !important;
+  }
 
+  .ant-collapse-content-box {
+    background-color: #f9f9f9;
+    padding: 16px;
+  }
+
+  .ant-table {
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .ant-table-thead > tr > th {
+    background: #f3f4f6;
+    font-weight: 600;
+    font-size: 14px;
+    color: #555;
+  }
+
+  .ant-table-tbody > tr > td {
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .ant-table-cell {
+    padding: 12px;
+  }
+`;
+
+export const StyledLocationText = styled.div`
+  color: #1e4bd1;
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 12px;
+`;
 
 
 export const RoundedAddButton = styled.button`
@@ -256,4 +300,85 @@ export const RightAlignedContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   width: 100%;
+`;
+
+
+
+export const StyledDropdownWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 40px;
+
+  span {
+    font-size: 16px;
+    margin-right: 12px;
+    color: #333;
+    font-weight: 500;
+  }
+
+  .ant-select {
+    width: 250px;
+    height: 50px;
+  }
+
+  .ant-select-selector {
+    background-color: #403F3F !important;
+    color: white !important;
+    height: 50px !important;
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder {
+    color: white !important;
+    font-size: 16px;
+  }
+
+  .ant-select-arrow {
+    color: white !important;
+  }
+`;
+
+export const NotesWrapper = styled.div`
+  background-color: #FFFFFF;
+  margin: 28px;
+  border-radius: 10px;
+  border: 2px solid #E8E8E8;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin-left: 0px;
+  margin-right: 0px;
+
+  textarea.ant-input {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 14px;
+    border: 1px solid #e0e0e0;
+  }
+`;
+
+export const NotesHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  .icon {
+    background: #e8f0fe;
+    border-radius: 6px;
+    padding: 4px;
+    font-size: 18px;
+    color: #1a73e8;
+  }
+
+  .title {
+    font-weight: 600;
+    font-size: 20px;
+    color: black;
+    
+  }
 `;

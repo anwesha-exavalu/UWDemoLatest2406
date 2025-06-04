@@ -1,13 +1,24 @@
 import React, { useState } from 'react';
 import { Table, Input, Typography, Button, Select, Row, Col, Tooltip, Collapse } from 'antd';
-import { EditOutlined, SaveOutlined } from '@ant-design/icons';
+import { EditOutlined, SaveOutlined, FileTextOutlined } from '@ant-design/icons';
 import styles from './LocationComponent.module.css';
-import TableComponent from "../../components/Table"
+import { StyledDropdownWrapper } from "../../styles/index"
+import {
+  WorkSection,
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
+import { StyledLocationText, StyledCollapse } from "../../styles/index";
+import { NotesWrapper, NotesHeader } from "../../styles/index";
+import { RoundedAddButton } from "../../styles/index";
+import {
+  NextButtonContainer,
+  NextButton,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import NextArrow from "../../assets/img/nextArrow.png";
 
 const { Title } = Typography;
 const { Option } = Select;
 const { Panel } = Collapse;
-const Coverages = ({ onNext }) =>{
+const Coverages = ({ onNext }) => {
   const [editing, setEditing] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState("Location 1");
 
@@ -31,7 +42,7 @@ const Coverages = ({ onNext }) =>{
     //   { key: 5, label: 'Earthquake Coverage', coverageAmount: '$500,000', deductible: '$5000', approvedCoverage: '', approvedDeductible: '' },
     //   { key: 6, label: 'Annual Rental and fees', coverageAmount: '$400,000', deductible: '$4000', approvedCoverage: '', approvedDeductible: '' },
     //   { key: 7, label: 'Ord/ Law Blanket Limits', coverageAmount: '$400,000', deductible: '$4000', approvedCoverage: '', approvedDeductible: '' },
-     
+
     // ],
   };
 
@@ -80,8 +91,8 @@ const Coverages = ({ onNext }) =>{
       dataIndex: 'deductible',
       render: (text) => <span className="deductible">{text}</span>,
       // render: (text, record) => (
-    
-    
+
+
     },
     {
       title: 'Approved Coverage Amount',
@@ -115,75 +126,109 @@ const Coverages = ({ onNext }) =>{
 
   return (
     <div className={styles.container}>
-    <div className="coverages-screen" id="coverages">
-      {/* Location selection dropdown */}
-      <span style={{ marginRight: "10px", fontSize: "18px" }}>Please select the location:</span>
-      <Select
-       value={selectedLocation} 
-        onChange={handleLocationChange}
-        style={{ width: 250, height: 50, marginTop: 40 }}
-      >
-        <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
-        {/* <Option value="Location 2">1234 Elm Street,Apt 101,California,90210,USA</Option> */}
-      </Select>
-
-      {/* Edit/Save button */}
-      {selectedLocation && (
-        <>
-        <Row gutter={16}>
-        <Col span={22}>
-        </Col>
-        <Col span={2}>
-        
-          <Button
-            shape="circle"
-            icon={editing ?<Tooltip title="Save"><SaveOutlined style={{ fontSize: "20px" }}  /> </Tooltip>  : <Tooltip title="Edit"><EditOutlined style={{ fontSize: "20px" }}/></Tooltip> }
-            onClick={toggleEditing}
-            style={{ marginBottom: 16, marginLeft: 16, fontSize: 20 }}
-            
+      <div className="coverages-screen" id="coverages">
+        {/* Location selection dropdown */}
+        <StyledDropdownWrapper>
+          <span>Select Location:</span>
+          <Select
+            value={selectedLocation}
+            onChange={handleLocationChange}
+            dropdownStyle={{ fontSize: 14 }}
           >
-            {editing ? '' : ''}
-          </Button>
-          </Col>
-          </Row>
-          {/* Table for the selected location */}
-          <Collapse defaultActiveKey={['1']} style={{ marginTop: '20px' }}>
-          <Panel header="Building No: 123-05" key="1">
-             <TableComponent
-                    title={"Coverages"}
-                    columns={columns}
-                    data={rowData}
-                    style={{ marginTop: 2 }}
-                  />
-         
-        
-      </Panel></Collapse>
+            <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
+            {/* <Option value="Location 2">1234 Elm Street,Apt 101,California,90210,USA</Option> */}
+          </Select>
+        </StyledDropdownWrapper>
+        {/* Edit/Save button */}
+        {selectedLocation && (
+          <>
+            <Row gutter={16}>
+              <Col span={22}>
+              </Col>
+              <Col span={2}>
 
-      {/* UW Notes section */}
-      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <Title level={4}>Notes:</Title>
-        <Input.TextArea
-          placeholder="Enter notes here"
-          rows={4}
-          style={{ marginTop: 10, width: '100%', border: '2px solid gray' }}
-        />
+                <Button
+                  shape="circle"
+                  icon={editing ? <Tooltip title="Save"><SaveOutlined style={{ fontSize: "20px" }} /> </Tooltip> : <Tooltip title="Edit"><EditOutlined style={{ fontSize: "20px" }} /></Tooltip>}
+                  onClick={toggleEditing}
+                  style={{ marginBottom: 16, marginLeft: 16, fontSize: 20 }}
+
+                >
+                  {editing ? '' : ''}
+                </Button>
+
+              </Col>
+              {/* <Row style={{ width: '100%' }} justify="end">
+                <Col>
+                  <RoundedAddButton onClick={toggleEditing}>
+                    <span className="icon">+</span>
+                    Edit
+                  </RoundedAddButton>
+                </Col>
+              </Row> */}
+            </Row>
+            {/* Table for the selected location */}
+
+
+            <WorkSection>
+
+              <div className="work-content">
+                <StyledCollapse defaultActiveKey={['1']}>
+                  <Panel header="Coverages" key="1">
+                    <StyledLocationText>
+                      Location – 123–05 84th Avenue, Kew Gardens, NY 11415
+                    </StyledLocationText>
+                    <div className="modern-table">
+                      <Table
+                        columns={columns}
+                        dataSource={rowData.map(item => ({ ...item, key: item.key }))}
+                        pagination={{ pageSize: 4 }}
+                        style={{ width: '100%' }}
+                        className="custom-table-header"
+                        tableLayout="fixed"
+                      />
+                    </div>
+                  </Panel>
+                </StyledCollapse>
+              </div>
+            </WorkSection>
+
+
+            {/* UW Notes section */}
+            <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+              <NotesHeader>
+                <FileTextOutlined className="icon" />
+                <span className="title">Notes</span>
+              </NotesHeader>
+              <WorkSection>
+                <Input.TextArea
+                  placeholder="Enter notes here"
+                  rows={4}
+                />
+              </WorkSection>
+            </div>
+
+            <Row gutter={16}>
+              <Col span={20}></Col>
+              <Col span={4}>
+                <NextButtonContainer>
+                  <NextButton onClick={onNext}>
+                    <div className="step-content-box">
+                      {"Next "}
+                      <img
+                        src={NextArrow}
+                        alt="Exavalu"
+                        title="Exavalu"
+                        className="logobox"
+                      />
+                    </div>
+                  </NextButton>
+                </NextButtonContainer>
+              </Col>
+            </Row>
+          </>
+        )}
       </div>
-      
-      <Row gutter={16}>
-                        <Col span={20}></Col>
-                        <Col span={4}>
-                            <div >
-                            <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button></div></Col>
-                        {/*} <Col span={4}>
-            <div >
-            <button type="account" style={{width: "10rem"}} onClick={() => handleClick()}><b>Go To Account</b></button>
-          </div></Col>*/}
-                    </Row>
-      </>
-      )}
-    </div>
     </div>
   );
 };
