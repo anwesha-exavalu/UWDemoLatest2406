@@ -13,11 +13,11 @@ import {
   WorkSection,
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
 import {
-  
+
   NextButtonContainer,
   NextButton,
-  
-} from '../../styles/pages/CreateSubmission/InsuredInfoStyle'; 
+
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import RiskCard from './LocationCard';
 
 const { Option } = Select;
@@ -231,11 +231,11 @@ const LocationTable = ({ nextTab }) => {
     <div className={`${styles.container} tableContainer`} id='LocationTable'>
       <Row justify="end" style={{ marginBottom: 8, marginTop: 8, marginRight: 35 }}>
         <Col >
-          
+
           <RoundedAddButton onClick={showModal}>
-                                      <span className="icon">+</span>
-                                       Add Location
-                                    </RoundedAddButton>
+            <span className="icon">+</span>
+            Add Location
+          </RoundedAddButton>
         </Col>
       </Row>
 
@@ -352,19 +352,19 @@ const LocationTable = ({ nextTab }) => {
               Next
             </Button>
           </div> */}
-           <NextButtonContainer>
-                      <NextButton onClick={nextTab}>
-                        <div className="step-content-box">
-                          {"Next "}
-                          <img
-                            src={NextArrow}
-                            alt="Exavalu"
-                            title="Exavalu"
-                            className="logobox"
-                          />
-                        </div>
-                      </NextButton>
-                    </NextButtonContainer>
+          <NextButtonContainer>
+            <NextButton onClick={nextTab}>
+              <div className="step-content-box">
+                {"Next "}
+                <img
+                  src={NextArrow}
+                  alt="Exavalu"
+                  title="Exavalu"
+                  className="logobox"
+                />
+              </div>
+            </NextButton>
+          </NextButtonContainer>
         </Col>
       </Row>
       <Documents />

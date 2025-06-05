@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Button, ConfigProvider, Modal, Space, Col, Select } from 'antd';
+import { Button, ConfigProvider, Modal, Space, Select } from 'antd';
 import { createStyles, useTheme } from 'antd-style';
+import styled from 'styled-components';
 
 const useStyle = createStyles(({ token }) => ({
   'my-modal-body': {
@@ -22,6 +23,25 @@ const useStyle = createStyles(({ token }) => ({
     padding: token.paddingLG,
   },
 }));
+
+const VerticalButtonGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-end;
+
+  button {
+    width: 100px;
+    height: 36px;
+    border-radius: 6px;
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    font-weight: 500;
+    color: #000;
+    text-align: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+`;
 
 const ModalDesign = () => {
   const [isModalOpen, setIsModalOpen] = useState([false, false, false]);
@@ -70,7 +90,7 @@ const ModalDesign = () => {
 
   const renderFooter = (modalIdx) => (
     <Space>
-      {modalIdx === 2 ? ( // For Referral modal only
+      {modalIdx === 2 ? (
         <Button type="primary" onClick={() => toggleModal(modalIdx, false)}>
           OK
         </Button>
@@ -93,22 +113,17 @@ const ModalDesign = () => {
 
   return (
     <>
-      <Col span={24} style={{ display: "flex", justifyContent: "center" }}>
+      <VerticalButtonGroup>
         {actions.map(({ label, color, index }) => (
           <Button
             key={label}
-            type="primary"
-            style={{
-              padding: "25px 75px",
-              backgroundColor: color,
-              margin: "0 10px", // Adjust the value as needed to reduce the gap
-            }}
+            style={{ backgroundColor: color }}
             onClick={() => toggleModal(index, true)}
           >
             {label}
           </Button>
         ))}
-      </Col>
+      </VerticalButtonGroup>
 
       <ConfigProvider modal={{ classNames, styles: modalStyles }}>
         {actions.map(({ label, message, index }) => (
@@ -117,6 +132,7 @@ const ModalDesign = () => {
             title={label}
             open={isModalOpen[index]}
             footer={renderFooter(index)}
+            onCancel={() => toggleModal(index, false)}
           >
             <p>{message}</p>
             {label === "Referral" && (
@@ -125,7 +141,7 @@ const ModalDesign = () => {
                 style={{ width: "100%", marginTop: "10px" }}
                 onChange={(value) => setSelectedUnderwriter(value)}
               >
-              <Select.Option value="underwriter1">Henry Oscar</Select.Option>
+                <Select.Option value="underwriter1">Henry Oscar</Select.Option>
                 <Select.Option value="underwriter2">Alexander William</Select.Option>
                 <Select.Option value="underwriter3">Samuel Smith</Select.Option>
               </Select>

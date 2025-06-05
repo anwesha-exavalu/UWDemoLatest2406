@@ -382,3 +382,39 @@ export const NotesHeader = styled.div`
     
   }
 `;
+
+
+
+export const NotesSectionWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 20px 0;
+
+  .notes-box {
+    flex: 1;
+    margin-right: 20px;
+
+    textarea {
+      border-radius: 8px;
+      font-size: 14px;
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    button {
+      width: 100px;
+      height: 36px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: white;
+      font-weight: 500;
+      cursor: pointer;
+    }
+  }
+`;
+

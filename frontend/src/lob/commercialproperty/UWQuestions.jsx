@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
 import "./UWQuestions.css";
-import { Col, Row, Button, Popover } from "antd";
+import { Input, Col, Row, Button, Popover } from "antd";
 // import Documents from "../../layout/RightSidebar";
 import ModalDesign from "../../layout/Modal";
 import FormInput from "../../components/FormInput";
 import DropdownSelect from "../../components/FormDropdown";
 import PriorityPopup from "../../SidebarComponents/PriorityPopup";
- 
- 
+import { UWQuestionsContainer } from "../../styles/pages/UWQuestions";
+import { Container } from "../../styles/components/Layout";
+import { FileTextOutlined } from '@ant-design/icons';
+import {
+  MainContainer,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import {
+  WorkSection,
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
+import { NotesHeader } from "../../styles/index";
+import {
+  NextButtonContainer,
+  NextButton,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import NextArrow from "../../assets/img/nextArrow.png";
+
+
+
 const PRODUCTIONURL = process.env.REACT_APP_UWQUESTIONS_URL;
 const uwquestionsData = [
   {
@@ -60,15 +76,15 @@ const uwquestionsData = [
       "The applicant has not faced any financial setbacks in the past five years.",
   },
 ];
- 
+
 const UWQuestions = ({ onNext }) => {
   const [questions, setQuestions] = useState(uwquestionsData);
   const [notes, setNotes] = useState(" ");
   const [dynamicQuestions, setDynamicQuestions] = useState([]);
- 
- 
+
+
   // const [uwnotes, setUWNotes] = useState("");
- 
+
   // const handleResponseChange = (index, newResponse) => {
   //   const updatedQuestions = [...questions];
   //   updatedQuestions[index].response = newResponse;
@@ -91,8 +107,8 @@ const UWQuestions = ({ onNext }) => {
         setDynamicQuestions([]);
       });
   }, []);
- 
- 
+
+
   const handleCommentChange = (index, newComment) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].comment = newComment;
@@ -107,206 +123,202 @@ const UWQuestions = ({ onNext }) => {
     client: "Kew Gardens Property",
     lob: "Commercial Property"
   };
- 
+
   return (
-    <Row>
-      <Col span={24}>
-        <div className="mainContainer" id="uw">
-          {/* <div className="side-by-side-container"> */}
-          <div className="uw-questions-section">
-            <h2>UW Questions</h2>
-            <table id="underwriting-Table">
-              <thead>
-                <tr>
-                  <th className="table-header" style={{ width: "40%" }}>
-                    Questions
-                  </th>
-                  <th className="table-header" style={{ width: "15%" }}>
-                    Response
-                  </th>
-                  <th className="table-header" style={{ width: "45%" }}>
-                    Comment
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {questions.map((item, index) => (
-                  <tr key={index}>
-                    <td>
-                      <b>{item.question}</b>
-                    </td>
-                    <td>
-                      <DropdownSelect
-                        options={[
-                          { value: "yes", label: "Yes" },
-                          { value: "no", label: "No" },
-                          { value: "na", label: "can't be determined" },
-                        ]}
-                        required={true}
-                        value={item.response}
-                      />
-                    </td>
-                    <td>
-                      <FormInput
-                        value={item.comment}
-                        onChange={(e) =>
-                          handleCommentChange(index, e.target.value)
-                        }
-                      />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {/* </div> */}
-          </div>
-          {/* ✅ Dynamic Section Below */}
-          <div className="uw-questions-section" style={{ marginTop: "40px" }}>
-            <h2>UW Questions(AI)</h2>
-            <table id="underwriting-Table">
-              <thead>
-                <tr>
-                  <th className="table-header" style={{ width: "40%" }}>
-                    Questions
-                  </th>
-                  <th className="table-header" style={{ width: "15%" }}>
-                    Response
-                  </th>
-                  <th className="table-header" style={{ width: "45%" }}>
-                    Comment
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {Array.isArray(dynamicQuestions) &&
-                  dynamicQuestions.map((item, index) => (
-                    <tr key={index}>
-                      <td>
-                        <b>{item.Question}</b>
-                      </td>
-                      <td>
-                        <DropdownSelect
-                          options={[
-                            { value: "yes", label: "Yes" },
-                            { value: "no", label: "No" },
-                            { value: "na", label: "can't be determined" },
-                          ]}
-                          required={true}
-                          value={item.Response?.toLowerCase()}
-                        />
-                      </td>
-                      <td>
-                      <FormInput
-                          value={item.Comment || ""}
-                          onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
-                        />
-                      </td>
+    <Container>
+      <MainContainer>
+        <Row>
+          <Col span={24}>
+            <div id="uw">
+              <UWQuestionsContainer>
+                <h2>UW Questions</h2>
+                <table id="underwriting-Table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "40%" }}>Questions</th>
+                      <th style={{ width: "15%" }}>Response</th>
+                      <th style={{ width: "45%" }}>Comment</th>
                     </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
- 
-          {/* System Recommended Decision */}
- 
- 
- 
-          {/* Override Decision Section */}
-          <div
-            className="override-decision-container"
-            style={{ marginBottom: 20 }}
-          >
-            <h5>Notes</h5>
-            <textarea
-              className="notes"
-              placeholder=""
-              value={notes}
-              onChange={(e) => setNotes(e.target.value)}
-              style={{
-                width: "100%",
-                minHeight: "100px",
-                borderRadius: "8px",
-                padding: "10px",
-                border: "1px solid #d9d9d9",
-                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                resize: "vertical",
-              }}
-            />
-            <h5 style={{ marginTop: "20px" }}>Claim Propensity</h5>
-            <div
-              style={{
-                padding: '16px',
-                border: '1px solid #e1e1e1',
-                borderRadius: '12px',
-                display: 'block',
-                width: '100%',
-                backgroundColor: 'white',
-                boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                transition: 'box-shadow 0.2s ease-in-out',
-                marginBottom: '20px'
-              }}
-            >
-              <Popover
-                content={<PriorityPopup predictionData="Medium" record={record} />}
-                trigger="click"
-                placement="topLeft"
-                overlayStyle={{ width: 500 }}
+                  </thead>
+                  <tbody>
+                    {questions.map((item, index) => (
+                      <tr key={index}>
+                        <td><b>{item.question}</b></td>
+                        <td>
+                          <DropdownSelect
+                            options={[
+                              { value: "yes", label: "Yes" },
+                              { value: "no", label: "No" },
+                              { value: "na", label: "can't be determined" },
+                            ]}
+                            required={true}
+                            value={item.response}
+                          />
+                        </td>
+                        <td>
+                          <FormInput
+                            value={item.comment}
+                            onChange={(e) => handleCommentChange(index, e.target.value)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </UWQuestionsContainer>
+              {/* ✅ Dynamic Section Below */}
+              <UWQuestionsContainer>
+                <h2>UW Questions(AI)</h2>
+                <table id="underwriting-Table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: "40%" }}>Questions</th>
+                      <th style={{ width: "15%" }}>Response</th>
+                      <th style={{ width: "45%" }}>Comment</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Array.isArray(dynamicQuestions) &&
+                      dynamicQuestions.map((item, index) => (
+                        <tr key={index}>
+                          <td>
+                            <b>{item.Question}</b>
+                          </td>
+                          <td>
+                            <DropdownSelect
+                              options={[
+                                { value: "yes", label: "Yes" },
+                                { value: "no", label: "No" },
+                                { value: "na", label: "can't be determined" },
+                              ]}
+                              required={true}
+                              value={item.Response?.toLowerCase()}
+                            />
+                          </td>
+                          <td>
+                            <FormInput
+                              value={item.Comment || ""}
+                              onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+              </UWQuestionsContainer>
+
+              {/* System Recommended Decision */}
+              <NotesHeader>
+                <FileTextOutlined className="icon" />
+                <span className="title">Notes</span>
+              </NotesHeader>
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                  marginBottom: "20px",
+                }}
               >
-                <Button
-                  onClick={(e) => e.stopPropagation()}
-                  style={{
-                    fontSize: "16px",
-                    width: "150px",
-                    height: "40px",
-                    padding: "5px 20px", // Balanced padding for better spacing
-                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                    fontWeight: "600",
-                    borderRadius: "4px", // Rounded corners for a modern look
-                    color: "white",
-                    backgroundColor: "#FAAF25",
-                    border: "none",
-                    cursor: "pointer",
-                    lineHeight: "1.5", // Ensures text is vertically centered
-                    display: "inline-block",
-                    textAlign: "center",
-                  }}
-                >
-                  Risk - Medium
-                </Button>
-              </Popover>
-            </div>
-            <div className="decision-container">
-              <ModalDesign />
-            </div>
-          </div>
-          <Row gutter={16}>
-            <Col span={20}></Col>
-            <Col span={4}>
-              <div>
-                <Button
-                  type="primary"
-                  onClick={onNext}
-                  style={{
-                    width: "10rem",
-                    marginBottom: "1rem",
-                    marginTop: "1rem",
-                    marginRight: "3px",
-                    backgroundColor: "blue",
-                  }}
-                >
-                  Next
-                </Button>
+                {/* Notes TextArea */}
+                <div style={{ flex: 1, marginRight: "20px" }}>
+                  <WorkSection>
+                    <Input.TextArea
+                      placeholder="Enter notes here"
+                      rows={4}
+                      style={{
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                      }}
+                    />
+                  </WorkSection>
+                </div>
+
+                {/* Buttons from ModalDesign */}
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                  <ModalDesign />
+                </div>
               </div>
-            </Col>
-          </Row>
-        </div>
-      </Col>
-      {/* Uncomment and use if Documents component is needed in future */}
-      {/* <Col span={4}>
+
+              {/* Override Decision Section */}
+              <div
+
+                style={{ marginBottom: 20 }}
+              >
+
+                <h5 style={{ marginTop: "20px" }}>Claim Propensity</h5>
+                <div
+                  style={{
+                    padding: '16px',
+                    border: '1px solid #e1e1e1',
+                    borderRadius: '12px',
+                    display: 'block',
+                    width: '100%',
+                    backgroundColor: 'white',
+                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                    transition: 'box-shadow 0.2s ease-in-out',
+                    marginBottom: '20px'
+                  }}
+                >
+                  <Popover
+                    content={<PriorityPopup predictionData="Medium" record={record} />}
+                    trigger="click"
+                    placement="topLeft"
+                    overlayStyle={{ width: 500 }}
+                  >
+                    <Button
+                      onClick={(e) => e.stopPropagation()}
+                      style={{
+                        fontSize: "16px",
+                        width: "150px",
+                        height: "40px",
+                        padding: "5px 20px", // Balanced padding for better spacing
+                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                        fontWeight: "600",
+                        borderRadius: "4px", // Rounded corners for a modern look
+                        color: "white",
+                        backgroundColor: "#FAAF25",
+                        border: "none",
+                        cursor: "pointer",
+                        lineHeight: "1.5", // Ensures text is vertically centered
+                        display: "inline-block",
+                        textAlign: "center",
+                      }}
+                    >
+                      Risk - Medium
+                    </Button>
+                  </Popover>
+                </div>
+              </div>
+              <Row gutter={16}>
+                <Col span={20}></Col>
+                <Col span={4}>
+                  <NextButtonContainer>
+                    <NextButton onClick={onNext}>
+                      <div className="step-content-box">
+                        {"Next "}
+                        <img
+                          src={NextArrow}
+                          alt="Exavalu"
+                          title="Exavalu"
+                          className="logobox"
+                        />
+                      </div>
+                    </NextButton>
+                  </NextButtonContainer>
+                </Col>
+              </Row>
+            </div>
+          </Col>
+          {/* Uncomment and use if Documents component is needed in future */}
+          {/* <Col span={4}>
         <Documents />
       </Col> */}
-    </Row>
+        </Row>
+      </MainContainer>
+    </Container>
   );
 };
- 
+
 export default UWQuestions;
