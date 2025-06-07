@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import './LossInfo.css';  // Import the CSS file
+// import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
 import { Button, Card, Col, Modal, Row, Input, DatePicker, Collapse, Table } from 'antd';
 import Documents from '../../layout/Documents';
@@ -362,8 +362,8 @@ const LossInfo = ({ onNext }) => {
                     key="1"
                     style={{ padding: '20px 0' }}
                   >
-                    <div style={{ marginBottom: "20px" }}>
-                      <Row style={{ width: '100%' }} justify="end">
+                    <div>
+                      <Row style={{ width: '100%',marginTop:-80 }} justify="end">
                         <Col>
                           <RoundedAddButton onClick={showAddPolicyModal}>
                             <span className="icon">+</span>
@@ -444,7 +444,7 @@ const LossInfo = ({ onNext }) => {
                     style={{ padding: '20px 0' }}
                   >
                     <div>
-                      <Row style={{ width: '100%' }} justify="end">
+                      <Row style={{ width: '100%', marginTop:-80 }} justify="end">
                         <Col>
                           <RoundedAddButton onClick={showLossDetailModal}>
                             <span className="icon">+</span>

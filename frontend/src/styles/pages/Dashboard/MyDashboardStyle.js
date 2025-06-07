@@ -68,7 +68,7 @@ export const TopBar = styled.div`
 
 export const WelcomeSection = styled.div`
  
-  padding: 14px;
+
  
     .filters-section {
     display: flex;
@@ -103,13 +103,13 @@ export const WelcomeSection = styled.div`
   
   .tab-navigation {
     display: flex;
-    justify-content: center;
+    
     gap: 0;
     border: 1px solid #D9D9D9;
     border-radius: 6px;
     overflow: hidden;
     display: inline-flex;
-    margin-right: 15px;
+   
     
     .nav-tab {
       background-color: #FFFFFF !important;
@@ -117,9 +117,7 @@ export const WelcomeSection = styled.div`
       color: #666666 !important;
       font-weight: 500;
       height: 40px;
-      padding: 0 24px;
       border-radius: 0 !important;
-      
       &.active {
         background-color: #262626 !important;
         color: #FFFFFF !important;

@@ -11,6 +11,7 @@ import { RoundedAddButton } from "../../styles/index";
 import NextArrow from "../../assets/img/nextArrow.png";
 import {
   WorkSection,
+
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
 import {
 
@@ -19,6 +20,7 @@ import {
 
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import RiskCard from './LocationCard';
+import { Container } from '../../styles/components/Layout';
 
 const { Option } = Select;
 
@@ -228,8 +230,9 @@ const LocationTable = ({ nextTab }) => {
 
 
   return (
+    <Container>
     <div className={`${styles.container} tableContainer`} id='LocationTable'>
-      <Row justify="end" style={{ marginBottom: 8, marginTop: 8, marginRight: 35 }}>
+      <Row justify="end" style={{ marginBottom: 8, marginTop: -80}}>
         <Col >
 
           <RoundedAddButton onClick={showModal}>
@@ -478,6 +481,7 @@ const LocationTable = ({ nextTab }) => {
         </Form>
       </Modal>
     </div>
+    </Container>
   );
 };
 

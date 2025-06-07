@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from "react";
 import styles from './LocationComponent.module.css';
-import { Col, Row, Select, Button, Radio, Checkbox } from "antd";
+import { Col, Row, Select, Button, Radio, Checkbox, Table } from "antd";
 import FormInput from "../../components/FormInput";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Container } from "../../styles/components/Layout";
 import NextArrow from "../../assets/img/nextArrow.png";
 import Rpa from "./Rpa";
 import DropdownSelect from "../../components/FormDropdown";
+import propertyicon from "../../assets/img/property-icon.png";
+import businessicon from "../../assets/img/business-icon.png";
+import mailAdd from "../../assets/img/mailingAddress.png";
+import homeicon from "../../assets/img/home-icon.png";
+import addDetails from "../../assets/img/addDetails-icon.png";
 import {
-WelcomeSection,
+  WelcomeSection,
   WorkSection,
-
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
 import {
   MainContainer,
@@ -22,11 +26,9 @@ import {
   Card,
   CardHeader,
   CardContent,
-
   FormField,
   Label,
   Input,
-
   NextButtonContainer,
   NextButton,
   ActionButton,
@@ -37,783 +39,461 @@ import {
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 
 import useMetaData from "../../context/metaData";
+import { useLocationBuildingConfig } from './locationBuildingData';
+
 const { Option } = Select;
 
 export function LocationBuildingTab() {
-  const [selectedLocation, setSelectedLocation] = useState("123-05 84th Avenue");
-  const [activeTab, setActiveTab] = useState("Tab1");
+  // Get configuration data
+  const config = useLocationBuildingConfig();
+  
+  // State management
+  const [selectedLocation, setSelectedLocation] = useState(config.locations[0]?.value || "");
+  const [activeTab, setActiveTab] = useState(config.ui.tabs.tab1.id);
   const [locationData, setLocationData] = useState({});
-  const [formData, setFormData] = useState({
-    yearBuilt: "",
-    squareFootage: "",
-    unitsCount: "",
-    storiesCount: "",
-    freePlacesCount: "",
-    roomsCount: "",
-    parkingSpacesCount: "",
-    protectiveDevices: "",
-    freePlacesCount2: "",
-    constructionType: "",
-    fireSprinkler: "",
-    sprinkleredArea: "",
-    roofType: "",
-    estimatedrcv: "",
-    propertyClass: "",
-    coverages: "",
-    rateType: "",
-    causeofLoss: "",
-    excludeVandalism: "",
-    excludeSprinkler: "",
-    windDeductable: "",
-    valuationMethod: "",
-    autoIncrease: "",
-    coinsurance: "",
-    buildingLimit: "",
-    buildingDeductable: "",
-    bppl: "",
-    bppd: "",
-    causeofLoss2: "",
-    excludeVandalism2: "",
-    excludeSprinkler2: "",
-    windDeductable2: "",
-    valuationMethod2: "",
-    reportingForm: "",
-    coinsurance2: "",
-    incomeLimitManufacture: "",
-    incomeLimitMfg: "",
-    incomeLimitrental: "",
-    coinsurance3: "",
-    causeofLoss3: "",
-    waitingPeriod: "",
-    periodOfCoverages: "",
-    floodCoveragelimit: "",
-    floodCoveragemonthlyLimit: "",
-    earthquakeCoveragelimit: "",
-    earthquakeCoveragemonthlylimit: "",
-    showFloodFields: false,
-    showEarthquakeFields: false,
-  });
+  const [formData, setFormData] = useState({ ...config.defaultFormData });
   const [selectedBuildingIndex, setSelectedBuildingIndex] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
 
+  const { theme } = useMetaData();
 
+  // Icon mapping
+  const iconMap = {
+    homeicon: homeicon,
+    propertyicon: propertyicon,
+    businessicon: businessicon,
+    mailAdd: mailAdd,
+    addDetails: addDetails
+  };
 
-
-
-
+  // Event handlers
   const handleLocationChange = (value) => {
     setSelectedLocation(value);
     setSelectedBuildingIndex(null);
     setIsEditing(false);
-
-    // Set form data to blank for the new location if no data exists
-    setFormData({
-      yearBuilt: "",
-      squareFootage: "",
-      unitsCount: "",
-      storiesCount: "",
-      freePlacesCount: "",
-      roomsCount: "",
-      parkingSpacesCount: "",
-      protectiveDevices: "",
-      freePlacesCount2: "",
-      constructionType: "",
-      fireSprinkler: "",
-      sprinkleredArea: "",
-      roofType: "",
-      estimatedrcv: "",
-      propertyClass: "",
-      coverages: "",
-      rateType: "",
-      causeofLoss: "",
-      excludeVandalism: "",
-      excludeSprinkler: "",
-      windDeductable: "",
-      valuationMethod: "",
-      autoIncrease: "",
-      coinsurance: "",
-      buildingLimit: "",
-      buildingDeductable: "",
-      bppl: "",
-      bppd: "",
-      causeofLoss2: "",
-      excludeVandalism2: "",
-      excludeSprinkler2: "",
-      windDeductable2: "",
-      valuationMethod2: "",
-      reportingForm: "",
-      coinsurance2: "",
-      incomeLimitManufacture: "",
-      incomeLimitMfg: "",
-      incomeLimitrental: "",
-      coinsurance3: "",
-      causeofLoss3: "",
-      waitingPeriod: "",
-      periodOfCoverages: "",
-      floodCoveragelimit: "",
-      floodCoveragemonthlyLimit: "",
-      earthquakeCoveragelimit: "",
-      earthquakeCoveragemonthlylimit: "",
-      showFloodFields: false,
-      showEarthquakeFields: false,
-    });
+    setFormData({ ...config.defaultFormData });
   };
 
   const handleInputChange = (name, value) => {
-    setFormData({
-      ...formData,
+    setFormData(prev => ({
+      ...prev,
       [name]: value,
-    });
+    }));
   };
 
+  const handleCheckboxChange = (field) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: !prev[field],
+    }));
+  };
 
+  const handleAdditionalCoverageInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Building management functions
   const addOrUpdateBuilding = () => {
     const updatedBuildings = locationData[selectedLocation] || [];
-    if (isEditing) {
-      // Update existing building
-      updatedBuildings[selectedBuildingIndex] = formData;
+    
+    if (isEditing && selectedBuildingIndex !== null) {
+      updatedBuildings[selectedBuildingIndex] = { ...formData };
       setIsEditing(false);
       setSelectedBuildingIndex(null);
     } else {
-      // Add new building
-      updatedBuildings.push(formData);
+      updatedBuildings.push({ ...formData });
     }
 
-    setLocationData({
-      ...locationData,
+    setLocationData(prev => ({
+      ...prev,
       [selectedLocation]: updatedBuildings,
-    });
+    }));
 
-    // Reset form
-    setFormData({
-      yearBuilt: "",
-      squareFootage: "",
-      unitsCount: "",
-      storiesCount: "",
-      freePlacesCount: "",
-      roomsCount: "",
-      parkingSpacesCount: "",
-      protectiveDevices: "",
-      freePlacesCount2: "",
-      constructionType: "",
-      fireSprinkler: "",
-      sprinkleredArea: "",
-      roofType: "",
-      estimatedrcv: "",
-      propertyClass: "",
-      coverages: "",
-      rateType: "",
-      causeofLoss: "",
-      excludeVandalism: "",
-      excludeSprinkler: "",
-      windDeductable: "",
-      valuationMethod: "",
-      autoIncrease: "",
-      coinsurance: "",
-      buildingLimit: "",
-      buildingDeductable: "",
-      bppl: "",
-      bppd: "",
-      causeofLoss2: "",
-      excludeVandalism2: "",
-      excludeSprinkler2: "",
-      windDeductable2: "",
-      valuationMethod2: "",
-      reportingForm: "",
-      coinsurance2: "",
-      incomeLimitManufacture: "",
-      incomeLimitMfg: "",
-      incomeLimitrental: "",
-      coinsurance3: "",
-      causeofLoss3: "",
-      waitingPeriod: "",
-      periodOfCoverages: "",
-      floodCoveragelimit: "",
-      floodCoveragemonthlyLimit: "",
-      earthquakeCoveragelimit: "",
-      earthquakeCoveragemonthlylimit: "",
-      showFloodFields: false,
-      showEarthquakeFields: false,
-    });
+    setFormData({ ...config.defaultFormData });
   };
-  const { theme } = useMetaData();
+
   const selectBuilding = (index) => {
     const buildings = locationData[selectedLocation] || [];
     setSelectedBuildingIndex(index);
-    setFormData(buildings[index]);
+    setFormData({ ...buildings[index] });
     setIsEditing(true);
   };
 
   const deleteBuilding = (index) => {
-    const updatedBuildings = locationData[selectedLocation] || [];
+    const updatedBuildings = [...(locationData[selectedLocation] || [])];
     updatedBuildings.splice(index, 1);
 
-    setLocationData({
-      ...locationData,
+    setLocationData(prev => ({
+      ...prev,
       [selectedLocation]: updatedBuildings,
-    });
+    }));
 
     if (selectedBuildingIndex === index) {
-      setFormData({
-        yearBuilt: "2001",
-        squareFootage: "12000sq ft",
-        unitsCount: "25",
-        storiesCount: "7",
-        freePlacesCount: "2",
-        roomsCount: "10",
-        parkingSpacesCount: "10",
-        protectiveDevices: "yes",
-        freePlacesCount2: "2",
-        constructionType: "commercial",
-        fireSprinkler: "yes",
-        sprinkleredArea: "5000sq ft",
-        roofType: "",
-        estimatedrcv: "",
-        propertyClass: "",
-        coverages: "",
-        rateType: "",
-        causeofLoss: "",
-        excludeVandalism: "",
-        excludeSprinkler: "",
-        windDeductable: "",
-        valuationMethod: "",
-        autoIncrease: "",
-        coinsurance: "",
-        buildingLimit: "",
-        buildingDeductable: "",
-        bppl: "",
-        bppd: "",
-        causeofLoss2: "",
-        excludeVandalism2: "",
-        excludeSprinkler2: "",
-        windDeductable2: "",
-        valuationMethod2: "",
-        reportingForm: "",
-        coinsurance2: "",
-        incomeLimitManufacture: "",
-        incomeLimitMfg: "",
-        incomeLimitrental: "",
-        coinsurance3: "",
-        causeofLoss3: "",
-        waitingPeriod: "",
-        periodOfCoverages: "",
-        floodCoveragelimit: "",
-        floodCoveragemonthlyLimit: "",
-        earthquakeCoveragelimit: "",
-        earthquakeCoveragemonthlylimit: "",
-        showFloodFields: false,
-        showEarthquakeFields: false,
-
-      });
+      setFormData({ ...config.deleteFormData });
       setIsEditing(false);
       setSelectedBuildingIndex(null);
     }
   };
 
   const nextTab = () => {
-    setActiveTab("Tab2");
+    setActiveTab(config.ui.tabs.tab2.id);
   };
 
-  const handleAdditionalCoverageInputChange = (field, value) => {
-    setFormData(prevData => ({
-      ...prevData,
-      [field]: value,
-    }));
-  };
-
-  const handleCheckboxChange = (field) => {
-    setFormData(prevData => ({
-      ...prevData,
-      [field]: !prevData[field],
-    }));
-  };
-  useEffect(() => {
-    // Trigger the button's functionality on component load
-    addOrUpdateBuilding();
-  }, [])
-  return (
-   <Container>
-  <Row gutter={[16, 16]} align="middle" style={{ marginTop: "16px" }}>
-    {/* Dropdown in first column */}
-    <Col flex="auto">
-      <WelcomeSection>
-   <div className="filter-group">
-        <span className="filter-label">Please select the location:</span>
-        <Select
-          placeholder="Select Location"
-          onChange={handleLocationChange}
-          value={selectedLocation}
-          style={{ width: 220, height: 45, boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" }}
+  // Table configuration
+  const buildingColumns = [
+    {
+      title: 'Select',
+      dataIndex: 'select',
+      key: 'select',
+      width: 80,
+      render: (_, record, index) => (
+        <Radio
+          checked={selectedBuildingIndex === index}
+          onChange={(e) => {
+            e.stopPropagation();
+            selectBuilding(index);
+          }}
+        />
+      )
+    },
+    {
+      title: 'SL.',
+      dataIndex: 'serial',
+      key: 'serial',
+      width: 60,
+      render: (_, record, index) => index + 1
+    },
+    {
+      title: 'Location Details',
+      dataIndex: 'location',
+      key: 'location',
+      render: (text) => text || selectedLocation
+    },
+    {
+      title: config.fieldLabels.yearBuilt,
+      dataIndex: 'yearBuilt',
+      key: 'yearBuilt',
+      render: (text) => text || config.tableDefaults.yearBuilt
+    },
+    {
+      title: config.fieldLabels.squareFootage,
+      dataIndex: 'squareFootage',
+      key: 'squareFootage',
+      render: (text) => {
+        const value = text || config.tableDefaults.squareFootage;
+        return typeof value === 'number' ? value.toLocaleString() : value;
+      }
+    },
+    {
+      title: config.fieldLabels.roofType,
+      dataIndex: 'roofType',
+      key: 'roofType',
+      render: (text) => text || config.tableDefaults.roofType
+    },
+    {
+      title: 'Action',
+      dataIndex: 'action',
+      key: 'action',
+      width: 80,
+      render: (_, record, index) => (
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            deleteBuilding(record.originalIndex || index);
+          }}
+          style={{ 
+            color: '#204FC2', 
+            border: '1px solid #204FC2', 
+            padding: '4px 8px', 
+            borderRadius: '50px'
+          }}
         >
-          <Option value="123-05 84th Avenue">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
-        
-        </Select>
-      </div>
-      </WelcomeSection>
-    </Col>
-    
-    {/* Tabs in second column - only show when location is selected */}
-    {selectedLocation && (
-      <Col flex="none">
-<WelcomeSection>
-        <div className="tab-navigation">
-          <Button
-            className={`nav-tab ${activeTab === "Tab1" ? "active" : ""}`}
-            onClick={() => setActiveTab("Tab1")}
-          >
-            Add Buildings
-          </Button>
-          <Button
-            className={`nav-tab ${activeTab === "Tab2" ? "active" : ""}`}
-            onClick={() => setActiveTab("Tab2")}
-          >
-            Other Insights
-          </Button>
-        </div></WelcomeSection>
-      </Col>
-    )}
-  </Row>
+          {config.buttonLabels.delete}
+        </a>
+      )
+    }
+  ];
 
-  {/* Tab content covers full width below */}
-  {selectedLocation && (
-    <Row gutter={[24, 24]}>
-      <Col span={24}>
-      
-        <div className={styles.container}>
-          {activeTab === "Tab1" && (
-            <div id="Tab1" >
-              <WorkSection>
-                <div className="work-header">Building Management</div>
-                <div className="work-content">
-                  <div>
-                    <h5>Building List for {selectedLocation}</h5>
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Select</th>
-                          <th>SL.</th>
-                          <th>Location Details</th>
-                          <th>Year Built</th>
-                          <th>Square Footage</th>
-                          <th>Roof Type</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {(locationData[selectedLocation] || []).map((building, index) => (
-                          <tr key={index}>
-                            <td>
-                              <Radio
-                                checked={selectedBuildingIndex === index}
-                                onChange={() => selectBuilding(index)}
-                              />
-                            </td>
-                            <td>{index + 1}</td>
-                            <td>{selectedLocation}</td>
-                            <td>1952</td>
-                            <td>45,000</td>
-                            <td>Flat Roof with Gravel</td>
-                            <td>
-                              <a href="#" onClick={(e) => {
-                                e.preventDefault();
-                                deleteBuilding(index);
-                              }}>
-                                Delete
-                              </a>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              </WorkSection>
-              
-              <Container>
-                <MainContainer>
+  // Transform building data for table
+  const buildingData = (locationData[selectedLocation] || []).map((building, index) => ({
+    key: `building-${index}`,
+    originalIndex: index,
+    location: selectedLocation,
+    yearBuilt: building.yearBuilt || config.tableDefaults.yearBuilt,
+    squareFootage: building.squareFootage || config.tableDefaults.squareFootage,
+    roofType: building.roofType || config.tableDefaults.roofType,
+    ...building
+  }));
+
+  // Table component
+  const MyTableComponent = ({ columns, dataSource, handleRowClick, handleChange }) => (
+    <div className="modern-table">
+      <Table
+        columns={columns}
+        dataSource={dataSource}
+        onChange={handleChange}
+        onRow={(record, index) => ({
+          onClick: (event) => {
+            if (!event.target.closest('a, button, input[type="radio"]')) {
+              handleRowClick(record, index);
+            }
+          },
+          className: 'clickable-row',
+        })}
+        pagination={{ 
+          pageSize: config.ui.tablePageSize, 
+          showSizeChanger: false 
+        }}
+        size="middle"
+        rowKey={(record, index) => record.key || index}
+      />
+    </div>
+  );
+
+  // Form section renderer
+  const renderFormSection = (sectionKey, fields) => {
+    const sectionConfig = config.ui.sections[sectionKey];
+    
+    return (
+      <Card>
+        <CardHeader>
+          <div className="step-content-box">
+            <img
+              src={iconMap[sectionConfig.icon]}
+              alt="Exavalu"
+              title="Exavalu"
+              className="logobox"
+            />
+          </div>
+          <h3>{sectionConfig.title}</h3>
+        </CardHeader>
+        <CardContent>
+          <Row gutter={[16, 16]}>
+            {fields.map((fieldKey) => (
+              <Col xs={24} sm={24} md={12} lg={24} xl={12} key={fieldKey}>
+                <FormInput
+                  label={
+                    <span >
+                      {config.fieldLabels[fieldKey]}
+                    </span>
+                  }
+                  value={formData[fieldKey] || config.sampleValues[fieldKey] || ""}
+                  required={true}
+                  onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                />
+              </Col>
+            ))}
+          </Row>
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Form field groups configuration
+  const formSections = {
+    propertyDetails: [
+      'yearBuilt', 'squareFootage', 'unitsCount', 'storiesCount', 
+      'freePlacesCount', 'roomsCount', 'parkingSpacesCount', 
+      'protectiveDevices', 'constructionType', 'fireSprinkler', 
+      'sprinkleredArea', 'roofType', 'estimatedrcv', 'propertyClass', 
+      'coverages', 'rateType'
+    ],
+    propertyDamage: [
+      'excludeVandalism', 'excludeSprinkler', 'windDeductable', 
+      'valuationMethod', 'autoIncrease', 'coinsurance', 
+      'buildingLimit', 'buildingDeductable'
+    ],
+    businessProperty: [
+      'bppl', 'bppd', 'excludeVandalism2', 'excludeSprinkler2', 
+      'windDeductable2', 'valuationMethod2', 'reportingForm', 'coinsurance2'
+    ],
+    businessIncome: [
+      'incomeLimitrental', 'coinsurance3', 'waitingPeriod', 'periodOfCoverages'
+    ]
+  };
+
+  // Event handlers for table
+  const handleBuildingRowClick = (record, index) => {
+    selectBuilding(index);
+  };
+
+  const handleBuildingChange = (pagination, filters, sorter) => {
+    console.log('Table changed:', { pagination, filters, sorter });
+  };
+
+  // Effect hook
+  useEffect(() => {
+    // Initialize with default data if needed
+    if (selectedLocation && !locationData[selectedLocation]?.length) {
+      addOrUpdateBuilding();
+    }
+  }, [selectedLocation]);
+
+  return (
+    <Container>
+      {/* Location Selection Header */}
+      <Row gutter={[24, 24]} style={{ marginTop: "16px" }}>
+        <Col flex="auto">
+          <WelcomeSection>
+            <div className="filter-group">
+              <span className="filter-label">Please select the location:</span>
+              <Select
+                placeholder="Select Location"
+                onChange={handleLocationChange}
+                value={selectedLocation}
+                style={{ 
+                  width: config.ui.selectWidth, 
+                  height: config.ui.selectHeight, 
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" 
+                }}
+              >
+                {config.locations.map((location) => (
+                  <Option key={location.value} value={location.value}>
+                    {location.label}
+                  </Option>
+                ))}
+              </Select>
+            </div>
+          </WelcomeSection>
+        </Col>
+
+        {/* Tab Navigation */}
+        {selectedLocation && (
+          <Col flex="none" style={{ display: 'flex' }}>
+            <WelcomeSection>
+              <div className="tab-navigation">
+                <Button
+                  className={`nav-tab ${activeTab === config.ui.tabs.tab1.id ? "active" : ""}`}
+                  onClick={() => setActiveTab(config.ui.tabs.tab1.id)}
+                >
+                  {config.ui.tabs.tab1.label}
+                </Button>
+                <Button
+                  className={`nav-tab ${activeTab === config.ui.tabs.tab2.id ? "active" : ""}`}
+                  onClick={() => setActiveTab(config.ui.tabs.tab2.id)}
+                >
+                  {config.ui.tabs.tab2.label}
+                </Button>
+              </div>
+            </WelcomeSection>
+          </Col>
+        )}
+      </Row>
+
+      {/* Main Content */}
+      {selectedLocation && (
+        <Row gutter={[24, 24]}>
+          <Col span={24}>
+            <div className={styles.container}>
+              {/* Tab 1: Add Buildings */}
+              {activeTab === config.ui.tabs.tab1.id && (
+                <div id={config.ui.tabs.tab1.id}>
+                  {/* Building List Section */}
+                  <WorkSection>
+                    <div className="work-header">{config.ui.tabs.tab1.title}</div>
+                    <div className="work-content">
+                      <div>
+                        <h5>Building List for {selectedLocation}</h5>
+                        <MyTableComponent
+                          columns={buildingColumns}
+                          dataSource={buildingData}
+                          handleRowClick={handleBuildingRowClick}
+                          handleChange={handleBuildingChange}
+                        />
+                      </div>
+                    </div>
+                  </WorkSection>
+
                   <Row gutter={[24, 24]}>
                     <Col flex="1"></Col>
                     <Col flex="none">
                       <HeaderContainer>
-                        <ButtonGroup>
-                        </ButtonGroup>
+                        <ButtonGroup></ButtonGroup>
                       </HeaderContainer>
                     </Col>
                   </Row>
 
+                  {/* Form Content */}
                   <ContentContainer>
                     <Row gutter={[24, 24]}>
+                      {/* Left Column */}
                       <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                         <LeftColumn>
-                          <Card>
-                            <CardHeader>
-                            </CardHeader>
-                            <CardContent>
-                              <Row gutter={[16, 16]}>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Year Built</span>}
-                                    value="1952"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("yearBuilt", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Square Footage</span>}
-                                    value="45,000"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("squareFootage", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Units Count</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("unitsCount", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px", marginRight: "40px" }}>Stories Count</span>}
-                                    value="5"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("storiesCount", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>FreePlacesCount</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("freePlacesCount", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Rooms Count</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("roomsCount", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Parking Spaces Count</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("parkingSpacesCount", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Protective devices</span>}
-                                    value="Alarm system, CCTV"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("protectiveDevices", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Construction Type</span>}
-                                    value="Masonry"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("constructionType", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Fire Sprinkler</span>}
-                                    value="yes"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("fireSprinkler", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Sprinklered area</span>}
-                                    value="100%"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("sprinkleredArea", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Roof type</span>}
-                                    value="Flat roof with gravel"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("roofType", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Estimated replacement cost value</span>}
-                                    value="$15,000,000"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("estimatedrcv", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Property class</span>}
-                                    value="Residental Building"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("propertyClass", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Coverages</span>}
-                                    value="Property damage, Fire, Liability"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("coverages", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Rate Type</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("rateType", e.target.value)}
-                                  />
-                                </Col>
-                              </Row>
-                            </CardContent>
-                          </Card>
+                          {renderFormSection('propertyDetails', formSections.propertyDetails)}
                         </LeftColumn>
                       </Col>
 
+                      {/* Right Column */}
                       <Col xs={24} sm={24} md={24} lg={12} xl={12}>
                         <RightColumn>
-                          <Card>
-                            <CardHeader>
-                              <h3>Property Damage Coverage</h3>
-                            </CardHeader>
-                            <CardContent>
-                              <Row gutter={[16, 16]}>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Exclude Vandalism</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("excludeVandalism", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Exclude sprinkler</span>}
-                                    value="No"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("excludeSprinkler", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Wind % deductable</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("windDeductable", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Valuation Method</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("valuationMethod", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Auto increase %</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("autoIncrease", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Coinsurance</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("coinsurance", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Building Limit</span>}
-                                    value="$15,000,000"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("buildingLimit", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Building Deductible</span>}
-                                    value="$5,000"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("buildingDeductable", e.target.value)}
-                                  />
-                                </Col>
-                              </Row>
-                            </CardContent>
-                          </Card>
-
-                          <Card>
-                            <CardHeader>
-                              <h3>Business Personal Property</h3>
-                            </CardHeader>
-                            <CardContent>
-                              <Row gutter={[16, 16]}>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Business Personal Property Limit</span>}
-                                    value="$5,00,000"
-                                    required={true}
-                                    onChange={(e) => handleInputChange("bppl", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Business Personal Property Deductable</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("bppd", e.target.value)}
-                                  />
-                                </Col>
-
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Exclude Vandalism</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("excludeVandalism2", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Exclude Sprinkler</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("excludeSprinkler2", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Wind % deductable</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("windDeductable2", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Valuation Method</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("valuationMethod2", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Reporting form</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("reportingForm", e.target.value)}
-                                  />
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                                  <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Coinsurance</span>}
-                                    value=" "
-                                    required={true}
-                                    onChange={(e) => handleInputChange("coinsurance2", e.target.value)}
-                                  />
-                                </Col>
-                              </Row>
-                            </CardContent>
-                          </Card>
+                          {renderFormSection('propertyDamage', formSections.propertyDamage)}
+                          {renderFormSection('businessProperty', formSections.businessProperty)}
                         </RightColumn>
                       </Col>
 
+                      {/* Business Income Section */}
                       <Col span={24}>
                         <Card>
                           <CardHeader>
                             <div className="step-content-box">
+                              <img
+                                src={iconMap[config.ui.sections.businessIncome.icon]}
+                                alt="Exavalu"
+                                title="Exavalu"
+                                className="logobox"
+                              />
                             </div>
-                            <h3>Business Income Coverage</h3>
+                            <h3>{config.ui.sections.businessIncome.title}</h3>
                           </CardHeader>
                           <CardContent>
                             <Row gutter={[16, 16]}>
-                              <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                                <FormInput
-                                  label={<span style={{ fontSize: "15px" }}>Income Limit $</span>}
-                                  value=" "
-                                  required={true}
-                                  onChange={(e) => handleInputChange("incomeLimitrental", e.target.value)}
-                                />
-                              </Col>
-                              <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                                <FormInput
-                                  label={<span style={{ fontSize: "15px" }}>Coinsurance</span>}
-                                  value=" "
-                                  required={true}
-                                  onChange={(e) => handleInputChange("coinsurance3", e.target.value)}
-                                />
-                              </Col>
-
-                              <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                                <FormInput
-                                  label={<span style={{ fontSize: "15px" }}>Waiting Period</span>}
-                                  value=" "
-                                  required={true}
-                                  onChange={(e) => handleInputChange("waitingPeriod", e.target.value)}
-                                />
-                              </Col>
-                              <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                                <FormInput
-                                  label={<span style={{ fontSize: "15px" }}>Period of coverages</span>}
-                                  value=""
-                                  required={true}
-                                  onChange={(e) => handleInputChange("periodOfCoverages", e.target.value)}
-                                />
-                              </Col>
+                              {formSections.businessIncome.map((fieldKey) => (
+                                <Col xs={24} sm={24} md={6} lg={24} xl={6} key={fieldKey}>
+                                  <FormInput
+                                    label={
+                                      <span >
+                                        {config.fieldLabels[fieldKey]}
+                                      </span>
+                                    }
+                                    value={formData[fieldKey] || config.sampleValues[fieldKey] || ""}
+                                    required={true}
+                                    onChange={(e) => handleInputChange(fieldKey, e.target.value)}
+                                  />
+                                </Col>
+                              ))}
                             </Row>
                           </CardContent>
                         </Card>
                       </Col>
 
+                      {/* Additional Information Section */}
                       <Col span={24}>
                         <Card>
                           <CardHeader>
                             <div className="step-content-box">
+                              <img
+                                src={iconMap[config.ui.sections.additionalInfo.icon]}
+                                alt="Exavalu"
+                                title="Exavalu"
+                                className="logobox"
+                              />
                             </div>
-                            <h3>Additional Information</h3>
+                            <h3>{config.ui.sections.additionalInfo.title}</h3>
                           </CardHeader>
                           <CardContent>
+                            {/* Checkboxes */}
                             <Row gutter={[16, 16]}>
                               <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                                 <Checkbox
                                   checked={formData.showFloodFields}
                                   onChange={() => handleCheckboxChange('showFloodFields')}
                                 >
-                                  Flood Coverage
+                                  {config.checkboxLabels.showFloodFields}
                                 </Checkbox>
                               </Col>
                               <Col xs={24} sm={24} md={6} lg={24} xl={6}>
@@ -821,25 +501,34 @@ export function LocationBuildingTab() {
                                   checked={formData.showEarthquakeFields}
                                   onChange={() => handleCheckboxChange('showEarthquakeFields')}
                                 >
-                                  Earthquake Coverage
+                                  {config.checkboxLabels.showEarthquakeFields}
                                 </Checkbox>
                               </Col>
                             </Row>
 
+                            {/* Conditional Fields - Flood */}
                             {formData.showFloodFields && (
                               <Row gutter={22}>
                                 <Col span={6}>
                                   <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Flood Coverage Limit</span>}
-                                    value="$5,00,000"
+                                    label={
+                                      <span >
+                                        {config.fieldLabels.floodCoveragelimit}
+                                      </span>
+                                    }
+                                    value={formData.floodCoveragelimit || config.sampleValues.floodCoveragelimit}
                                     required={true}
                                     onChange={(e) => handleAdditionalCoverageInputChange("floodCoveragelimit", e.target.value)}
                                   />
                                 </Col>
                                 <Col span={6}>
                                   <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Flood Coverage Deductable</span>}
-                                    value="$25,000"
+                                    label={
+                                      <span >
+                                        {config.fieldLabels.floodCoveragemonthlyLimit}
+                                      </span>
+                                    }
+                                    value={formData.floodCoveragemonthlyLimit || config.sampleValues.floodCoveragemonthlyLimit}
                                     required={true}
                                     onChange={(e) => handleAdditionalCoverageInputChange("floodCoveragemonthlyLimit", e.target.value)}
                                   />
@@ -847,22 +536,31 @@ export function LocationBuildingTab() {
                               </Row>
                             )}
 
+                            {/* Conditional Fields - Earthquake */}
                             {formData.showEarthquakeFields && (
                               <Row gutter={22}>
                                 <Col span={6}>
                                   <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Earthquake Coverage Limit</span>}
-                                    value="$10,00,000"
+                                    label={
+                                      <span>
+                                        {config.fieldLabels.earthquakeCoveragelimit}
+                                      </span>
+                                    }
+                                    value={formData.earthquakeCoveragelimit || config.sampleValues.earthquakeCoveragelimit}
                                     required={true}
-                                    onChange={(e) => handleAdditionalCoverageInputChange("floodCoveragelimit", e.target.value)}
+                                    onChange={(e) => handleAdditionalCoverageInputChange("earthquakeCoveragelimit", e.target.value)}
                                   />
                                 </Col>
                                 <Col span={6}>
                                   <FormInput
-                                    label={<span style={{ fontSize: "15px" }}>Earthquake Coverage Deductable</span>}
-                                    value="$50,000"
+                                    label={
+                                      <span >
+                                        {config.fieldLabels.earthquakeCoveragemonthlylimit}
+                                      </span>
+                                    }
+                                    value={formData.earthquakeCoveragemonthlylimit || config.sampleValues.earthquakeCoveragemonthlylimit}
                                     required={true}
-                                    onChange={(e) => handleAdditionalCoverageInputChange("floodCoveragemonthlyLimit", e.target.value)}
+                                    onChange={(e) => handleAdditionalCoverageInputChange("earthquakeCoveragemonthlylimit", e.target.value)}
                                   />
                                 </Col>
                               </Row>
@@ -873,16 +571,21 @@ export function LocationBuildingTab() {
                     </Row>
                   </ContentContainer>
 
+                  {/* Action Buttons */}
                   <Row gutter={[24, 24]}>
                     <Col flex="1"></Col>
                     <Col flex="None">
                       <NextButtonContainer style={{ marginBottom: "20px" }}>
-                        <NextButton type="primary" onClick={addOrUpdateBuilding} style={{ marginRight: "10px" }}>
-                          {isEditing ? "OK" : "Add Building"}
+                        <NextButton 
+                          type="primary" 
+                          onClick={addOrUpdateBuilding} 
+                          style={{ marginRight: "10px" }}
+                        >
+                          {isEditing ? config.buttonLabels.editBuilding : config.buttonLabels.addBuilding}
                         </NextButton>
                         <NextButton onClick={nextTab}>
                           <div className="step-content-box">
-                            {"Next "}
+                            {config.buttonLabels.next}
                             <img
                               src={NextArrow}
                               alt="Exavalu"
@@ -894,22 +597,22 @@ export function LocationBuildingTab() {
                       </NextButtonContainer>
                     </Col>
                   </Row>
-                </MainContainer>
-              </Container>
-            </div>
-          )}
+                </div>
+              )}
 
-          {activeTab === "Tab2" && (
-            <div id="Tab2" >
-              <Container>
-              <Rpa /></Container>
+              {/* Tab 2: Other Insights */}
+              {activeTab === config.ui.tabs.tab2.id && (
+                <div id={config.ui.tabs.tab2.id}>
+                  <Container>
+                    <Rpa />
+                  </Container>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-      </Col>
-    </Row>
-  )}
-</Container>
+          </Col>
+        </Row>
+      )}
+    </Container>
   );
 }
 

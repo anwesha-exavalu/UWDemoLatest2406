@@ -113,8 +113,9 @@ export const ButtonGroup = styled.div`
 export const ContentContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   margin-bottom: 20px;
+  
   width: 100%;
   
   @media (max-width: 767px) {
@@ -129,7 +130,7 @@ export const LeftColumn = styled.div`
   flex-direction: column;
   gap: 25px;
   width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   height: 100%; /* Add this */
   
   @media (max-width: 991px) {
@@ -148,7 +149,7 @@ export const RightColumn = styled.div`
   flex-direction: column;
   gap: 25px;
   width: 100%;
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   height: 100%; /* Add this */
   
   @media (max-width: 991px) {
@@ -168,7 +169,7 @@ export const Card = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   width: 100%;
@@ -227,7 +228,7 @@ export const CardHeader = styled.div`
   
   h3 {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #2D2B32;
     font-family: 'Inter', sans-serif;

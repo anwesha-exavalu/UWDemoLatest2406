@@ -33,7 +33,6 @@ const StyledTabs = ({ children, ...props }) => {
         }
 
         .modern-tabs-wrapper .ant-tabs-nav-wrap {
-         
           border-radius: 25px;
           padding: 3px;
           border: none;
@@ -52,51 +51,69 @@ const StyledTabs = ({ children, ...props }) => {
 
         .modern-tabs-wrapper .ant-tabs-nav-list {
           display: flex;
-          gap: 1px;
-          
+          gap: 0;
           flex-wrap: nowrap;
           min-width: fit-content;
+          position: relative;
         }
 
         .modern-tabs-wrapper .ant-tabs-tab {
-          background: transparent !important;
-          border: none !important;
+          background: #f8f9fa !important;
+          border: 1px solid #DDE5F9 !important;
           border-radius: 20px !important;
-          border-bottom: 1px solid #DDE5F9 !important;
-          border-top: 1px solid #DDE5F9  !important;
-          border-left: 1px solid #DDE5F9  !important;
-          border-right: 1px solid #DDE5F9  !important;
-          margin: 0 !important;
-          padding: 8px 20px !important;
+          margin: 0 -18px 0 0 !important;
+          padding: 10px 28px !important;
           font-weight: 500;
-         align-items: center;
-          
+          align-items: center;
+          justify-content: center;
+          text-align: center;
           color: #5f6368 !important;
           transition: all 0.2s ease;
           white-space: nowrap;
           flex-shrink: 0;
           font-size: 14px;
           line-height: 1.4;
-          min-width: 140px;
+          min-width: 170px;
+          position: relative;
+          z-index: 1;
+        }
+
+        .modern-tabs-wrapper .ant-tabs-tab:not(:first-child) {
+          z-index: 0;
+        }
+
+        .modern-tabs-wrapper .ant-tabs-tab:nth-child(1) { z-index: 4; }
+        .modern-tabs-wrapper .ant-tabs-tab:nth-child(2) { z-index: 3; }
+        .modern-tabs-wrapper .ant-tabs-tab:nth-child(3) { z-index: 2; }
+        .modern-tabs-wrapper .ant-tabs-tab:nth-child(4) { z-index: 1; }
+        .modern-tabs-wrapper .ant-tabs-tab:nth-child(n+5) { z-index: 0; }
+
+        .modern-tabs-wrapper .ant-tabs-tab:first-child {
+          margin-left: 0 !important;
         }
 
         .modern-tabs-wrapper .ant-tabs-tab:hover {
           background: rgba(66, 133, 244, 0.08) !important;
-         
-          color:#204FC2 !important;
+          color: #204FC2 !important;
+          z-index: 10 !important;
+          transform: translateY(-1px);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .modern-tabs-wrapper .ant-tabs-tab-active {
           background: #DDE5F9 !important;
-          
           color: #204FC2 !important;
-          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1) !important;
-          font-weight: 500;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+          font-weight: 600;
+          z-index: 15 !important;
+          transform: translateY(-2px);
+          border-color: #b3c7f7 !important;
         }
 
         .modern-tabs-wrapper .ant-tabs-tab-active:hover {
           background: #DDE5F9 !important;
           color: #204FC2 !important;
+          z-index: 15 !important;
         }
 
         .modern-tabs-wrapper .ant-tabs-ink-bar {
@@ -123,9 +140,10 @@ const StyledTabs = ({ children, ...props }) => {
           }
           
           .modern-tabs-wrapper .ant-tabs-tab {
-            padding: 6px 16px !important;
+            padding: 8px 20px !important;
             font-size: 13px;
-            min-width: auto;
+            min-width: 150px;
+            margin: 0 -14px 0 0 !important;
           }
         }
 
@@ -136,16 +154,20 @@ const StyledTabs = ({ children, ...props }) => {
           }
           
           .modern-tabs-wrapper .ant-tabs-tab {
-            padding: 6px 12px !important;
+            padding: 6px 18px !important;
             font-size: 12px;
+            min-width: 130px;
+            margin: 0 -10px 0 0 !important;
           }
         }
 
         /* Extra small screens */
         @media (max-width: 360px) {
           .modern-tabs-wrapper .ant-tabs-tab {
-            padding: 5px 10px !important;
+            padding: 5px 14px !important;
             font-size: 11px;
+            min-width: 110px;
+            margin: 0 -8px 0 0 !important;
           }
         }
       `;
