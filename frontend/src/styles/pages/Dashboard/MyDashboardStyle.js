@@ -132,7 +132,7 @@ export const WelcomeSection = styled.div`
 
 export const MetricsSection = styled.div`
 
-  padding: 22px 14px;
+  padding: 12px 8px;
   
   .metrics-header {
     display: flex;
@@ -153,9 +153,9 @@ export const MetricsSection = styled.div`
   
   .metrics-grid {
     display: flex;
-    gap: 24px;
+    gap: 20px;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
   }
 `;
@@ -166,7 +166,8 @@ export const MetricCard = styled.div`
   border-radius: 12px;
   padding: 24px;
   flex: 1;
-  max-width: 380px;
+  max-width: 400px;
+  max-height: 350px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   
   .card-title {
@@ -200,7 +201,7 @@ export const MetricCard = styled.div`
   }
   
   .chart-container {
-    height: 200px;
+    min-height: 250px;
     width: 100%;
     position: relative;
     
@@ -213,7 +214,7 @@ export const MetricCard = styled.div`
 
 export const WorkSection = styled.div`
   background-color: #FFFFFF;
-  margin: 28px;
+  margin: 30px;
   border-radius: 10px;
   border: 2px solid #E8E8E8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -245,7 +246,7 @@ export const WorkSection = styled.div`
           font-weight: 500;
           font-size: 12px;
           border-bottom: 1px solid #E8E8E8 !important;
-          padding: 12px 16px;
+          padding: 18px 20px;
           text-transform: uppercase;
           letter-spacing: 0.5px;
           

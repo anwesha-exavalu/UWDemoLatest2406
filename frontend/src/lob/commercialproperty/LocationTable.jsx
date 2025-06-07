@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Button, Space, Table, Input, Row, Col, Form, Modal, Select, Radio } from 'antd';
 import Highlighter from 'react-highlight-words';
 import { SearchOutlined } from '@ant-design/icons';
@@ -7,24 +7,20 @@ import LocationCard from './LocationCard';
 import styles from './LocationComponent.module.css';
 import '../../components/TableStyles.css';
 import Documents from '../../layout/Documents';
-import { RoundedAddButton } from "../../styles/index";
 import NextArrow from "../../assets/img/nextArrow.png";
 import {
   WorkSection,
-
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
 import {
-
   NextButtonContainer,
   NextButton,
-
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import RiskCard from './LocationCard';
 import { Container } from '../../styles/components/Layout';
 
 const { Option } = Select;
 
-const LocationTable = ({ nextTab }) => {
+const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
   const [data, setData] = useState([
     {
       key: 1,
@@ -34,7 +30,6 @@ const LocationTable = ({ nextTab }) => {
       zip: "11415",
       country: "USA"
     }
-
   ]);
   const [currentRowIndex, setCurrentRowIndex] = useState(0);
   const [selectionType] = useState('radio');
@@ -43,7 +38,6 @@ const LocationTable = ({ nextTab }) => {
   const [sortedInfo, setSortedInfo] = useState({});
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [sameAsRiskLocation, setSameAsRiskLocation] = useState(false);
   const [form] = Form.useForm();
   const searchInput = useRef(null);
@@ -192,11 +186,6 @@ const LocationTable = ({ nextTab }) => {
     },
   ];
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    form.resetFields();
-  };
-
   const handleOk = () => {
     form
       .validateFields()
@@ -227,261 +216,239 @@ const LocationTable = ({ nextTab }) => {
     setDocumentMenuVisible(false);
   };
 
-
-
   return (
-    <Container>
-    <div className={`${styles.container} tableContainer`} id='LocationTable'>
-      <Row justify="end" style={{ marginBottom: 8, marginTop: -80}}>
-        <Col >
-
-          <RoundedAddButton onClick={showModal}>
-            <span className="icon">+</span>
-            Add Location
-          </RoundedAddButton>
-        </Col>
-      </Row>
-
-
-
-      <Row gutter={16} style={{ marginTop: 16 }}>
-        <Col span={selectedRow ? 12 : 24}>
-          <WorkSection>
-            <div className="work-header">Enter Location Details</div>
-            <div className="work-content">
-              <div className="modern-table">
-                <Table
-                  rowSelection={{ ...rowSelection }}
-                  columns={columns}
-                  dataSource={data}
-                  onChange={handleChange}
-                  style={{ width: '100%' }}
-                  pagination={{ pageSize: 4 }}
-                  className="custom-table-header"
-                  tableLayout="fixed"
-                />
-              </div>
-            </div>
-          </WorkSection>
-        </Col>
-
-        {selectedRow && (
-          <Col span={12}>
+    
+      <div className={`${styles.container} tableContainer`} id='LocationTable'>
+        <Row gutter={16} style={{ marginTop: 16 }}>
+          <Col span={selectedRow ? 12 : 24}>
             <WorkSection>
-              <div style={{ height: '320px' }}>
-                {/* <div style={{ background: '#fff', borderRadius: 12, padding: 16 }}> */}
-                <div className="work-header" >Location map</div>
-                <MapView />
+              <div className="work-header">Enter Location Details</div>
+              <div className="work-content">
+                <div className="modern-table">
+                  <Table
+                    rowSelection={{ ...rowSelection }}
+                    columns={columns}
+                    dataSource={data}
+                    onChange={handleChange}
+                    style={{ width: '100%' }}
+                    pagination={{ pageSize: 4 }}
+                    className="custom-table-header"
+                    tableLayout="fixed"
+                  />
+                </div>
               </div>
             </WorkSection>
           </Col>
-        )}
-      </Row>
 
+          {selectedRow && (
+            <Col span={12}>
+              <WorkSection>
+                <div style={{ height: '300px' }}>
+                  <div className="work-header" >Location map</div>
+                  <MapView />
+                </div>
+              </WorkSection>
+            </Col>
+          )}
+        </Row>
 
-      {selectedRow && (
-        <div style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'center', // center the cards
-          gap: '35px', // reduce gap between cards
-          margin: '35px auto',
-          maxWidth: '1200px', // limit total width
-        }}>
-          {[
-            {
-              riskFactorTitle: 'Flood',
-              riskFactorDetails: {
-                'Flood Risk Score': '60',
-                'Flood Zone': 'AE',
-                'Elevation Variance': '-1.1ft',
-                'Property Elevation': '5.9ft',
+        {selectedRow && (
+          <div style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-between',
+            gap: '35px',
+            margin: '30px auto',
+            maxWidth: '1200px',
+          }}>
+            {[
+              {
+                riskFactorTitle: 'Flood',
+                riskFactorDetails: {
+                  'Flood Risk Score': '60',
+                  'Flood Zone': 'AE',
+                  'Elevation Variance': '-1.1ft',
+                  'Property Elevation': '5.9ft',
+                }
+              },
+              {
+                riskFactorTitle: 'WildFire',
+                riskFactorDetails: {
+                  'Wildfire Risk Score': '60',
+                  'Risk Description': 'Urban',
+                  'Number of Past Fires': '0',
+                }
+              },
+              {
+                riskFactorTitle: 'Earthquake',
+                riskFactorDetails: {
+                  'USA Earthquake Risk Score': '60',
+                }
+              },
+              {
+                riskFactorTitle: 'StormSurge',
+                riskFactorDetails: {
+                  'Storm Surge': '70',
+                  'Hail Probability': 'Very low',
+                  'Tornado Exposure': '5-Very High',
+                  'Wind Pool Eligibility': 'Out',
+                }
+              },
+              {
+                riskFactorTitle: 'Sinkhole',
+                riskFactorDetails: {
+                  'Sinkhole Risk': 'Extreme',
+                  'Sinkhole Score': '20',
+                }
+              },
+              {
+                riskFactorTitle: 'FireStation',
+                riskFactorDetails: {
+                  'Fire Protected Class': 'Fully Protected',
+                  'Distance from Fire Station': '2.1 Miles',
+                }
               }
-            },
-            {
-              riskFactorTitle: 'WildFire',
-              riskFactorDetails: {
-                'Wildfire Risk Score': '60',
-                'Risk Description': 'Urban',
-                'Number of Past Fires': '0',
-              }
-            },
-            {
-              riskFactorTitle: 'Earthquake',
-              riskFactorDetails: {
-                'USA Earthquake Risk Score': '60',
-              }
-            },
-            {
-              riskFactorTitle: 'StormSurge',
-              riskFactorDetails: {
-                'Storm Surge': '70',
-                'Hail Probability': 'Very low',
-                'Tornado Exposure': '5-Very High',
-                'Wind Pool Eligibility': 'Out',
-              }
-            },
-            {
-              riskFactorTitle: 'Sinkhole',
-              riskFactorDetails: {
-                'Sinkhole Risk': 'Extreme',
-                'Sinkhole Score': '20',
-              }
-            },
-            {
-              riskFactorTitle: 'FireStation',
-              riskFactorDetails: {
-                'Fire Protected Class': 'Fully Protected',
-                'Distance from Fire Station': '2.1 Miles',
-              }
-            }
-          ].map((risk, idx) => (
-            <div key={idx} style={{
-              flex: '0 1 30%', display: 'flex',
-              minHeight: '260px'
-            }}>
-              <RiskCard card={risk} />
-            </div>
-          ))}
-        </div>
-      )}
-
-
-      <Row gutter={16}>
-        <Col span={20}></Col>
-        <Col span={4}>
-          {/* <div>
-            <Button type="primary" onClick={nextTab} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
-              Next
-            </Button>
-          </div> */}
-          <NextButtonContainer>
-            <NextButton onClick={nextTab}>
-              <div className="step-content-box">
-                {"Next "}
-                <img
-                  src={NextArrow}
-                  alt="Exavalu"
-                  title="Exavalu"
-                  className="logobox"
-                />
+            ].map((risk, idx) => (
+              <div key={idx} style={{
+                flex: '0 1 30%', 
+                display: 'flex',
+                minHeight: '260px'
+              }}>
+                <RiskCard card={risk} />
               </div>
-            </NextButton>
-          </NextButtonContainer>
-        </Col>
-      </Row>
-      <Documents />
+            ))}
+          </div>
+        )}
 
+        <Row gutter={16}>
+          <Col span={20}></Col>
+          <Col span={4}>
+            <NextButtonContainer>
+              <NextButton onClick={nextTab}>
+                <div className="step-content-box">
+                  {"Next "}
+                  <img
+                    src={NextArrow}
+                    alt="Exavalu"
+                    title="Exavalu"
+                    className="logobox"
+                  />
+                </div>
+              </NextButton>
+            </NextButtonContainer>
+          </Col>
+        </Row>
+        
+        <Documents />
 
-      <Row justify="center" style={{ marginTop: '30px', padding: '10px 0' }}>
-        <Col span={24} style={{ textAlign: 'center' }}>
-          <div
-            style={{
-              display: 'inline-block',
-              overflow: 'hidden',
-              width: '100%',  // width of the label area
-              border: '1px  #003f5c',
-              borderRadius: '8px',
-              padding: '5px',
-              backgroundColor: '#e4f3f8',
-            }}
-          >
+        <Row justify="center" style={{ marginTop: '30px', padding: '10px 0' }}>
+          <Col span={24} style={{ textAlign: 'center' }}>
             <div
               style={{
-                fontSize: '16px',
-                color: '#003f5c',
-                fontWeight: 'bold',
-                whiteSpace: 'nowrap',
-                animation: 'marquee 30s linear infinite',
+                display: 'inline-block',
+                overflow: 'hidden',
+                width: '100%',
+                border: '1px  #003f5c',
+                borderRadius: '8px',
+                padding: '5px',
+                backgroundColor: '#e4f3f8',
               }}
             >
-              📢 Report: Please review and assess your risk factors displayed above for flood, wildfire, earthquake, and more.
+              <div
+                style={{
+                  fontSize: '16px',
+                  color: '#003f5c',
+                  fontWeight: 'bold',
+                  whiteSpace: 'nowrap',
+                  animation: 'marquee 30s linear infinite',
+                }}
+              >
+                📢 Report: Please review and assess your risk factors displayed above for flood, wildfire, earthquake, and more.
+              </div>
             </div>
-          </div>
-        </Col>
-      </Row>
+          </Col>
+        </Row>
 
-      {/* CSS 
-      {/* CSS for marquee effect */}
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-      `}</style>
+        {/* CSS for marquee effect */}
+        <style>{`
+          @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+          }
+        `}</style>
 
-      <Modal
-        title="Add Location"
-        visible={isModalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <Form form={form} layout="vertical" name="form_in_modal">
-          <Form.Item>
-            <Radio.Group
-              onChange={(e) => {
-                setSameAsRiskLocation(e.target.value);
-                if (e.target.value) {
-                  form.setFieldsValue({
-                    address1: "123-05 84th Avenue, Kew Gardens",
-                    address2: "",
-                    state: "NY State",
-                    zip: "11415",
-                    country: "USA"
-                  });
-                } else {
-                  form.resetFields();
-                }
-              }}
-              value={sameAsRiskLocation}
+        <Modal
+          title="Add Location"
+          visible={isModalVisible}
+          onOk={handleOk}
+          onCancel={handleCancel}
+        >
+          <Form form={form} layout="vertical" name="form_in_modal">
+            <Form.Item>
+              <Radio.Group
+                onChange={(e) => {
+                  setSameAsRiskLocation(e.target.value);
+                  if (e.target.value) {
+                    form.setFieldsValue({
+                      address1: "123-05 84th Avenue, Kew Gardens",
+                      address2: "",
+                      state: "NY State",
+                      zip: "11415",
+                      country: "USA"
+                    });
+                  } else {
+                    form.resetFields();
+                  }
+                }}
+                value={sameAsRiskLocation}
+              >
+                <Radio value={true}>Same as mailing address</Radio>
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item
+              name="address1"
+              label="AddressLine 1"
+              rules={[{ required: true, message: 'Please input Address Line 1!' }]}
             >
-              <Radio value={true}>Same as mailing address</Radio>
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item
-            name="address1"
-            label="AddressLine 1"
-            rules={[{ required: true, message: 'Please input Address Line 1!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="address2"
-            label="AddressLine 2"
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="state"
-            label="State"
-            rules={[{ required: true, message: 'Please select the state!' }]}
-          >
-            <Select placeholder="Select a state">
-              {usStates.map(state => (
-                <Option key={state} value={state}>
-                  {state}
-                </Option>
-              ))}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="zip"
-            label="ZIP"
-            rules={[{ required: true, message: 'Please input the ZIP code!' }]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="country"
-            label="Country"
-            initialValue="USA"
-          >
-            <Input disabled />
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
-    </Container>
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="address2"
+              label="AddressLine 2"
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="state"
+              label="State"
+              rules={[{ required: true, message: 'Please select the state!' }]}
+            >
+              <Select placeholder="Select a state">
+                {usStates.map(state => (
+                  <Option key={state} value={state}>
+                    {state}
+                  </Option>
+                ))}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="zip"
+              label="ZIP"
+              rules={[{ required: true, message: 'Please input the ZIP code!' }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              name="country"
+              label="Country"
+              initialValue="USA"
+            >
+              <Input disabled />
+            </Form.Item>
+          </Form>
+        </Modal>
+      </div>
+   
   );
 };
 

@@ -18,6 +18,7 @@ import {
   ChartWrapper
 } from '../styles/pages/Dashboard/MyDashboardStyle';
 import PortfolioInsights from './PortfolioInsights';
+import { Container } from '../styles/components/Layout';
 
 const { Title, Text } = Typography;
 
@@ -153,13 +154,25 @@ const Dashboard = () => {
           label: title,
           data,
           backgroundColor: colors,
-          borderRadius: 4,
+          borderRadius: 8,
           borderSkipped: false,
+          barThickness: 24, // Decreased bar width
+          maxBarThickness: 24,
+          categoryPercentage: 0.6, // Floating effect
+          barPercentage: 0.7, // Floating effect
         }],
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 10,
+            right: 10,
+            top: 10,
+            bottom: 10
+          }
+        },
         plugins: {
           legend: { display: false }
         },
@@ -193,45 +206,96 @@ const Dashboard = () => {
     });
   };
 
-  const createDonutChart = () => {
-    if (!donutChartRef.current) return;
-    
-    // Destroy existing chart if it exists
-    if (donutChartRef.current.chartInstance) {
-      donutChartRef.current.chartInstance.destroy();
-    }
+const createDonutChart = () => {
+  if (!donutChartRef.current) return;
+  
+  // Destroy existing chart if it exists
+  if (donutChartRef.current.chartInstance) {
+    donutChartRef.current.chartInstance.destroy();
+  }
 
-    const ctx = donutChartRef.current.getContext('2d');
-    donutChartRef.current.chartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: ['Acquisition', 'Purchase', 'Retention'],
-        datasets: [{
+  const ctx = donutChartRef.current.getContext('2d');
+  
+  donutChartRef.current.chartInstance = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Acquisition', 'Purchase', 'Retention'],
+      datasets: [
+        // Outermost hallow ring (lightest)
+        {
+          data: [100],
+          backgroundColor: ['#EEF0FA'],
+          borderWidth: 0,
+          cutout: '45%',
+          radius: '90%',
+          circumference: 360,
+          rotation: 0
+        },
+          {
           data: [40, 35, 25],
           backgroundColor: ['#204FC2', '#D2DAF2', '#97A5EB'],
           borderWidth: 0,
-        }],
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: '75%',
-        plugins: {
-          legend: {
-            display: false
+         cutout: '25%',
+          radius: '100%',
+          borderRadius: 2
+        },
+        // Second hallow ring
+        {
+          data: [100],
+          backgroundColor: ['#EEF0FA'],
+          borderWidth: 0,
+          cutout: '55%',
+          radius: '80%',
+          circumference: 360,
+          rotation: 0
+        },
+        // Third hallow ring
+        {
+          data: [100],
+          backgroundColor: ['#EEF0FA'],
+          borderWidth: 0,
+          cutout: '55%',
+          radius: '80%',
+          circumference: 360,
+          rotation: 0
+        },
+        // Main data (top layer)
+      
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          filter: function(tooltipItem) {
+            // Only show tooltips for the main dataset (last one)
+            return tooltipItem.datasetIndex === 3;
           },
-          tooltip: {
-            callbacks: {
-              label: function (context) {
-                return `${context.label}: ${context.raw}%`;
-              }
+          callbacks: {
+            label: function (context) {
+              return `${context.label}: ${context.raw}%`;
             }
           }
-        },
+        }
       },
-    });
-  };
-
+      interaction: {
+        intersect: false
+      },
+      elements: {
+        arc: {
+          borderWidth: 0
+        }
+      },
+      layout: {
+        padding: 15
+      }
+    },
+  });
+};
   const createCharts = () => {
     // Use setTimeout to ensure DOM is ready
     setTimeout(() => {
@@ -421,8 +485,9 @@ const Dashboard = () => {
   );
 
   return (
-    <ResponsiveHelper>
+    
       <DashboardContainer>
+        <Container>
         <TopBar>
           <div className="left-section">
             <span className="greeting">Hi Andrei,</span>
@@ -457,8 +522,9 @@ const Dashboard = () => {
         </WelcomeSection>
         
         {activeTab === 'dashboard' ? <DashboardContent /> : <PortfolioInsights />}
+        </Container>
       </DashboardContainer>
-    </ResponsiveHelper>
+   
   );
 };
 

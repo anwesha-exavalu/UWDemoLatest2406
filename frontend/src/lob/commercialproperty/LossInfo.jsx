@@ -16,6 +16,15 @@ import {
 import { RoundedAddButton } from "../../styles/index";
 import { StyledTabs, TabPane } from '../../styles/pages/RiskInformation/index'; // Import the styled component
 
+// Import dummy data
+import { 
+  initialPolicies, 
+  initialLossData, 
+  initialClaimsData, 
+  tableColumns, 
+  initialFormStates 
+} from './dummyLossData';
+
 const { Panel } = Collapse;
 
 const LossInfo = ({ onNext }) => {
@@ -24,106 +33,16 @@ const LossInfo = ({ onNext }) => {
   const [isLossSummaryModalVisible, setIsLossSummaryModalVisible] = useState(false);
   const [isLossDetailModalVisible, setIsLossDetailModalVisible] = useState(false);
   
-  const lossdata = [
-    { policyYear: '2024', annualPremium: '$ 500', claims: '0', openClaims: '1', totalInsuredLosses: '$ 10,000', totalPaidLosses: '$ 200', expenses: '$ 100' }
-  ]
-  
-  const [newPolicy, setNewPolicy] = useState({
-    carrier: "",
-    policyNumber: "",
-    effectiveDate: "",
-    expirationDate: "",
-    annualPremium: "",
-    losses: "",
-    totalLosses: ""
-  });
-  
-  const [newLossSummary, setNewLossSummary] = useState({
-    policyYear: "",
-    annualPremium: "",
-    claims: "",
-    openClaims: "",
-    totalInsuredLosses: "",
-    totalPaidLosses: "",
-    expenses: ""
-  });
-  
-  const [newLossDetail, setNewLossDetail] = useState({
-    claimNumber: "",
-    effectiveDate: "",
-    expirationDate: "",
-    carrier: "",
-    lob: "",
-    accidentDescription: "",
-    reportedDate: "",
-    status: "",
-    class: "",
-    totalPaid: "",
-    totalIncurred: ""
-  });
+  const [newPolicy, setNewPolicy] = useState(initialFormStates.newPolicy);
+  const [newLossSummary, setNewLossSummary] = useState(initialFormStates.newLossSummary);
+  const [newLossDetail, setNewLossDetail] = useState(initialFormStates.newLossDetail);
+  const [errors, setErrors] = useState(initialFormStates.errors);
 
-  const [policies, setPolicies] = useState([
-    {
-      uwyear: "2022",
-      carrier: "AIG",
-      policyNumber: "CP89569001/R/22",
-      effectiveDate: "01-01-2022",
-      expirationDate: "12-31-2022",
-      annualPremium: "$28,000",
-      losses: 1,
-      totalLosses: "$64,000.00"
-    },
-    {
-      uwyear: "2023",
-      carrier: "AIG",
-      policyNumber: "CP23578022/R/23",
-      effectiveDate: "01-01-2023",
-      expirationDate: "12-31-2023",
-      annualPremium: "$35,000",
-      losses: 1,
-      totalLosses: "$32,000.00"
-    },
-    {
-      uwyear: "2024",
-      carrier: "AIG",
-      policyNumber: "CP23578022/R/24",
-      effectiveDate: "01-01-2024",
-      expirationDate: "12-31-2024",
-      annualPremium: "$41,000",
-      losses: 1,
-      totalLosses: "$25,000.00"
-    },
-  ]);
-  
-  const priorPolicyColumns = [
-    { title: 'UW Year', dataIndex: 'uwyear', key: 'uwyear' },
-    { title: 'Carrier', dataIndex: 'carrier', key: 'carrier' },
-    { title: 'Policy #', dataIndex: 'policyNumber', key: 'policyNumber' },
-    { title: 'Effective Date', dataIndex: 'effectiveDate', key: 'effectiveDate' },
-    { title: 'Expiration Date', dataIndex: 'expirationDate', key: 'expirationDate' },
-    { title: 'Annual Premium', dataIndex: 'annualPremium', key: 'annualPremium' },
-    { title: '# Losses', dataIndex: 'losses', key: 'losses' },
-    { title: 'Total Loss Amount', dataIndex: 'totalLosses', key: 'totalLosses' }
-  ];
-
-  const lossDetailColumns = [
-    { title: 'UW Year', dataIndex: 'uwyear', key: 'uwyear' },
-    { title: 'Carrier', dataIndex: 'carrier', key: 'carrier' },
-    { title: 'Claim #', dataIndex: 'claimNumber', key: 'claimNumber' },
-    { title: 'Policy Eff Date', dataIndex: 'effectiveDate', key: 'effectiveDate' },
-    { title: 'Policy Exp Date', dataIndex: 'expirationDate', key: 'expirationDate' },
-    { title: 'Date of Loss', dataIndex: 'dateofLoss', key: 'dateofLoss' },
-    { title: 'Cause of Loss', dataIndex: 'causeofLoss', key: 'causeofLoss' },
-    { title: 'LOB', dataIndex: 'lob', key: 'lob' },
-    { title: 'LAE', dataIndex: 'lae', key: 'lae' },
-    { title: 'Settlement Amount', dataIndex: 'settlementAmount', key: 'settlementAmount' },
-    { title: 'Total Incurred', dataIndex: 'totalIncurred', key: 'totalIncurred' },
-    { title: 'Status', dataIndex: 'status', key: 'status' }
-  ];
-
+  const [policies, setPolicies] = useState(initialPolicies);
   const [selectedPolicies, setSelectedPolicies] = useState([]);
   const [selectedClaim, setSelectedClaim] = useState(null);
-  const [lossSummaries, setLossSummaries] = useState(lossdata);
+  const [lossSummaries, setLossSummaries] = useState(initialLossData);
+  const [lossDetails, setLossDetails] = useState(initialClaimsData);
   
   const rowSelection = {
     selectedRowKeys: selectedPolicies,
@@ -135,87 +54,6 @@ const LossInfo = ({ onNext }) => {
     selectedRowKeys: selectedClaim ? [selectedClaim.claimNumber] : [],
     onChange: (selectedRowKeys, selectedRows) => setSelectedClaim(selectedRows[0])
   };
-  
-  const claimsData = [
-    {
-      uwyear: "2022",
-      carrier: "AIG",
-      claimNumber: "40051070-2022",
-      effectiveDate: "01-01-2022",
-      expirationDate: "12-31-2022",
-      dateofLoss: "06-30-2022",
-      causeofLoss: "Fire Damage",
-      lob: "Commercial Property",
-      lae: "$2,250.00",
-      settlementAmount: "$61,750.00",
-      totalIncurred: "$64,000.00",
-      status: "Paid",
-      notes: [
-        {
-          noteDate: "07-01-2022",
-          accidentDate: "06-30-2022",
-          reportedDate: "07-01-2022",
-          expenseReserve: "$20000.00",
-          note: "The claimant was not responsible for the lossess"
-        },
-        {
-          noteDate: "06-23-2022",
-          accidentDate: "06-22-2022",
-          reportedDate: "06-23-2022",
-          expenseReserve: "$5000.00",
-          note: "",
-        }
-      ]
-    },
-    {
-      uwyear: "2023",
-      carrier: "AIG",
-      claimNumber: "78345710-2023",
-      effectiveDate: "01-01-2023",
-      expirationDate: "12-31-2023",
-      dateofLoss: "02-27-2023",
-      causeofLoss: "Water Damage",
-      lob: "Commercial Property",
-      lae: "$750.00",
-      settlementAmount: "$14,250.00",
-      totalIncurred: "$15,000.00",
-      status: "Paid",
-      notes: [
-        {
-          noteDate: "02-28-2023",
-          accidentDate: "02-27-2023",
-          reportedDate: "02-28-2023",
-          expenseReserve: "$10000.00",
-          note: ""
-        }
-      ]
-    },
-    {
-      uwyear: "2024",
-      carrier: "AIG",
-      claimNumber: "86453201-2024",
-      effectiveDate: "01-01-2024",
-      expirationDate: "12-31-2024",
-      dateofLoss: "07-31-2024",
-      causeofLoss: "Fire Damage",
-      lob: "Commercial Property",
-      lae: "1,850.00",
-      settlementAmount: "$30,150.00",
-      totalIncurred: "$32,000.00",
-      status: "Paid",
-      notes: [
-        {
-          noteDate: "08-01-2024",
-          accidentDate: "07-31-2024",
-          reportedDate: "08-01-2024",
-          expenseReserve: "$8000.00",
-          note: ""
-        }
-      ]
-    }
-  ];
-
-  const [lossDetails, setLossDetails] = useState(claimsData);
 
   // Function to handle tab change
   const handleTabChange = (key) => {
@@ -240,15 +78,7 @@ const LossInfo = ({ onNext }) => {
 
   const handleModalOk = () => {
     setPolicies([...policies, newPolicy]);
-    setNewPolicy({
-      carrier: "",
-      policyNumber: "",
-      effectiveDate: "",
-      expirationDate: "",
-      annualPremium: "",
-      losses: "",
-      totalLosses: ""
-    });
+    setNewPolicy(initialFormStates.newPolicy);
     setIsModalVisible(false);
   };
 
@@ -259,15 +89,7 @@ const LossInfo = ({ onNext }) => {
   // Loss Summary Modal Handlers
   const handleLossSummaryModalOk = () => {
     setLossSummaries([...lossSummaries, newLossSummary]);
-    setNewLossSummary({
-      policyYear: "",
-      annualPremium: "",
-      claims: "",
-      openClaims: "",
-      totalInsuredLosses: "",
-      totalPaidLosses: "",
-      expenses: ""
-    });
+    setNewLossSummary(initialFormStates.newLossSummary);
     setIsLossSummaryModalVisible(false);
   };
   
@@ -282,19 +104,7 @@ const LossInfo = ({ onNext }) => {
   
   const handleLossDetailModalOk = () => {
     setLossDetails([...lossDetails, newLossDetail]);
-    setNewLossDetail({
-      claimNumber: "",
-      effectiveDate: "",
-      expirationDate: "",
-      carrier: "",
-      lob: "",
-      accidentDescription: "",
-      reportedDate: "",
-      status: "",
-      class: "",
-      totalPaid: "",
-      totalIncurred: ""
-    });
+    setNewLossDetail(initialFormStates.newLossDetail);
     setIsLossDetailModalVisible(false);
   };
   
@@ -324,12 +134,6 @@ const LossInfo = ({ onNext }) => {
     setSelectedPolicies([]);
   };
 
-  const [errors, setErrors] = useState({
-    reportedDate: '',
-    effectiveDate: '',
-    expirationDate: ''
-  });
-
   const handleDateChangeError = (field, value) => {
     // Validate for MM-DD-YYYY format
     const isValidDate = /^(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])-\d{4}$/.test(value);
@@ -346,6 +150,27 @@ const LossInfo = ({ onNext }) => {
     }));
   };
 
+  const getCurrentTabButton = () => {
+    switch (activeTab) {
+      case "1":
+        return (
+          <RoundedAddButton onClick={showAddPolicyModal}>
+            <span className="icon">+</span>
+            Add Policy
+          </RoundedAddButton>
+        );
+      case "2":
+        return (
+          <RoundedAddButton onClick={showLossDetailModal}>
+            <span className="icon">+</span>
+            Add Loss Details
+          </RoundedAddButton>
+        );
+      default:
+        return null;
+    }
+  };
+
   return (
     <Container>
       <MainContainer>
@@ -353,30 +178,34 @@ const LossInfo = ({ onNext }) => {
           <Col span={24}>
             <div id="lossInfo">
               <div style={{ width: '100%', overflowX: 'auto' }}>
-                <StyledTabs
-                  activeKey={activeTab}
-                  onChange={handleTabChange}
-                >
-                  <TabPane 
-                    tab="Prior Policies" 
-                    key="1"
-                    style={{ padding: '20px 0' }}
-                  >
-                    <div>
-                      <Row style={{ width: '100%',marginTop:-80 }} justify="end">
-                        <Col>
-                          <RoundedAddButton onClick={showAddPolicyModal}>
-                            <span className="icon">+</span>
-                            Add Policy
-                          </RoundedAddButton>
-                        </Col>
-                      </Row>
+                {/* Tab and Button Row */}
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                  <div style={{ flex: 1 }}>
+                    <StyledTabs
+                      activeKey={activeTab}
+                      onChange={handleTabChange}
+                    >
+                      <TabPane tab="Prior Policies" key="1" />
+                      <TabPane tab="Loss Summary" key="2" />
+                      <TabPane tab="Loss Runs - AI Insights" key="3" />
+                    </StyledTabs>
+                  </div>
+                  {getCurrentTabButton() && (
+                    <div style={{ marginTop: '-10px', marginLeft: '20px', flexShrink: 0 }}>
+                      {getCurrentTabButton()}
+                    </div>
+                  )}
+                </div>
 
+                {/* Tab Content */}
+                <div style={{ marginTop: '20px' }}>
+                  {activeTab === "1" && (
+                    <div>
                       {selectedPolicies.length > 0 && (
                         <Button
                           type="primary"
                           onClick={handleDelete}
-                          style={{ marginBottom: "20px", marginLeft: "10px" }}
+                          style={{ marginBottom: "20px" }}
                         >
                           Delete
                         </Button>
@@ -388,7 +217,7 @@ const LossInfo = ({ onNext }) => {
                           <div className="modern-table">
                             <Table
                               rowSelection={rowSelection}
-                              columns={priorPolicyColumns}
+                              columns={tableColumns.priorPolicy}
                               dataSource={policies.map((item, index) => ({ key: index, ...item }))}
                               pagination={{ pageSize: 4 }}
                               scroll={{ x: 'max-content' }}
@@ -420,7 +249,7 @@ const LossInfo = ({ onNext }) => {
                         <Col span={20}></Col>
                         <Col span={4}>
                           <NextButtonContainer>
-                            <NextButton onClick={onNext}>
+                            <NextButton onClick={nextTab}>
                               <div className="step-content-box">
                                 {"Next "}
                                 <img
@@ -436,30 +265,17 @@ const LossInfo = ({ onNext }) => {
                       </Row>
                       <Documents />
                     </div>
-                  </TabPane>
-                  
-                  <TabPane 
-                    tab="Loss Summary" 
-                    key="2"
-                    style={{ padding: '20px 0' }}
-                  >
+                  )}
+
+                  {activeTab === "2" && (
                     <div>
-                      <Row style={{ width: '100%', marginTop:-80 }} justify="end">
-                        <Col>
-                          <RoundedAddButton onClick={showLossDetailModal}>
-                            <span className="icon">+</span>
-                            Add Loss Details
-                          </RoundedAddButton>
-                        </Col>
-                      </Row>
-                      
                       <WorkSection>
                         <div className="work-header">Loss Details</div>
                         <div className="work-content">
                           <div className="modern-table">
                             <Table
                               rowSelection={rowSelectionClaims}
-                              columns={lossDetailColumns}
+                              columns={tableColumns.lossDetail}
                               dataSource={lossDetails.map((item) => ({ key: item.claimNumber, ...item }))}
                               pagination={{ pageSize: 4 }}
                               style={{ width: '100%' }}
@@ -507,18 +323,14 @@ const LossInfo = ({ onNext }) => {
                         </WorkSection>
                       )}
                     </div>
-                  </TabPane>
-                  
-                  <TabPane 
-                    tab="Loss Runs - AI Insights" 
-                    key="3"
-                    style={{ padding: '20px 0' }}
-                  >
+                  )}
+
+                  {activeTab === "3" && (
                     <div style={{ marginTop: "0px", marginBottom: "30px" }}>
                       <LossRun />
                     </div>
-                  </TabPane>
-                </StyledTabs>
+                  )}
+                </div>
               </div>
 
               {/* Modals */}
