@@ -1,7 +1,17 @@
 import React, { useState } from 'react';
 import { Table, Input, Typography, Button, Tooltip, Row, Col, Select, Collapse } from 'antd';
-import { EditOutlined, SaveOutlined } from '@ant-design/icons';
+import { EditOutlined, SaveOutlined, FileTextOutlined } from '@ant-design/icons';
 import TableComponent from '../../components/Table';
+import { StyledLocationText, StyledCollapse } from "../../styles/index";
+import {
+  WorkSection,
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
+import {
+  NextButtonContainer,
+  NextButton,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import NextArrow from "../../assets/img/nextArrow.png";
+import { NotesWrapper, NotesHeader } from "../../styles/index";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -130,54 +140,99 @@ const PremiumSummary = ({ onNext }) => {
           />
         </Col>
       </Row>
+      <WorkSection>
+        <div className="work-content">
+          <StyledCollapse defaultActiveKey={['1']}>
+            <Panel header="Premium Data" key="1">
+              <StyledLocationText>
+                Building No: 123-05
+              </StyledLocationText>
+              <div className="modern-table" style={{ marginTop: '10px' }}>
+                <Table
+                  columns={columns}
+                  dataSource={data}
+                  pagination={{ pageSize: 7 }}
+                  style={{ width: '100%' }}
+                  className="custom-table-header"
+                  tableLayout="fixed"
+                />
+              </div>
+            </Panel>
+          </StyledCollapse>
+        </div>
+        <div className="work-content">
 
-      {/* Table */}
-      <Collapse defaultActiveKey={['1']} style={{ marginTop: '20px' }}>
-        <Panel header="Building No: 123-05" key="1">
-          <TableComponent title={"Premium Data"}
-                    columns={columns}
-                    data={data}
-                    style={{ marginTop: 2 }}
-         />
-        </Panel>
-      </Collapse>
+          <div className="modern-table">
+            <Table
+              columns={[
+                { title: '', dataIndex: 'label', key: 'label' },
+                { title: '', dataIndex: 'value', key: 'value' }
+              ]}
+              dataSource={[
+                { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
+                { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350.00' },
+                { key: 'totalPayable', label: 'Total Payable', value: '$49,350.00' }
+              ]}
+              pagination={false}
+              style={{ width: '100%' }}
+              className="custom-table-header"
+              tableLayout="fixed"
+            />
+          </div>
+        </div>
+      </WorkSection>
 
       {/* Total Premiums */}
-      <TableComponent
-          columns={[
-            { title: '', dataIndex: 'label' },
-            { title: '', dataIndex: 'value' }
-          ]}
-          data={[
-            { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
-            { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350,00' },
-            { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' }
-          ]}
-        />
-      
+
 
       {/* Notes Section */}
-      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <Title level={4}>Notes:</Title>
-        <TextArea
-          placeholder="Enter notes here"
-          rows={4}
-          style={{ marginTop: 10, width: '100%', border: '2px solid gray' }}
-        />
+      <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <NotesHeader>
+          <FileTextOutlined className="icon" />
+          <span className="title">Notes</span>
+        </NotesHeader>
+        <WorkSection>
+          <Input.TextArea
+            placeholder="Enter notes here"
+            rows={4}
+          />
+        </WorkSection>
       </div>
-
-      {/* Buttons */}
       <Row gutter={16}>
-        <Col span={16}></Col>
-        <Col span={8}>
-          <div>
-          <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                     Recalculate
-                    </Button>
-            
-            <Button type="primary" onClick={onNext} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px",  backgroundColor: "blue" }}>
-                      Next
-                    </Button>
+        <Col span={20}></Col>
+        <Col span={4}>
+          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+            <Button
+              type="primary"
+
+              style={{
+                width: "10rem",
+                marginBottom: "1rem",
+                marginTop: "2rem",
+                marginRight: "15px",
+                backgroundColor: "white",
+                border: "2px solid #004A77", // deep blue border
+                color: "#004A77",            // matching text color
+                fontWeight: "bold",
+                borderRadius: "8px",         // rounded corners
+              }}
+            >
+              Recalculate
+            </Button>
+
+            <NextButtonContainer>
+              <NextButton onClick={onNext}>
+                <div className="step-content-box">
+                  {"Next "}
+                  <img
+                    src={NextArrow}
+                    alt="Exavalu"
+                    title="Exavalu"
+                    className="logobox"
+                  />
+                </div>
+              </NextButton>
+            </NextButtonContainer>
           </div>
         </Col>
       </Row>

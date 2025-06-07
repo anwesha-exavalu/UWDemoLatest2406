@@ -171,7 +171,6 @@ const Coverages = ({ onNext }) => {
 
 
             <WorkSection>
-
               <div className="work-content">
                 <StyledCollapse defaultActiveKey={['1']}>
                   <Panel header="Coverages" key="1">
