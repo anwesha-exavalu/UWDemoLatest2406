@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Dashboard = styled.div`
-  padding: 24px;
+  padding: 14px;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
@@ -352,7 +352,7 @@ export const ClaimCircleItem = styled.div`
 export const ClaimCircleChart = styled.div`
   position: relative;
   width: 120px;
-  height: 120px;
+  height: 150px;
   display: flex;
   align-items: center;
   justify-content: center;

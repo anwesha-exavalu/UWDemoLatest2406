@@ -19,6 +19,7 @@ import {
 } from '../styles/pages/Dashboard/MyDashboardStyle';
 import PortfolioInsights from './PortfolioInsights';
 import { Container } from '../styles/components/Layout';
+import { dashboardData, chartData, legendConfig } from './dummyDashboardData';
 
 const { Title, Text } = Typography;
 
@@ -37,26 +38,6 @@ const MyTableComponent = ({ columns, dataSource, handleRowClick, handleChange })
     />
   </div>
 );
-
-const data = {
-  myteamscases: [
-    { id: 'CP1001', client: 'Fleet Solutions', lob: 'Commercial Property', status: 'Clearance UW', limit: '$500,000', date: '20-08-2024', broker: 'Marsh ', priority: 'Medium' },
-    { id: 'CP1002', client: 'Skyline Residences', lob: 'Commercial Property', status: 'Clearance UW', limit: '$250,000', date: '18-08-2024', broker: 'Marsh ', priority: 'Medium' }
-  ],
-  myassignedcases: [
-    { id: 'CP1003', client: 'Skyline Property Inc.', lob: 'Commercial Property', status: 'Awaiting Client Response', limit: '$900,000', date: '10-15-2024', broker: 'Marsh ', priority: 'Medium' },
-    { id: 'CP1001', client: 'Fleet Solutions', lob: 'Commercial Property', status: 'Clearance UW', limit: '$500,000', date: '20-08-2024', broker: 'Marsh ', priority: 'Medium' },
-    { id: 'CP1006', client: 'Uptown Commercial Spaces', lob: 'Commercial Property', status: 'Broker Review', limit: '$450,000', date: '17-08-2024', broker: 'Marsh ', priority: 'Medium' }
-  ],
-  senttobroker: [
-    { id: 'CP1006', client: 'Uptown Commercial Spaces', lob: 'Commercial Property', status: 'Broker Review', limit: '$450,000', date: '17-08-2024', broker: 'Marsh ', priority: 'Medium' },
-    { id: 'CP1007', client: 'Client F', lob: 'Commercial Property', status: 'Broker Review', limit: '$100,000', date: '09-08-2024', broker: 'Marsh ', priority: 'High' }
-  ],
-  close: [
-    { id: 'CP1009', client: 'Client F', lob: 'Commercial Property', status: 'Approved', limit: '$700,000', date: '10-08-2024', broker: 'Marsh ', priority: 'Low' },
-    { id: 'CP1010', client: 'Client I', lob: 'Commercial Property', status: 'Rejected', limit: '$300,000', date: '11-08-2024', broker: 'Marsh ', priority: 'High' }
-  ]
-};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -85,7 +66,7 @@ const Dashboard = () => {
   const getColumnSearchProps = (dataIndex) => ({
     filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
       <SearchDropdown>
-        <div style={{ padding: 8 }} onKeyDown={(e) => e.stopPropagation()}>
+        <div style={{ padding: 4 }} onKeyDown={(e) => e.stopPropagation()}>
           <Input
             ref={searchInput}
             placeholder={`Search ${dataIndex}`}
@@ -156,10 +137,10 @@ const Dashboard = () => {
           backgroundColor: colors,
           borderRadius: 8,
           borderSkipped: false,
-          barThickness: 24, // Decreased bar width
+          barThickness: 24,
           maxBarThickness: 24,
-          categoryPercentage: 0.6, // Floating effect
-          barPercentage: 0.7, // Floating effect
+          categoryPercentage: 0.6,
+          barPercentage: 0.7,
         }],
       },
       options: {
@@ -180,8 +161,7 @@ const Dashboard = () => {
           y: {
             beginAtZero: true,
             grid: { 
-              display: true,
-              color: '#F0F0F0',
+              display: false,
               drawBorder: false
             },
             ticks: { 
@@ -206,101 +186,22 @@ const Dashboard = () => {
     });
   };
 
-const createDonutChart = () => {
-  if (!donutChartRef.current) return;
-  
-  // Destroy existing chart if it exists
-  if (donutChartRef.current.chartInstance) {
-    donutChartRef.current.chartInstance.destroy();
-  }
-
-  const ctx = donutChartRef.current.getContext('2d');
-  
-  donutChartRef.current.chartInstance = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: ['Acquisition', 'Purchase', 'Retention'],
-      datasets: [
-        // Outermost hallow ring (lightest)
-        {
-          data: [100],
-          backgroundColor: ['#EEF0FA'],
-          borderWidth: 0,
-          cutout: '45%',
-          radius: '90%',
-          circumference: 360,
-          rotation: 0
-        },
-          {
-          data: [40, 35, 25],
-          backgroundColor: ['#204FC2', '#D2DAF2', '#97A5EB'],
-          borderWidth: 0,
-         cutout: '25%',
-          radius: '100%',
-          borderRadius: 2
-        },
-        // Second hallow ring
-        {
-          data: [100],
-          backgroundColor: ['#EEF0FA'],
-          borderWidth: 0,
-          cutout: '55%',
-          radius: '80%',
-          circumference: 360,
-          rotation: 0
-        },
-        // Third hallow ring
-        {
-          data: [100],
-          backgroundColor: ['#EEF0FA'],
-          borderWidth: 0,
-          cutout: '55%',
-          radius: '80%',
-          circumference: 360,
-          rotation: 0
-        },
-        // Main data (top layer)
-      
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
-        },
-        tooltip: {
-          filter: function(tooltipItem) {
-            // Only show tooltips for the main dataset (last one)
-            return tooltipItem.datasetIndex === 3;
-          },
-          callbacks: {
-            label: function (context) {
-              return `${context.label}: ${context.raw}%`;
-            }
-          }
-        }
-      },
-      interaction: {
-        intersect: false
-      },
-      elements: {
-        arc: {
-          borderWidth: 0
-        }
-      },
-      layout: {
-        padding: 15
-      }
-    },
-  });
-};
   const createCharts = () => {
-    // Use setTimeout to ensure DOM is ready
     setTimeout(() => {
-      createBarChart(policiesChartRef, 'Policies Issued', ['Commercial Property', 'General Liability'], [30, 25], ['#204FC2', '#E9EDF7']);
-      createBarChart(submissionsChartRef, 'Submission in Progress', ['Commercial Property', 'General Liability'], [40, 35], ['#204FC2', '#E9EDF7']);
+      createBarChart(
+        policiesChartRef, 
+        'Policies Issued', 
+        chartData.policiesIssued.labels, 
+        chartData.policiesIssued.data, 
+        chartData.policiesIssued.colors
+      );
+      createBarChart(
+        submissionsChartRef, 
+        'Submission in Progress', 
+        chartData.submissionsInProgress.labels, 
+        chartData.submissionsInProgress.data, 
+        chartData.submissionsInProgress.colors
+      );
       createDonutChart();
     }, 100);
   };
@@ -314,7 +215,6 @@ const createDonutChart = () => {
     });
   };
 
-  // Create charts when dashboard tab is active
   useEffect(() => {
     if (activeTab === 'dashboard') {
       createCharts();
@@ -322,7 +222,6 @@ const createDonutChart = () => {
       destroyCharts();
     }
 
-    // Cleanup on unmount
     return () => {
       destroyCharts();
     };
@@ -337,13 +236,20 @@ const createDonutChart = () => {
     setSortedInfo(sorter);
   };
 
+  const getAllData = () => [
+    ...dashboardData.myteamscases,
+    ...dashboardData.myassignedcases,
+    ...dashboardData.senttobroker,
+    ...dashboardData.close
+  ];
+
   const columns = [
     {
       title: 'Submission Id',
       dataIndex: 'id',
       key: 'id',
       ...getColumnSearchProps('id'),
-      filters: [...new Set(data.myteamscases.concat(data.myassignedcases, data.senttobroker, data.close).map(item => ({ text: item.id, value: item.id })))],
+      filters: [...new Set(getAllData().map(item => ({ text: item.id, value: item.id })))],
       filteredValue: filteredInfo.id || null,
       onFilter: (value, record) => record.id.includes(value),
     },
@@ -352,7 +258,7 @@ const createDonutChart = () => {
       dataIndex: 'client',
       key: 'client',
       ...getColumnSearchProps('client'),
-      filters: [...new Set(data.myteamscases.concat(data.myassignedcases, data.senttobroker, data.close).map(item => ({ text: item.client, value: item.client })))],
+      filters: [...new Set(getAllData().map(item => ({ text: item.client, value: item.client })))],
       filteredValue: filteredInfo.client || null,
       onFilter: (value, record) => record.client.includes(value),
     },
@@ -361,13 +267,19 @@ const createDonutChart = () => {
       dataIndex: 'lob',
       key: 'lob',
       ...getColumnSearchProps('lob'),
-      filters: [...new Set(data.myteamscases.concat(data.myassignedcases, data.senttobroker, data.close).map(item => ({ text: item.lob, value: item.lob })))],
+      filters: [...new Set(getAllData().map(item => ({ text: item.lob, value: item.lob })))],
       filteredValue: filteredInfo.lob || null,
       onFilter: (value, record) => record.lob.includes(value),
     },
     { title: 'Limit', dataIndex: 'limit', key: 'limit' },
     { title: 'Status', dataIndex: 'status', key: 'status', ...getColumnSearchProps('status') },
-    { title: 'Date Submitted', dataIndex: 'date', key: 'date', sorter: (a, b) => new Date(a.date) - new Date(b.date), sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null },
+    { 
+      title: 'Date Submitted', 
+      dataIndex: 'date', 
+      key: 'date', 
+      sorter: (a, b) => new Date(a.date) - new Date(b.date), 
+      sortOrder: sortedInfo.columnKey === 'date' ? sortedInfo.order : null 
+    },
     { title: 'Broker', dataIndex: 'broker', key: 'broker', ...getColumnSearchProps('broker') },
     {
       title: 'Priority',
@@ -393,81 +305,153 @@ const createDonutChart = () => {
     },
   ];
 
-  const combinedData = [
-    ...data.myteamscases,
-    ...data.myassignedcases,
-    ...data.senttobroker
-  ];
+  const createDonutChart = () => {
+    if (!donutChartRef.current) return;
+    
+    if (donutChartRef.current.chartInstance) {
+      donutChartRef.current.chartInstance.destroy();
+    }
 
-  
+    const ctx = donutChartRef.current.getContext('2d');
+    
+    donutChartRef.current.chartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: chartData.newBusinessRenewal.labels,
+        datasets: [
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '45%',
+            radius: '90%',
+            circumference: 360,
+            rotation: 0
+          },
+          {
+            data: chartData.newBusinessRenewal.data,
+            backgroundColor: chartData.newBusinessRenewal.colors,
+            borderWidth: 0,
+            cutout: '25%',
+            radius: '100%',
+            borderRadius: 2
+          },
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '55%',
+            radius: '80%',
+            circumference: 360,
+            rotation: 0
+          },
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '55%',
+            radius: '80%',
+            circumference: 360,
+            rotation: 0
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            filter: function(tooltipItem) {
+              return tooltipItem.datasetIndex === 1;
+            },
+            callbacks: {
+              label: function (context) {
+                return `${context.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        interaction: {
+          intersect: false
+        },
+        elements: {
+          arc: {
+            borderWidth: 0
+          }
+        },
+        layout: {
+          padding: 5,
+         
+        }
+      },
+    });
+  };
 
-  // Dashboard content component
+  // Dashboard content component with responsive layout
   const DashboardContent = () => (
     <>
       <MetricsSection>
-       
-        <div className="metrics-grid">
-          <MetricCard>
-            <div className="card-title">Policies Issued</div>
-            <div className="card-subtitle">
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#204FC2' }}></div>
-                <span>Commercial Property</span>
+        <Row gutter={[16, 16]} justify="space-between">
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <MetricCard>
+              <div className="card-title">Policies Issued</div>
+              <div className="card-subtitle">
+                {legendConfig.policiesIssued.map((item, index) => (
+                  <div key={index} className="legend-item">
+                    <div className="legend-color" style={{ backgroundColor: item.color }}></div>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
               </div>
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#E9EDF7' }}></div>
-                <span>General Liability</span>
-              </div>
-            </div>
-            <ChartWrapper>
-              <div className="chart-container">
-                <canvas ref={policiesChartRef}></canvas>
-              </div>
-            </ChartWrapper>
-          </MetricCard>
+              <ChartWrapper>
+                <div className="chart-container">
+                  <canvas ref={policiesChartRef}></canvas>
+                </div>
+              </ChartWrapper>
+            </MetricCard>
+          </Col>
 
-          <MetricCard>
-            <div className="card-title">Submission in Progress</div>
-            <div className="card-subtitle">
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#204FC2' }}></div>
-                <span>Commercial Property</span>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <MetricCard>
+              <div className="card-title">Submission in Progress</div>
+              <div className="card-subtitle">
+                {legendConfig.submissionsInProgress.map((item, index) => (
+                  <div key={index} className="legend-item">
+                    <div className="legend-color" style={{ backgroundColor: item.color }}></div>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
               </div>
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#E9EDF7' }}></div>
-                <span>General Liability</span>
-              </div>
-            </div>
-            <ChartWrapper>
-              <div className="chart-container">
-                <canvas ref={submissionsChartRef}></canvas>
-              </div>
-            </ChartWrapper>
-          </MetricCard>
+              <ChartWrapper>
+                <div className="chart-container">
+                  <canvas ref={submissionsChartRef}></canvas>
+                </div>
+              </ChartWrapper>
+            </MetricCard>
+          </Col>
 
-          <MetricCard>
-            <div className="card-title">New Business vs Renewal Premium ($)</div>
-            <div className="card-subtitle">
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#204FC2' }}></div>
-                <span>Acquisition</span>
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <MetricCard>
+              <div className="card-title">New Business vs Renewal Premium ($)</div>
+              <div className="card-subtitle">
+                {legendConfig.newBusinessRenewal.map((item, index) => (
+                  <div key={index} className="legend-item">
+                    <div className="legend-color" style={{ backgroundColor: item.color }}></div>
+                    <span>{item.label}</span>
+                  </div>
+                ))}
               </div>
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#D2DAF2' }}></div>
-                <span>Purchase</span>
-              </div>
-              <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: '#97A5EB' }}></div>
-                <span>Retention</span>
-              </div>
-            </div>
-            <ChartWrapper>
-              <div className="chart-container">
-                <canvas ref={donutChartRef}></canvas>
-              </div>
-            </ChartWrapper>
-          </MetricCard>
-        </div>
+              <ChartWrapper>
+                <div className="chart-container">
+                  <canvas ref={donutChartRef}></canvas>
+                </div>
+              </ChartWrapper>
+            </MetricCard>
+          </Col>
+        </Row>
       </MetricsSection>
 
       <WorkSection>
@@ -475,7 +459,7 @@ const createDonutChart = () => {
         <div className="work-content">
           <MyTableComponent
             columns={columns}
-            dataSource={data.myassignedcases}
+            dataSource={dashboardData.myassignedcases}
             handleRowClick={handleRowClick}
             handleChange={handleChange}
           />
@@ -485,46 +469,54 @@ const createDonutChart = () => {
   );
 
   return (
-    
-      <DashboardContainer>
-        <Container>
+    <DashboardContainer>
+      <Container>
         <TopBar>
-          <div className="left-section">
-            <span className="greeting">Hi Andrei,</span>
-          </div>
-          <div className="center-section">
-            <Input
-              className="search-input"
-              placeholder="Search"
-              prefix={<SearchOutlined />}
-            />
-          </div>
+          <Row justify="space-between" align="middle" style={{ width: '99.5%' }}>
+            <Col flex={1}>
+              <div className="left-section">
+                <span className="greeting">Hi Andrei,</span>
+              </div>
+            </Col>
+            <Col flex={'none'}>
+              <div className="center-section">
+                <Input
+                  className="search-input"
+                  placeholder="Search"
+                  prefix={<SearchOutlined />}
+                />
+              </div>
+            </Col>
+          </Row>
         </TopBar>
 
         <WelcomeSection>
-          <Row  justify="space-between" align="middle">
-            <Title level={2} className="welcome-title">Welcome to UW Workbench</Title>
-            <div className="tab-navigation">
-              <Button 
-                className={`nav-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
-                onClick={() => setActiveTab('dashboard')}
-              >
-                My Dashboard
-              </Button>
-              <Button 
-                className={`nav-tab ${activeTab === 'portfolio' ? 'active' : ''}`}
-                onClick={() => setActiveTab('portfolio')}
-              >
-                My Portfolio
-              </Button>
-            </div>
+          <Row justify="space-between" align="middle">
+            <Col flex={1}>
+              <Title level={2} className="welcome-title">Welcome to UW Workbench</Title>
+            </Col>
+            <Col flex={'none'}>
+              <div className="tab-navigation">
+                <Button 
+                  className={`nav-tab ${activeTab === 'dashboard' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('dashboard')}
+                >
+                  My Dashboard
+                </Button>
+                <Button 
+                  className={`nav-tab ${activeTab === 'portfolio' ? 'active' : ''}`}
+                  onClick={() => setActiveTab('portfolio')}
+                >
+                  My Portfolio
+                </Button>
+              </div>
+            </Col>
           </Row>
         </WelcomeSection>
         
         {activeTab === 'dashboard' ? <DashboardContent /> : <PortfolioInsights />}
-        </Container>
-      </DashboardContainer>
-   
+      </Container>
+    </DashboardContainer>
   );
 };
 

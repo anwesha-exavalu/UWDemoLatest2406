@@ -9,19 +9,17 @@ export const DashboardContainer = styled.div`
 `;
 
 export const TopBar = styled.div`
- 
   padding: 12px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
- 
 
   .left-section {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-top: 18px;
-    margin-left: 16px;
+    margin-left: 18px;
 
     .greeting {
       font-size: 20px;
@@ -31,7 +29,7 @@ export const TopBar = styled.div`
 
   .center-section {
     .search-input {
-      width: 300px;
+      width: 360px;
       height: 40px;
       
       .ant-input {
@@ -44,7 +42,6 @@ export const TopBar = styled.div`
     display: flex;
     align-items: center;
     gap: 16px;
-    
 
     .user-avatar {
       width: 32px;
@@ -67,10 +64,7 @@ export const TopBar = styled.div`
 `;
 
 export const WelcomeSection = styled.div`
- 
-
- 
-    .filters-section {
+  .filters-section {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -93,6 +87,7 @@ export const WelcomeSection = styled.div`
     color: ${({ theme }) => (theme === 'dark' ? '#FFFFFF' : '#05004E')};
     white-space: nowrap;
   }
+  
   .welcome-title {
     font-size: 24px !important;
     font-weight: 600 !important;
@@ -103,13 +98,12 @@ export const WelcomeSection = styled.div`
   
   .tab-navigation {
     display: flex;
-    
     gap: 0;
     border: 1px solid #D9D9D9;
     border-radius: 6px;
     overflow: hidden;
     display: inline-flex;
-   
+    margin-right: 16px; /* Align with search box */
     
     .nav-tab {
       background-color: #FFFFFF !important;
@@ -128,11 +122,16 @@ export const WelcomeSection = styled.div`
       }
     }
   }
+
+  /* Ensure proper alignment between search and tabs */
+  .ant-row {
+    margin-right: 16px;
+    margin-left: 16px;
+  }
 `;
 
 export const MetricsSection = styled.div`
-
-  padding: 12px 8px;
+  padding: 12px 24px; /* Added horizontal padding to match other sections */
   
   .metrics-header {
     display: flex;
@@ -164,9 +163,9 @@ export const MetricCard = styled.div`
   background-color: #FFFFFF;
   border: 1px solid #E8E8E8;
   border-radius: 12px;
-  padding: 24px;
+  padding: 18px;
   flex: 1;
-  max-width: 400px;
+  max-width: 410px;
   max-height: 350px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   
@@ -204,6 +203,9 @@ export const MetricCard = styled.div`
     min-height: 250px;
     width: 100%;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center the donut chart */
     
     canvas {
       width: 100% !important;
@@ -214,16 +216,11 @@ export const MetricCard = styled.div`
 
 export const WorkSection = styled.div`
   background-color: #FFFFFF;
-  margin: 30px;
+  margin: 30px 24px; /* Match the horizontal margin with MetricsSection */
   border-radius: 10px;
   border: 2px solid #E8E8E8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-left: 0px;
-  margin-right: 0px;
-  
-
- 
   
   .work-header {
     background-color: #054F7D;
@@ -427,13 +424,19 @@ export const ResponsiveHelper = styled.div`
 export const ChartWrapper = styled.div`
   .chart-container {
     height: 200px !important;
-    width: 100% !important;
+    width: 90% !important;
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+   
   }
   
   canvas {
     width: 100% !important;
     height: 100% !important;
+    
   }
   
   /* Custom chart colors */
