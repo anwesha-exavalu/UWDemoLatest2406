@@ -1,9 +1,23 @@
 import React, { useRef } from 'react';
 import { Table, Input, Typography, Button, Collapse, Row, Col } from 'antd';
-import { FilePdfOutlined } from '@ant-design/icons';
+import { FilePdfOutlined, FileTextOutlined } from '@ant-design/icons';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import TableComponent from '../../components/Table';
+import PremiumSummary from "../../assets/img/PremiumSummary.png"
+import { ScreenHeader } from '../../styles';
+import { QuoteSummaryTableWrapper } from "../../styles/pages/QuoteSummary"
+import {
+  WorkSection,
+} from '../../styles/pages/Dashboard/MyDashboardStyle';
+import { StyledLocationText, StyledCollapse } from "../../styles/index";
+import { NotesWrapper, NotesHeader } from "../../styles/index";
+import {
+  NextButtonContainer,
+  NextButton,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import NextArrow from "../../assets/img/nextArrow.png";
+import { RoundedAddButton } from "../../styles/index";
 
 const { Title } = Typography;
 const { Panel } = Collapse;
@@ -97,90 +111,185 @@ const QuoteSummary = () => {
       <Row gutter={16}>
         <Col span={21}></Col>
         <Col span={3}>
-          <Button
+          <RoundedAddButton
             type="primary"
             icon={<FilePdfOutlined />}
             onClick={generatePDF} // Call the PDF generation function on click
             style={{
-              width: '100%',
-              color: '#1d4ed8',
-              backgroundColor: 'white',
-              borderRadius: '5px',
+              marginTop:"10px"
+              
             }}
           >
             Download PDF
-          </Button>
+          </RoundedAddButton>
         </Col>
       </Row>
 
       {/* Header Information */}
-      <Title level={5}>Quote Summary</Title>
-      
-      <TableComponent
-        title="Quote Summary"
-        columns={[
-          { title: '', dataIndex: 'label', key: 'label' },
-          { title: '', dataIndex: 'value', key: 'value' }
-        ]}
-        data={[
-          { key: 'quoteNumber', label: 'Quote Number', value: 'Q0014562' },
-          { key: 'effectiveDate', label: 'Policy Effective Date', value: '12/11/2024' },
-          { key: 'endDate', label: 'Policy End Date', value: '12/11/2025' },
-          { key: 'insuredName', label: 'Insured Name', value: 'Kew Gardens Property Inc.' },
-          { key: 'mailingAddress', label: 'Mailing Address', value: '123-05 84th Avenue, Kew Gardens, NY 11415' }
-        ]}
-      />
 
-      <Collapse defaultActiveKey={['1', '2', '3']} style={{ marginTop: '20px' }}>
-        <Panel header="Coverage Summary" key="1">
-          <h6>Location- 123-05 84th Avenue, Kew Gardens, NY 11415</h6>
-          <TableComponent title="Coverage Summary" columns={coverageColumns} data={coverageData} />
-       
-          <TableComponent
-            title="Payment Summary"
-            data={[
-              { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
-              { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350,00' },
-              { key: 'totalPayable', label: 'Total Payable', value: '$49,350,00' }
-            ]}
-            columns={[
-              { title: '', dataIndex: 'label', key: 'label' },
-              { title: '', dataIndex: 'value', key: 'value' }
-            ]}
-          />
-        </Panel>
+      <ScreenHeader>
+        <div className="icon-wrapper">
+          <img src={PremiumSummary} alt="Quote Icon" className="icon" />
+        </div>
+        <h3>Quote Summary</h3>
+      </ScreenHeader>
 
-        <Panel header="Forms" key="2">
-        <TableComponent title="Forms" data={formData} columns={formColumns} />
-        </Panel>
 
-        <Panel header="Invoice Details" key="3">
-        <TableComponent title="Invoice Details" data={invoiceData} columns={invoiceColumns} />
-        </Panel>
-      </Collapse>
+      <QuoteSummaryTableWrapper>
+        <Table
+          columns={[
+            { title: '', dataIndex: 'label', key: 'label' },
+            { title: '', dataIndex: 'value', key: 'value' }
+          ]}
+          dataSource={[
+            { key: 'quoteNumber', label: 'Quote Number', value: 'Q0014562' },
+            { key: 'effectiveDate', label: 'Policy Effective Date', value: '12/11/2024' },
+            { key: 'endDate', label: 'Policy End Date', value: '12/11/2025' },
+            { key: 'insuredName', label: 'Insured Name', value: 'Kew Gardens Property Inc.' },
+            { key: 'mailingAddress', label: 'Mailing Address', value: '123-05 84th Avenue, Kew Gardens, NY 11415' }
+          ]}
+          pagination={false}
+          showHeader={false}
+          rowKey="key"
+        />
+      </QuoteSummaryTableWrapper>
+
+
+      <WorkSection>
+        <div className="work-content">
+          <StyledCollapse defaultActiveKey={['1', '2', '3']}>
+            <Panel header="Coverage Summary" key="1">
+              <StyledLocationText>
+                Location – 123–05 84th Avenue, Kew Gardens, NY 11415
+              </StyledLocationText>
+              <div className="modern-table">
+                <Table
+                  columns={coverageColumns}
+                  dataSource={coverageData}
+                  pagination={{ pageSize: 8 }}
+                  style={{ width: '100%' }}
+                  className="custom-table-header"
+                  tableLayout="fixed"
+                />
+              </div>
+              <div className="work-content" >
+
+                <div className="modern-table" >
+                  <Table
+                    columns={[
+                      { title: '', dataIndex: 'label', key: 'label' },
+                      { title: '', dataIndex: 'value', key: 'value' }
+                    ]}
+                    dataSource={[
+                      { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
+                      { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350.00' },
+                      { key: 'totalPayable', label: 'Total Payable', value: '$49,350.00' }
+                    ]}
+                    pagination={false}
+                    style={{ width: '100%' }}
+                    className="custom-table-header"
+                    tableLayout="fixed"
+                  />
+                </div>
+              </div>
+            </Panel>
+
+          </StyledCollapse>
+        </div>
+
+      </WorkSection>
+
+
+      <WorkSection>
+        <div className="work-content">
+          <StyledCollapse defaultActiveKey={['1', '2', '3']}>
+            <Panel header="Forms" key="2">
+              <div className="modern-table">
+                <Table
+                  columns={formColumns}
+                  dataSource={formData}
+                  pagination={{ pageSize: 6 }}
+                  style={{ width: '100%' }}
+                  className="custom-table-header"
+                  tableLayout="fixed"
+                />
+              </div>
+            </Panel>
+          </StyledCollapse>
+        </div>
+      </WorkSection>
+
+      <WorkSection>
+        <div className="work-content">
+          <StyledCollapse defaultActiveKey={['1', '2', '3']}>
+            <Panel header="Invoice Details" key="3">
+              <div className="modern-table">
+                <Table
+                  columns={invoiceColumns}
+                  dataSource={invoiceData}
+                  pagination={{ pageSize: 6 }}
+                  style={{ width: '100%' }}
+                  className="custom-table-header"
+                  tableLayout="fixed"
+                />
+              </div>
+            </Panel>
+          </StyledCollapse>
+        </div>
+      </WorkSection>
+
 
       {/* Underwriter Notes */}
-      <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-        <Title level={4}>Notes:</Title>
-        <Input.TextArea
-          placeholder="Enter notes here"
-          rows={4}
-          style={{ marginTop: 10, width: '100%', border: '2px solid gray' }}
-        />
+      <div style={{ marginTop: '10px', marginBottom: '10px' }}>
+        <NotesHeader>
+          <FileTextOutlined className="icon" />
+          <span className="title">Notes</span>
+        </NotesHeader>
+        <WorkSection>
+          <Input.TextArea
+            placeholder="Enter notes here"
+            rows={4}
+          />
+        </WorkSection>
       </div>
-
       <Row gutter={16}>
-        <Col span={16}></Col>
-        <Col span={8}>
-          <div>
-            <Button type="primary" onClick={() => alert("Create Quote request sent")} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+        <Col span={20}></Col>
+        <Col span={4}>
+          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
+            <Button
+              type="primary"
+              onClick={() => alert("Create Quote request sent")}
+              style={{
+                width: "10rem",
+                marginBottom: "1rem",
+                marginTop: "2rem",
+                marginRight: "15px",
+                backgroundColor: "white",
+                border: "2px solid #004A77", // deep blue border
+                color: "#004A77",            // matching text color
+                fontWeight: "bold",
+                borderRadius: "8px",         // rounded corners
+              }}
+            >
               Create Quote
             </Button>
-            <Button type="primary" onClick={() => alert("Bind Quote request sent")} style={{ width: "10rem", marginBottom: "1rem", marginTop: "1rem", marginRight: "3px", backgroundColor: "blue" }}>
+
+            <Button
+              type="primary"
+              onClick={() => alert("Bind Quote request sent")}
+              style={{
+                width: "12rem",
+                marginBottom: "1rem",
+                marginTop: "2rem",
+                marginRight: "15px",
+                backgroundColor: "#054F7D",
+                border: "2px solid #004A77", // deep blue border
+                color: "white",            // matching text color
+                borderRadius: "8px",         // rounded corners
+              }}
+            >
               Bind Quote
             </Button>
-
-
           </div>
         </Col>
       </Row>

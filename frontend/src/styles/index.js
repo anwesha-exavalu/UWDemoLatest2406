@@ -418,3 +418,62 @@ export const NotesSectionWrapper = styled.div`
   }
 `;
 
+export const ScreenHeader = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-left: 40px;
+  margin: 20px 0;
+
+  .icon-wrapper {
+    background-color: #edf4ff;
+    border-radius: 8px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+
+    .icon {
+      width: 34px;
+      height: 34px;
+      color: #1890ff;
+    }
+  }
+
+  h3 {
+    font-weight: 600;
+    font-size: 24px;
+    color: #1c1c1c;
+    margin: 0;
+  }
+
+  @media (max-width: 767px) {
+    .icon-wrapper {
+      width: 28px;
+      height: 28px;
+      padding: 4px;
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    h3 {
+      font-size: 15px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    text-align: center;
+    gap: 6px;
+
+    h3 {
+      font-size: 14px;
+    }
+  }
+`;
+
