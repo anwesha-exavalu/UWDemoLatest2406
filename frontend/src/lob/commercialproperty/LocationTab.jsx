@@ -33,7 +33,7 @@ const LocationTab = () => {
   
   return (
     <Container>
-      <MainContainer>
+     
         <div style={{ width: '100%', overflowX: 'auto' }}>
           {/* Tabs and Add Button in same row */}
           <Row justify="space-between" align="middle" style={{ marginBottom: 16 }}>
@@ -90,7 +90,7 @@ const LocationTab = () => {
             )}
           </div>
         </div>
-      </MainContainer>
+    
     </Container>
   );
 };

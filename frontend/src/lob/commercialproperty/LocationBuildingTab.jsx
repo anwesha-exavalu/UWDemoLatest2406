@@ -336,7 +336,7 @@ export function LocationBuildingTab() {
 
   return (
     <Container>
-      {/* Location Selection Header */}
+     
       <Row gutter={[24, 24]} style={{ marginTop: "16px" }}>
         <Col flex="auto">
           <WelcomeSection>
@@ -364,8 +364,8 @@ export function LocationBuildingTab() {
 
         {/* Tab Navigation */}
         {selectedLocation && (
-          <Col flex="none" style={{ display: 'flex' }}>
-            <WelcomeSection>
+          <Col flex="none" >
+            <WelcomeSection style={{marginLeft:'2px'}} >
               <div className="tab-navigation">
                 <Button
                   className={`nav-tab ${activeTab === config.ui.tabs.tab1.id ? "active" : ""}`}
@@ -388,13 +388,14 @@ export function LocationBuildingTab() {
       {/* Main Content */}
       {selectedLocation && (
         <Row gutter={[24, 24]}>
-          <Col span={24}>
-            <div className={styles.container}>
+          <Col flex="auto">
+            
               {/* Tab 1: Add Buildings */}
               {activeTab === config.ui.tabs.tab1.id && (
                 <div id={config.ui.tabs.tab1.id}>
                   {/* Building List Section */}
-                  <WorkSection>
+                  
+                  <WorkSection style={{ margin: '1px 1px', marginTop: '20px'}}>
                     <div className="work-header">{config.ui.tabs.tab1.title}</div>
                     <div className="work-content">
                       <div>
@@ -608,7 +609,7 @@ export function LocationBuildingTab() {
                   </Container>
                 </div>
               )}
-            </div>
+            
           </Col>
         </Row>
       )}
