@@ -140,18 +140,22 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
 
   const columns = [
     {
-      title: 'AddressLine 1',
+      title: 'Address Line 1',
       dataIndex: 'address1',
       key: 'address1',
+      width: 180,
+      minWidth: 180,
       ...getColumnSearchProps('address1'),
       sorter: (a, b) => a.address1.length - b.address1.length,
       sortOrder: sortedInfo.columnKey === 'address1' ? sortedInfo.order : null,
       ellipsis: true,
     },
     {
-      title: 'AddressLine 2',
+      title: 'Address Line 2',
       dataIndex: 'address2',
       key: 'address2',
+      width: 140,
+      minWidth: 140,
       ...getColumnSearchProps('address2'),
       sorter: (a, b) => a.address2?.length - b.address2?.length,
       sortOrder: sortedInfo.columnKey === 'address2' ? sortedInfo.order : null,
@@ -161,6 +165,8 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
       title: 'State',
       dataIndex: 'state',
       key: 'state',
+      width: 110,
+      minWidth: 110,
       ...getColumnSearchProps('state'),
       sorter: (a, b) => a.state.length - b.state.length,
       sortOrder: sortedInfo.columnKey === 'state' ? sortedInfo.order : null,
@@ -170,6 +176,8 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
       title: 'ZIP',
       dataIndex: 'zip',
       key: 'zip',
+      width: 90,
+      minWidth: 90,
       ...getColumnSearchProps('zip'),
       sorter: (a, b) => a.zip.length - b.zip.length,
       sortOrder: sortedInfo.columnKey === 'zip' ? sortedInfo.order : null,
@@ -179,6 +187,8 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
       title: 'Country',
       dataIndex: 'country',
       key: 'country',
+      width: 90,
+      minWidth: 90,
       ...getColumnSearchProps('country'),
       sorter: (a, b) => a.country.length - b.country.length,
       sortOrder: sortedInfo.columnKey === 'country' ? sortedInfo.order : null,
@@ -218,10 +228,10 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
 
   return (
     
-      <div className={`${styles.container} tableContainer`} id='LocationTable'>
+      <div style={{width:'100%'}}>
         <Row gutter={16} style={{ marginTop: 16 }}>
-          <Col span={selectedRow ? 12 : 24}>
-            <WorkSection>
+          <Col span={selectedRow ? 16 : 24}>
+            <WorkSection style={{marginLeft:'2px', marginRight:'10px'}}>
               <div className="work-header">Enter Location Details</div>
               <div className="work-content">
                 <div className="modern-table">
@@ -233,7 +243,12 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
                     style={{ width: '100%' }}
                     pagination={{ pageSize: 4 }}
                     className="custom-table-header"
-                    tableLayout="fixed"
+                    scroll={{ 
+                      x: 'max-content', // Allow table to expand to content width
+                      y: null 
+                    }}
+                    size="small"
+                    tableLayout="auto"
                   />
                 </div>
               </div>
@@ -241,9 +256,9 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
           </Col>
 
           {selectedRow && (
-            <Col span={12}>
-              <WorkSection>
-                <div style={{ height: '300px' }}>
+            <Col span={8}>
+              <WorkSection style={{marginLeft:'18px', marginRight:'2px'}}>
+                <div style={{ height: '315px', width: '600px' }}>
                   <div className="work-header" >Location map</div>
                   <MapView />
                 </div>
@@ -320,10 +335,10 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
           </div>
         )}
 
-        <Row gutter={16}>
+        <Row gutter={24}>
           <Col span={20}></Col>
           <Col span={4}>
-            <NextButtonContainer>
+            <NextButtonContainer style={{marginLeft:'12px'}} >
               <NextButton onClick={nextTab}>
                 <div className="step-content-box">
                   {"Next "}

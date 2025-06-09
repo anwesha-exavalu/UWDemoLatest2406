@@ -8,7 +8,7 @@ import sinkhole from '../../assets/img/sink.png';
 import stormsurge from '../../assets/img/strom.png';
 import wildfire from '../../assets/img/wildlife-01.png';
 import risk from '../../assets/img/risk.png';
-import view_more from '../../assets/img/view_more.png';
+import ViewMore from '../../assets/img/ViewMore.png';
 import { Container } from '../../styles/components/Layout';
 
 const RiskCard = ({ card }) => {
@@ -46,8 +46,8 @@ const RiskCard = ({ card }) => {
 
   const cardStyle = {
     width: '100%',
-    minHeight: 250, // Minimum height but allow expansion
-    height: 'auto', // Allow height to adjust based on content
+    minHeight: 250,
+    height: 'auto',
     background: '#f6faff',
     borderRadius: 12,
     padding: 16,
@@ -69,8 +69,8 @@ const RiskCard = ({ card }) => {
 
   const contentStyle = {
     flex: 1,
-    marginBottom: 16,
-    paddingRight: 8
+    paddingRight: 8,
+    marginBottom: 0 // Remove margin to allow button to stick to bottom
   };
 
   return (
@@ -86,7 +86,7 @@ const RiskCard = ({ card }) => {
             width: '100%',
             height: '100%',
             objectFit: 'cover',
-            pointerEvents: 'none', // allows clicks through
+            pointerEvents: 'none',
             zIndex: 0
           }}
         />
@@ -96,7 +96,8 @@ const RiskCard = ({ card }) => {
           zIndex: 1,
           height: '100%',
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          minHeight: 200 // Ensure minimum height for consistent layout
         }}>
           {/* Header */}
           <div style={{
@@ -104,7 +105,7 @@ const RiskCard = ({ card }) => {
             alignItems: 'center',
             gap: 8,
             marginBottom: 12,
-            flexShrink: 0 // Prevent header from shrinking
+            flexShrink: 0
           }}>
             {renderImage(card.riskFactorTitle)}
             <span style={{ fontSize: 20, fontWeight: 'bold' }}>{card.riskFactorTitle}</span>
@@ -119,35 +120,26 @@ const RiskCard = ({ card }) => {
               </div>
             ))}
           </div>
-          <Row gutter={24}>
-            <Col span={12}></Col>
-            <Col span={12} >
-              {/* View More Button - Always at bottom right */}
-              <div style={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                alignItems: 'flex-end',
-                flexShrink: 0, // Prevent button area from shrinking
-                marginTop: 'auto', // Push to bottom
-                textAlign: 'right'
-              }}>
-                <Button
-                  type="text"
-                  style={{
-                    fontWeight: 'bold',
-                    color: '#000',
-                    padding: '4px 8px',
-                    height: 'auto',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 4
-                  }}
-                  onClick={() => openDocument(riskmeter_report)}
-                >
-                  View more
-                  <img src={view_more} alt="view more" style={{ width: 16, height: 16 }} />
-                </Button>
-              </div>
+
+          {/* View More Button using Row/Col - Always at bottom */}
+          <Row style={{ marginTop: 'auto' }}>
+            <Col span={24} style={{ textAlign: 'right'}}>
+              <Button
+                type="text"
+                style={{
+                  fontWeight: 'bold',
+                  color: '#000',
+                  padding: '4px 8px',
+                  height: 'auto',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: 6
+                }}
+                onClick={() => openDocument(riskmeter_report)}
+              >
+                View more
+                <img src={ViewMore} alt="view more" style={{ width: 20, height: 20 }} />
+              </Button>
             </Col>
           </Row>
         </div>

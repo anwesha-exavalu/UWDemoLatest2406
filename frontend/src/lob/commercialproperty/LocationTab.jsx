@@ -68,7 +68,7 @@ const LocationTab = () => {
           </Row>
 
           {/* Tab Content */}
-          <div style={{ marginTop: '-80px', paddingTop: '80px' }}>
+          <div style={{ marginTop: '-80px', paddingTop: '50px' }}>
             {activeTab === "1" && (
               <LocationTable 
                 nextTab={nextTab} 
