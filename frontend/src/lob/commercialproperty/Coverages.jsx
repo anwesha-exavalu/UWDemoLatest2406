@@ -128,17 +128,17 @@ const Coverages = ({ onNext }) => {
     <div className={styles.container}>
       <div className="coverages-screen" id="coverages">
         {/* Location selection dropdown */}
-        <StyledDropdownWrapper>
-          <span>Select Location:</span>
-          <Select
-            value={selectedLocation}
-            onChange={handleLocationChange}
-            dropdownStyle={{ fontSize: 14 }}
-          >
-            <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
-            {/* <Option value="Location 2">1234 Elm Street,Apt 101,California,90210,USA</Option> */}
-          </Select>
-        </StyledDropdownWrapper>
+        <span style={{ marginRight: '10px', fontSize: '18px' }}>Select Location:</span>
+        <Select
+          value={selectedLocation}
+          onChange={handleLocationChange}
+          dropdownStyle={{ fontSize: 14 }}
+           style={{ width: 350, height: 50, marginTop: 40 }}
+          
+        >
+          <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
+          {/* <Option value="Location 2">1234 Elm Street, Apt 101, California, 90210, USA</Option> */}
+        </Select>
         {/* Edit/Save button */}
         {selectedLocation && (
           <>

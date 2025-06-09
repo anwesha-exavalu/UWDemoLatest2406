@@ -324,13 +324,14 @@ const UWQuestions = ({ onNext }) => {
                       style={{
                         borderRadius: "8px",
                         fontSize: "14px",
+                        height: "120px"
                       }}
                     />
                   </WorkSection>
                 </div>
 
                 {/* Buttons from ModalDesign */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                <div style={{ display: "flex", flexDirection: "column", gap: "8px",marginTop: "30px"}}>
                   <ModalDesign />
                 </div>
               </div>

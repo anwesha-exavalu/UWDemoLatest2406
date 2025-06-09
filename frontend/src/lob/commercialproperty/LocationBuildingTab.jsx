@@ -349,7 +349,8 @@ export function LocationBuildingTab() {
                 style={{ 
                   width: config.ui.selectWidth, 
                   height: config.ui.selectHeight, 
-                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)" 
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)", 
+                  width: 350
                 }}
               >
                 {config.locations.map((location) => (
