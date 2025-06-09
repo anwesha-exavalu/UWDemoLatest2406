@@ -350,7 +350,7 @@ export const NotesWrapper = styled.div`
   border: 2px solid #E8E8E8;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  margin-left: 0px;
+  margin-left: 15px;
   margin-right: 0px;
 
   textarea.ant-input {

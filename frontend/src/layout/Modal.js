@@ -106,9 +106,9 @@ const ModalDesign = () => {
   );
 
   const actions = [
-    { label: "Approve", color: "#2c66d1", index: 0, message: "Do you want to approve the application?" },
-    { label: "Decline", color: "#2c66d1", index: 1, message: "Do you want to reject the application?" },
-    { label: "Referral", color: "#2c66d1", index: 2, message: "Select which Underwriter you want to refer" },
+    { label: "Approve", color: "#F8F8F8", index: 0, message: "Do you want to approve the application?" },
+    { label: "Decline", color: "#F8F8F8", index: 1, message: "Do you want to reject the application?" },
+    { label: "Referral", color: "#F8F8F8", index: 2, message: "Select which Underwriter you want to refer" },
   ];
 
   return (

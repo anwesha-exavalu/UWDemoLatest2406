@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./UWQuestions.css";
-import { Input, Col, Row, Button, Popover } from "antd";
+import { Input, Col, Row, Button, Popover, Spin } from "antd";
 // import Documents from "../../layout/RightSidebar";
 import ModalDesign from "../../layout/Modal";
 import FormInput from "../../components/FormInput";
@@ -21,6 +21,8 @@ import {
   NextButton,
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import NextArrow from "../../assets/img/nextArrow.png";
+import { ScreenHeader } from '../../styles';
+import Uwicon from "../../assets/img/Uwicon.png"
 
 
 
@@ -81,16 +83,31 @@ const UWQuestions = ({ onNext }) => {
   const [questions, setQuestions] = useState(uwquestionsData);
   const [notes, setNotes] = useState(" ");
   const [dynamicQuestions, setDynamicQuestions] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [hasGenerated, setHasGenerated] = useState(false);
 
+  // Remove the useEffect that was calling the API on component mount
+  // useEffect(() => {
+  //   fetch(`${PRODUCTIONURL}/api/questions`)
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       console.log("Fetched dynamic questions:", data);
+  //       if (Array.isArray(data)) {
+  //         setDynamicQuestions(data);
+  //       } else {
+  //         console.warn("Unexpected API response:", data);
+  //         setDynamicQuestions([]);
+  //       }
+  //     })
+  //     .catch((err) => {
+  //       console.error("Error fetching dynamic questions:", err);
+  //       setDynamicQuestions([]);
+  //     });
+  // }, []);
 
-  // const [uwnotes, setUWNotes] = useState("");
-
-  // const handleResponseChange = (index, newResponse) => {
-  //   const updatedQuestions = [...questions];
-  //   updatedQuestions[index].response = newResponse;
-  //   setQuestions(updatedQuestions);
-  // };
-  useEffect(() => {
+  // New function to handle Generate button click
+  const handleGenerateQuestions = () => {
+    setIsLoading(true);
     fetch(`${PRODUCTIONURL}/api/questions`)
       .then((res) => res.json())
       .then((data) => {
@@ -101,24 +118,30 @@ const UWQuestions = ({ onNext }) => {
           console.warn("Unexpected API response:", data);
           setDynamicQuestions([]);
         }
+        setHasGenerated(true);
       })
       .catch((err) => {
         console.error("Error fetching dynamic questions:", err);
         setDynamicQuestions([]);
+        setHasGenerated(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
-  }, []);
-
+  };
 
   const handleCommentChange = (index, newComment) => {
     const updatedQuestions = [...questions];
     updatedQuestions[index].comment = newComment;
     setQuestions(updatedQuestions);
   };
+
   const handleDynamicCommentChange = (index, newComment) => {
     const updatedDynamicQuestions = [...dynamicQuestions];
     updatedDynamicQuestions[index].Comment = newComment;
     setDynamicQuestions(updatedDynamicQuestions);
   };
+
   const record = {
     client: "Kew Gardens Property",
     lob: "Commercial Property"
@@ -131,7 +154,12 @@ const UWQuestions = ({ onNext }) => {
           <Col span={24}>
             <div id="uw">
               <UWQuestionsContainer>
-                <h2>UW Questions</h2>
+                <ScreenHeader>
+                  <div className="icon-wrapper">
+                    <img src={Uwicon} alt="UW Icon" className="icon" />
+                  </div>
+                  <h3>UW Questions</h3>
+                </ScreenHeader>
                 <table id="underwriting-Table">
                   <thead>
                     <tr>
@@ -166,45 +194,111 @@ const UWQuestions = ({ onNext }) => {
                   </tbody>
                 </table>
               </UWQuestionsContainer>
-              {/* ✅ Dynamic Section Below */}
+
+              {/* Updated Dynamic Section with Generate Button */}
               <UWQuestionsContainer>
-                <h2>UW Questions(AI)</h2>
-                <table id="underwriting-Table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "40%" }}>Questions</th>
-                      <th style={{ width: "15%" }}>Response</th>
-                      <th style={{ width: "45%" }}>Comment</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Array.isArray(dynamicQuestions) &&
-                      dynamicQuestions.map((item, index) => (
-                        <tr key={index}>
-                          <td>
-                            <b>{item.Question}</b>
-                          </td>
-                          <td>
-                            <DropdownSelect
-                              options={[
-                                { value: "yes", label: "Yes" },
-                                { value: "no", label: "No" },
-                                { value: "na", label: "can't be determined" },
-                              ]}
-                              required={true}
-                              value={item.Response?.toLowerCase()}
-                            />
-                          </td>
-                          <td>
-                            <FormInput
-                              value={item.Comment || ""}
-                              onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
-                            />
+                <div style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  marginBottom: "16px"
+                }}>
+                  <h2>UW Questions(AI)</h2>
+                  <Button
+                    type="primary"
+                    onClick={handleGenerateQuestions}
+                    loading={isLoading}
+                    disabled={isLoading}
+                    style={{
+                      backgroundColor: "#054F7D",
+                      borderColor: "#054F7D",
+                      fontWeight: "600",
+                      height: "36px",
+                      paddingLeft: "20px",
+                      paddingRight: "20px",
+                      marginLeft: "25px"
+                    }}
+                  >
+                    {isLoading ? "Generating..." : "Generate"}
+                  </Button>
+                </div>
+
+                {/* Loading State */}
+                {isLoading && (
+                  <div style={{
+                    textAlign: "center",
+                    padding: "40px 0",
+                    backgroundColor: "#fafafa",
+                    borderRadius: "8px",
+                    border: "1px solid #e1e1e1"
+                  }}>
+                    <Spin size="large" />
+                    <div style={{ marginTop: "16px", fontSize: "16px", color: "#666" }}>
+                      Dynamic responses are loading...
+                    </div>
+                  </div>
+                )}
+
+                {/* Dynamic Questions Table - Only show if not loading and has generated */}
+                {!isLoading && hasGenerated && (
+                  <table id="underwriting-Table">
+                    <thead>
+                      <tr>
+                        <th style={{ width: "40%" }}>Questions</th>
+                        <th style={{ width: "15%" }}>Response</th>
+                        <th style={{ width: "45%" }}>Comment</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Array.isArray(dynamicQuestions) && dynamicQuestions.length > 0 ? (
+                        dynamicQuestions.map((item, index) => (
+                          <tr key={index}>
+                            <td>
+                              <b>{item.Question}</b>
+                            </td>
+                            <td>
+                              <DropdownSelect
+                                options={[
+                                  { value: "yes", label: "Yes" },
+                                  { value: "no", label: "No" },
+                                  { value: "na", label: "can't be determined" },
+                                ]}
+                                required={true}
+                                value={item.Response?.toLowerCase()}
+                              />
+                            </td>
+                            <td>
+                              <FormInput
+                                value={item.Comment || ""}
+                                onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
+                              />
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="3" style={{ textAlign: "center", color: "#666", padding: "20px" }}>
+                            No dynamic questions available
                           </td>
                         </tr>
-                      ))}
-                  </tbody>
-                </table>
+                      )}
+                    </tbody>
+                  </table>
+                )}
+
+                {/* Show placeholder message if not generated yet */}
+                {!isLoading && !hasGenerated && (
+                  <div style={{
+                    textAlign: "center",
+                    padding: "40px 0",
+                    backgroundColor: "#fafafa",
+                    borderRadius: "8px",
+                    border: "1px solid #e1e1e1",
+                    color: "#666"
+                  }}>
+                    Click "Generate" to load AI-generated questions
+                  </div>
+                )}
               </UWQuestionsContainer>
 
               {/* System Recommended Decision */}
@@ -242,11 +336,7 @@ const UWQuestions = ({ onNext }) => {
               </div>
 
               {/* Override Decision Section */}
-              <div
-
-                style={{ marginBottom: 20 }}
-              >
-
+              <div style={{ marginBottom: 20 }}>
                 <h5 style={{ marginTop: "20px" }}>Claim Propensity</h5>
                 <div
                   style={{
@@ -273,15 +363,15 @@ const UWQuestions = ({ onNext }) => {
                         fontSize: "16px",
                         width: "150px",
                         height: "40px",
-                        padding: "5px 20px", // Balanced padding for better spacing
+                        padding: "5px 20px",
                         boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                         fontWeight: "600",
-                        borderRadius: "4px", // Rounded corners for a modern look
+                        borderRadius: "4px",
                         color: "white",
                         backgroundColor: "#FAAF25",
                         border: "none",
                         cursor: "pointer",
-                        lineHeight: "1.5", // Ensures text is vertically centered
+                        lineHeight: "1.5",
                         display: "inline-block",
                         textAlign: "center",
                       }}
@@ -311,10 +401,6 @@ const UWQuestions = ({ onNext }) => {
               </Row>
             </div>
           </Col>
-          {/* Uncomment and use if Documents component is needed in future */}
-          {/* <Col span={4}>
-        <Documents />
-      </Col> */}
         </Row>
       </MainContainer>
     </Container>
