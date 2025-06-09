@@ -3,10 +3,25 @@ import { Modal } from "antd";
 import fire_flood_print from '../assets/documents/fire_flood_print.pdf'
 import riskmeter_report from '../assets/documents/riskmeter_report.pdf'
 import SampleInspectionReport from '../assets/documents/Sample Inspection Report.pdf'
+import { FileTextOutlined, ArrowRightOutlined } from '@ant-design/icons';
 import AspyreMetroApplicationNY from '../assets/documents/Aspyre Metro Application NY.pdf'
 import AIGLossRuns from '../assets/documents/AIG_Loss_Runs.pdf'
 import CommercialPropertySovs from '../assets/documents/Commercial_Property_Insurance_SOV.pdf'
 import DocumentForExtraction02 from '../assets/documents/DocumentForExtraction02.pdf'
+import arrowIcon from "../assets/img/rightarrow.png"
+import {
+  VerticalButton,
+  VerticalText,
+  DocumentIcon,
+  DocumentMenu,
+  DocumentList,
+  DocumentItem,
+  DocumentLink,
+  DocumentTitle,
+  SectionTitle,
+  DocumentIconBg,
+  RotatedContent
+} from "../styles/pages/Documents";
 
 const Documents = () => {
   const [isDocumentMenuVisible, setDocumentMenuVisible] = useState(false);
@@ -54,82 +69,67 @@ const Documents = () => {
   return (
     <>
       {/* Vertical "Documents" button */}
-      <div
+      <VerticalButton
         onMouseEnter={handleDocumentMenuHover}
         onMouseLeave={handleDocumentMenuLeave}
-        style={{
-          position: "fixed",
-          top: "80%",
-          right: 0,
-          transform: "translateY(-50%)",
-          backgroundColor: "#7eaada",
-          color: "#fff",
-          padding: "10px",
-          width: "50px",
-          height: "200px",
-          borderRadius: "8px 0 0 8px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          writingMode: "vertical-rl",
-          textAlign: "center",
-          cursor: "pointer",
-          zIndex: 1000,
-          fontWeight: "600",
-          fontSize: "22px",
-        }}
       >
-        Documents
-      </div>
+        <RotatedContent>
+           <DocumentIconBg />
+        </RotatedContent>
+       
+        <VerticalText>Documents</VerticalText>
+      </VerticalButton>
 
       {/* Document menu */}
-      <div
-        style={{
-          position: "fixed",
-          top: "25%",
-          right: isDocumentMenuVisible ? "0" : "-300px",
-          width: "300px",
-          maxHeight: "70vh",
-          backgroundColor: "#f4f4f4",
-          transition: "right 0.3s ease",
-          padding: "20px",
-          zIndex: 999,
-          boxShadow: "0px 0px 10px rgba(0, 0, 0, 0.3)",
-          borderRadius: "8px 0 0 8px",
-          overflowY: "scroll",
-        }}
+      <DocumentMenu
+        isVisible={isDocumentMenuVisible}
         onMouseEnter={handleDocumentMenuHover}
         onMouseLeave={handleDocumentMenuLeave}
       >
-        <h3>Documents</h3>
-        <ul style={{ listStyleType: "disc", paddingLeft: "20px", fontSize: "18px" }}>
-          <li><span onClick={() => openDocument(DocumentForExtraction02)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Application.pdf</span></li>
-          <li><span onClick={() => openDocument(AIGLossRuns)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Loss_Runs.pdf</span></li>
-          <li><span onClick={() => openDocument(CommercialPropertySovs)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>SOVs.pdf</span></li>
-          <li><span onClick={() => openDocument(riskmeter_report)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Riskmeter Corelogic Report.pdf</span></li>
-          <li><span onClick={() => openDocument(SampleInspectionReport)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Inspection Report.pdf</span></li>
-          <li><span onClick={() => openDocument(fire_flood_print)} style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}>Fire Flood Report.pdf</span></li>
+        <DocumentTitle>
+          <FileTextOutlined />
+          Documents
+        </DocumentTitle>
+        <DocumentList>
+          <DocumentItem onClick={() => openDocument(DocumentForExtraction02)}>
+             <DocumentIcon src={arrowIcon} alt="arrow" />
+            Application.pdf
+          </DocumentItem>
+          <DocumentItem onClick={() => openDocument(AIGLossRuns)}>
+            <DocumentIcon src={arrowIcon} alt="arrow" />
+            Loss_Runs.pdf
+          </DocumentItem>
+          <DocumentItem onClick={() => openDocument(CommercialPropertySovs)}>
+            <DocumentIcon src={arrowIcon} alt="arrow" />
+            SOVs.pdf
+          </DocumentItem>
+          <DocumentItem onClick={() => openDocument(riskmeter_report)}>
+            <DocumentIcon src={arrowIcon} alt="arrow" />
+            Riskmeter Corelogic Report.pdf
+          </DocumentItem>
+          <DocumentItem onClick={() => openDocument(SampleInspectionReport)}>
+            <DocumentIcon src={arrowIcon} alt="arrow" />
+            Inspection Report.pdf
+          </DocumentItem>
+          <DocumentItem onClick={() => openDocument(fire_flood_print)}>
+            <DocumentIcon src={arrowIcon} alt="arrow" />
+            Fire Flood Report.pdf
+          </DocumentItem>
 
-          {/* Captured Visualizations Section */}
           {capturedDocs.length > 0 && (
             <>
-              <li style={{ marginTop: "20px", fontWeight: "bold", color: "#333" }}>
-                Fire Data Visualizations
-              </li>
+              <SectionTitle>Fire Data Visualizations</SectionTitle>
               {capturedDocs.map((doc, index) => (
                 <li key={index}>
-                  <span
-                    onClick={() => openDocument(doc.image, 'image')}
-                    style={{ cursor: "pointer", color: "blue", textDecoration: "underline" }}
-                  >
+                  <DocumentLink onClick={() => openDocument(doc.image, 'image')}>
                     {doc.borough} ({doc.year === 'all' ? '2016-2024' : doc.year})
-                  </span>
+                  </DocumentLink>
                 </li>
               ))}
             </>
           )}
-        </ul>
-      </div>
+        </DocumentList>
+      </DocumentMenu>
 
       {/* Modal for viewing documents */}
       <Modal
