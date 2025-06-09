@@ -31,6 +31,10 @@ import {
 import axios from 'axios';
 import LossRunPdfViewer from './PdfReviewDisplay';
 import PdfModal from './PdfModal';
+import {
+  MainContainer,
+} from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import { Container } from "../../styles/components/Layout";
 
 const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
@@ -214,8 +218,8 @@ const LossRun = () => {
   const antIcon = <LoadingOutlined style={{ fontSize: 24 }} spin />;
 
   return (
-    <Layout className="min-h-screen bg-gray-50">
-      <Content className="p-6">
+    <Container>
+      
         {/* PDF Modal for Full Screen View */}
         <PdfModal 
           visible={modalVisible} 
@@ -245,16 +249,16 @@ const LossRun = () => {
             <Tabs.TabPane
               tab={
                 <span>
-                  <FilePdfOutlined style={{ fontSize: '18px' }} />
-                  <span style={{ marginLeft: '8px', fontSize: '16px' }}>Loss Run Extraction</span>
+                  <FilePdfOutlined style={{ fontSize: '18px', color: "#054F7D",fontWeight:"bold" }} />
+                  <span style={{ marginLeft: '8px', fontSize: '16px', color: "#054F7D" }}>Loss Run Extraction</span>
                 </span>
               }
               key="lossRun"
             >
               <div className="p-4">
                 <Row align="middle" className="mb-6">
-                  <FileTextOutlined style={{ fontSize: '28px', color: '#1890ff', marginRight: '16px' }} />
-                  <Title level={3} style={{ margin: 0, color: '#1890ff' }}>
+                  <FileTextOutlined style={{ fontSize: '28px', color: "#054F7D", marginRight: '16px' }} />
+                  <Title level={3} style={{ margin: 0, color: "#054F7D"}}>
                     Loss Run PDF Processing
                   </Title>
                 </Row>
@@ -295,8 +299,9 @@ const LossRun = () => {
                   style={{
                     height: '48px',
                     borderRadius: '6px',
-                    background: '#1890ff',
-                    fontWeight: 500
+                    background:"#054F7D",
+                    fontWeight: 500,
+                    color: "white",
                   }}
                   icon={<FileSearchOutlined />}
                   block
@@ -379,8 +384,9 @@ const LossRun = () => {
             </Tabs.TabPane>
           </Tabs>
         </Card>
-      </Content>
-    </Layout>
+    
+    </Container>
+   
   );
 };
 
