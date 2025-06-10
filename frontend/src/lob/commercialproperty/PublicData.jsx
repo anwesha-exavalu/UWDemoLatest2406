@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import ApexCharts from "react-apexcharts";
 import { Select, Spin, Alert, message, Row, Col } from "antd";
 import { CameraOutlined, LoadingOutlined, DownloadOutlined } from "@ant-design/icons";
 import html2canvas from "html2canvas";
@@ -13,6 +12,7 @@ import {
   ChartContainer,
   BoroughSelectContainer
 } from "../../styles/pages/RiskInformation/PublicdataStyle";
+import { Container } from "../../styles/components/Layout";
 
 const { Option } = Select;
 
@@ -25,7 +25,7 @@ const PublicData = ({ onCaptureComplete }) => {
   const [capturing, setCapturing] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
   const [activeTab, setActiveTab] = useState('all-boroughs');
-  
+
   const contentRef = useRef(null);
   const years = Array.from({ length: 9 }, (_, i) => 2024 - i);
 
@@ -54,7 +54,7 @@ const PublicData = ({ onCaptureComplete }) => {
 
   const handleCapture = async () => {
     if (capturing) return;
-    
+
     setCapturing(true);
     try {
       const element = contentRef.current;
@@ -63,9 +63,9 @@ const PublicData = ({ onCaptureComplete }) => {
         useCORS: true,
         logging: false,
       });
-      
+
       const imageData = canvas.toDataURL('image/png');
-      
+
       const captureData = {
         image: imageData,
         timestamp: new Date().toISOString(),
@@ -75,7 +75,7 @@ const PublicData = ({ onCaptureComplete }) => {
 
       setCapturedImage(captureData);
       message.success('Visualization captured successfully!');
-      
+
     } catch (err) {
       console.error('Failed to capture content:', err);
       message.error('Failed to capture visualization');
@@ -149,150 +149,107 @@ const PublicData = ({ onCaptureComplete }) => {
     return [...new Set(fireData.map((incident) => incident.borough))];
   };
 
-  const getFireCausesChartOptions = (topCauses, title) => {
-    const maxValue = Math.max(...Object.values(topCauses));
-    const actualValues = Object.values(topCauses);
-    const categories = Object.keys(topCauses);
-    
-    return {
-      chart: {
-        type: "bar",
-        height: 400,
-        toolbar: { show: false },
-        background: 'transparent',
-        stacked: true,
-      },
-      plotOptions: {
-        bar: {
-          horizontal: true,
-          barHeight: "70%",
-          endingShape: "rounded",
-        },
-      },
-      dataLabels: { 
-        enabled: false 
-      },
-      title: {
-        text: title,
-        align: "left",
-        style: {
-          fontSize: '16px',
-          fontWeight: 600,
-          color: '#1f2937',
-          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-        }
-      },
-      xaxis: {
-        categories: categories,
-        title: {
-          text: "Number of Fire Incidents",
-          style: {
-            color: '#64748b',
-            fontSize: '12px',
-            fontWeight: 500
-          }
-        },
-        labels: {
-          style: {
-            colors: '#64748b',
-            fontSize: '11px'
-          }
-        },
-        axisBorder: {
-          show: true,
-          color: '#f1f5f9'
-        },
-        axisTicks: {
-          show: true,
-          color: '#f1f5f9'
-        },
-        max: maxValue * 1.1
-      },
-      yaxis: {
-        title: {
-          text: "Cause of Fire",
-          style: {
-            color: '#64748b',
-            fontSize: '12px',
-            fontWeight: 500
-          }
-        },
-        labels: {
-          style: {
-            colors: '#475569',
-            fontSize: '11px',
-            fontWeight: 400
-          }
-        }
-      },
-      grid: {
-        borderColor: '#f1f5f9',
-        strokeDashArray: 0,
-        xaxis: {
-          lines: {
-            show: true
-          }
-        },
-        yaxis: {
-          lines: {
-            show: false
-          }
-        }
-      },
-      colors: ['#3b82f6', '#e5e7eb'],
-      tooltip: {
-        theme: 'light',
-        style: {
-          fontSize: '12px'
-        },
-        y: {
-          formatter: function(value, { seriesIndex }) {
-            if (seriesIndex === 0) {
-              return value + ' incidents';
-            }
-            return null;
-          }
-        }
-      },
-      legend: {
-        show: false
-      }
-    };
-  };
-
   const getYearRangeText = (year) => {
     return year === "all" ? "2016-2024" : year;
   };
 
+  // Progress Bar Style Component
+  const ProgressBarChart = ({ data, title }) => {
+    const maxValue = Math.max(...Object.values(data));
+
+    const ProgressBarStyle = {
+      width: '100%',
+      height: '12px',
+      backgroundColor: '#f3f4f6',
+      borderRadius: '6px',
+      overflow: 'hidden',
+      marginBottom: '8px',
+      position: 'relative'
+    };
+
+    const ProgressFillStyle = (percentage) => ({
+      width: `${percentage}%`,
+      height: '100%',
+      backgroundColor: '#204FC2',
+      borderRadius: '6px',
+      transition: 'width 0.3s ease'
+    });
+
+    const UsageRowStyle = {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: '8px',
+      fontSize: '14px',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    };
+
+    const UsageLabelStyle = {
+      color: '#374151',
+      fontWeight: '500',
+      maxWidth: '60%',
+      lineHeight: '1.4'
+    };
+
+    const UsageValueStyle = {
+      color: '#6b7280',
+      fontWeight: '600',
+      fontSize: '13px'
+    };
+
+    const ChartWrapperStyle = {
+      backgroundColor: '#ffffff',
+      borderRadius: '12px',
+      padding: '24px',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      border: '1px solid #e5e7eb'
+    };
+
+    const TitleStyle = {
+      fontSize: '18px',
+      fontWeight: '600',
+      color: '#1f2937',
+      marginBottom: '24px',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+    };
+
+    return (
+      <div style={ChartWrapperStyle}>
+        <h3 style={TitleStyle}>{title}</h3>
+        <div>
+          {Object.entries(data).map(([cause, count], index) => {
+            const percentage = (count / maxValue) * 100;
+            return (
+              <div key={index} style={{ marginBottom: '20px' }}>
+                <div style={UsageRowStyle}>
+                  <div style={UsageLabelStyle}>
+                    {cause.length > 50 ? `${cause.substring(0, 47)}...` : cause}
+                  </div>
+                  <div style={UsageValueStyle}>
+                    {count} incidents
+                  </div>
+                </div>
+                <div style={ProgressBarStyle}>
+                  <div style={ProgressFillStyle(percentage)}></div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    );
+  };
+
   const topAllBoroughCauses = getTopFireCauses(null, selectedYear);
-  const maxValue = Math.max(...Object.values(topAllBoroughCauses));
-  
-  const allBoroughChartOptions = getFireCausesChartOptions(
-    topAllBoroughCauses,
-    `Top 10 Causes of Fire (All Boroughs) in ${getYearRangeText(selectedYear)}`
-  );
-  
-  // Create data for actual values and remaining portions
-  const actualData = Object.values(topAllBoroughCauses);
-  const remainingData = actualData.map(value => maxValue - value);
-  
-  const allBoroughChartSeries = [
-    {
-      name: "Fire Incidents",
-      data: actualData,
-    },
-    {
-      name: "Remaining",
-      data: remainingData,
-    }
-  ];
 
   if (loading) {
     return (
       <PublicDataContainer>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
-          <Spin size="large" />
-        </div>
+        <Row justify="center" align="middle" style={{ minHeight: '400px' }}>
+          <Col>
+            <Spin size="large" />
+          </Col>
+        </Row>
       </PublicDataContainer>
     );
   }
@@ -300,50 +257,84 @@ const PublicData = ({ onCaptureComplete }) => {
   if (error) {
     return (
       <PublicDataContainer>
-        <Alert message="Error" description={error} type="error" showIcon />
+        <Row justify="center">
+          <Col xs={24} sm={20} md={16} lg={12}>
+            <Alert message="Error" description={error} type="error" showIcon />
+          </Col>
+        </Row>
       </PublicDataContainer>
     );
   }
 
   return (
-    <PublicDataContainer>
-      <StyledCard>
+    <Container>
+
+      <div>
         <div ref={contentRef}>
           <ControlsContainer>
-            <Row justify="end" align="middle" style={{ marginBottom: '16px' }}>
-              <Col>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <DownloadOutlined 
-                    className="download-icon" 
-                    onClick={handleDownload}
-                    title="Download Image"
-                    style={{ fontSize: '18px', cursor: 'pointer', color: '#64748b' }}
-                  />
-                  {capturing ? (
-                    <LoadingOutlined style={{ fontSize: '18px', color: '#64748b' }} />
-                  ) : (
-                    <CameraOutlined 
-                      className="camera-icon" 
-                      onClick={handleCapture}
-                      title="Capture Screenshot"
+            <Row justify="space-between" align="middle" style={{ marginBottom: '16px', marginTop: '-60px' }} gutter={[16, 16]}>
+              <Col xs={24} sm={12} md={16}>
+
+              </Col>
+              <Col xs={24} sm={12} md={8}>
+                <Row justify="end" align="middle" gutter={12}>
+                  <Col>
+                    <DownloadOutlined
+                      className="download-icon"
+                      onClick={handleDownload}
+                      title="Download Image"
                       style={{ fontSize: '18px', cursor: 'pointer', color: '#64748b' }}
                     />
-                  )}
-                  <span style={{ fontSize: '16px', fontWeight: 600, color: '#1f2937' }}>
-                    Fire Incidents in New York City
-                  </span>
-                </div>
+                  </Col>
+                  <Col>
+                    {capturing ? (
+                      <LoadingOutlined style={{ fontSize: '18px', color: '#64748b' }} />
+                    ) : (
+                      <CameraOutlined
+                        className="camera-icon"
+                        onClick={handleCapture}
+                        title="Capture Screenshot"
+                        style={{
+                          fontSize: '18px',
+                          cursor: 'pointer',
+                          color: '#64748b',
+
+
+                          borderRadius: '4px',
+                          padding: '4px'
+                        }}
+                      />
+
+                    )}
+                  </Col>
+                  <Col>
+                    <span style={{
+                      fontSize: '14px',
+                     
+                      color: '#1f2937',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    }}>
+                      Fire Incidents in New York City
+                    </span>
+                  </Col>
+                </Row>
               </Col>
             </Row>
-            
+
             <Row justify="end" align="middle" style={{ marginBottom: '24px' }}>
-              <Col>
+              <Col xs={24} sm={12} md={8} lg={6}>
                 <Select
                   value={selectedYear}
                   onChange={setSelectedYear}
                   placeholder="Select Year"
-                  style={{ width: 200 }}
-                  dropdownStyle={{ backgroundColor: '#374151' }}
+                  style={{
+                    width: '100%',
+                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                  }}
+                  dropdownStyle={{
+                    
+                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                  }}
                 >
                   <Option value="all">All Years (2016-2024)</Option>
                   {years.map((year) => (
@@ -357,91 +348,82 @@ const PublicData = ({ onCaptureComplete }) => {
           </ControlsContainer>
 
           <MainTabsContainer>
-            <div className="main-tabs">
-              <div 
-                className={`main-tab all-boroughs ${activeTab === 'all-boroughs' ? 'active' : ''}`}
-                onClick={() => setActiveTab('all-boroughs')}
-              >
-                All Borough's Fire Causes
-              </div>
-              <div 
-                className={`main-tab borough-specific ${activeTab === 'borough-specific' ? 'active' : ''}`}
-                onClick={() => setActiveTab('borough-specific')}
-              >
-                Borough-Specific Fire Causes
-              </div>
-            </div>
+            <Row>
+              <Col xs={24}>
+                <div className="main-tabs" style={{ fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif' }}>
+                  <div
+                    className={`main-tab all-boroughs ${activeTab === 'all-boroughs' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('all-boroughs')}
+                    style={{ fontSize: '14px' }}
+                  >
+                    All Borough's Fire Causes
+                  </div>
+                  <div
+                    className={`main-tab borough-specific ${activeTab === 'borough-specific' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('borough-specific')}
+                    style={{ fontSize: '14px' }}
+                  >
+                    Borough-Specific Fire Causes
+                  </div>
+                </div>
+              </Col>
+            </Row>
           </MainTabsContainer>
 
           {activeTab === 'all-boroughs' && (
             <ChartContainer>
-              <div className="chart-wrapper">
-                <ApexCharts
-                  options={allBoroughChartOptions}
-                  series={allBoroughChartSeries}
-                  type="bar"
-                  height={400}
-                />
-              </div>
+              <Row>
+                <Col xs={24}>
+                  <ProgressBarChart
+                    data={topAllBoroughCauses}
+                    title={`Top 10 Causes of Fire (All Boroughs) in ${getYearRangeText(selectedYear)}`}
+                  />
+                </Col>
+              </Row>
             </ChartContainer>
           )}
 
           {activeTab === 'borough-specific' && (
             <>
               <BoroughSelectContainer>
-                <Select
-                  placeholder="Select Borough"
-                  onChange={(value) => setSelectedBorough(value)}
-                  style={{ width: 200 }}
-                >
-                  {getBoroughs().map((borough) => (
-                    <Option key={borough} value={borough}>
-                      {borough}
-                    </Option>
-                  ))}
-                </Select>
+                <Row justify="start">
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Select
+                      placeholder="Select Borough"
+                      onChange={(value) => setSelectedBorough(value)}
+                      style={{
+                        width: '100%',
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontSize: '14px'
+                      }}
+                    >
+                      {getBoroughs().map((borough) => (
+                        <Option key={borough} value={borough}>
+                          {borough}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
               </BoroughSelectContainer>
               {selectedBorough && (
                 <ChartContainer>
-                  <div className="chart-wrapper">
-                    {(() => {
-                      const boroughCauses = getTopFireCauses(selectedBorough, selectedYear);
-                      const boroughMaxValue = Math.max(...Object.values(boroughCauses));
-                      const boroughActualData = Object.values(boroughCauses);
-                      const boroughRemainingData = boroughActualData.map(value => boroughMaxValue - value);
-                      
-                      return (
-                        <ApexCharts
-                          options={getFireCausesChartOptions(
-                            boroughCauses,
-                            `Top 10 Causes of Fire in ${selectedBorough} (${getYearRangeText(
-                              selectedYear
-                            )})`
-                          )}
-                          series={[
-                            {
-                              name: "Fire Incidents",
-                              data: boroughActualData,
-                            },
-                            {
-                              name: "Remaining",
-                              data: boroughRemainingData,
-                              color: 'white'
-                            }
-                          ]}
-                          type="bar"
-                          height={400}
-                        />
-                      );
-                    })()}
-                  </div>
+                  <Row>
+                    <Col xs={24}>
+                      <ProgressBarChart
+                        data={getTopFireCauses(selectedBorough, selectedYear)}
+                        title={`Top 10 Causes of Fire in ${selectedBorough} (${getYearRangeText(selectedYear)})`}
+                      />
+                    </Col>
+                  </Row>
                 </ChartContainer>
               )}
             </>
           )}
         </div>
-      </StyledCard>
-    </PublicDataContainer>
+      </div>
+
+    </Container>
   );
 };
 

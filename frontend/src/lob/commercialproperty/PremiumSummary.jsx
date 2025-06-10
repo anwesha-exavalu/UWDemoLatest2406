@@ -9,9 +9,12 @@ import {
 import {
   NextButtonContainer,
   NextButton,
+  ButtonGroup,
+  IconButton,
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import NextArrow from "../../assets/img/nextArrow.png";
 import { NotesWrapper, NotesHeader } from "../../styles/index";
+import { Container } from '../../styles/components/Layout';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -19,8 +22,8 @@ const { Title } = Typography;
 const { Panel } = Collapse;
 
 const PremiumSummary = ({ onNext }) => {
-  const [editing, setEditing] = useState(false); // Global editing state
-  const [selectedBuilding, setSelectedBuilding] = useState("Location 1"); // Default to "Location 1"
+  const [editing, setEditing] = useState(false);
+  const [selectedBuilding, setSelectedBuilding] = useState("Location 1");
 
   // Data for each building
   const buildingData = {
@@ -44,13 +47,10 @@ const PremiumSummary = ({ onNext }) => {
     ],
   };
 
-  // Initialize data for the default selected building
   const [data, setData] = useState(buildingData["Location 1"]);
 
-  // Toggles editing mode for the entire table
   const toggleEditing = () => setEditing(!editing);
 
-  // Updates data for the specific row and field
   const handleFieldChange = (key, field, value) => {
     setData((prevData) =>
       prevData.map((item) =>
@@ -59,13 +59,11 @@ const PremiumSummary = ({ onNext }) => {
     );
   };
 
-  // Handles building selection change
   const handleBuildingChange = (value) => {
     setSelectedBuilding(value);
     setData(buildingData[value] || []);
   };
 
-  // Column configuration for the table
   const columns = [
     {
       title: 'Coverages',
@@ -83,9 +81,16 @@ const PremiumSummary = ({ onNext }) => {
             onChange={(e) =>
               handleFieldChange(record.key, 'coverageAmount', e.target.value)
             }
+            style={{ 
+              fontSize: '14px',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}
           />
         ) : (
-          text
+          <span style={{ 
+            fontSize: '14px',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }}>{text}</span>
         ),
     },
     {
@@ -99,142 +104,263 @@ const PremiumSummary = ({ onNext }) => {
             onChange={(e) =>
               handleFieldChange(record.key, 'premium', e.target.value)
             }
+            style={{ 
+              fontSize: '14px',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}
           />
         ) : (
-          text
+          <span style={{ 
+            fontSize: '14px',
+            fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }}>{text}</span>
         ),
     },
   ];
 
-  return (
-    <div className="premium-summary" id="premiumSummary">
-      <span style={{ marginRight: '10px', fontSize: '18px' }}>Select Location:</span>
-      <Select
-        value={selectedBuilding} // Default value set to "Location 1"
-        onChange={handleBuildingChange}
-        style={{ width: 350, height: 50, marginTop: 40 }}
-      >
-        <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
-        {/* <Option value="Location 2">1234 Elm Street, Apt 101, California, 90210, USA</Option> */}
-      </Select>
+  const containerStyle = {
+    fontSize: '14px',
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    padding: '20px',
+  };
 
-      {/* Edit/Save button */}
-      <Row gutter={16}>
-        <Col span={22}></Col>
-        <Col span={2}>
-          <Button
-            shape="circle"
-            icon={
-              editing ? (
-                <Tooltip title="Save">
-                  <SaveOutlined style={{ fontSize: '20px' }} />
-                </Tooltip>
-              ) : (
-                <Tooltip title="Edit">
-                  <EditOutlined style={{ fontSize: '20px' }} />
-                </Tooltip>
-              )
-            }
-            onClick={toggleEditing}
-            style={{ marginBottom: 10, marginLeft: 16, fontSize: 20, marginTop: 1 }}
-          />
+   const headerFontStyle = {
+    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    fontSize: '22px'
+  };
+
+  const labelStyle = {
+    ...headerFontStyle,
+    fontWeight: '500',
+    marginBottom: '8px',
+    marginRight: '12px',
+    display: 'inline-block',
+    lineHeight: '1.2'
+  };
+
+  return (
+    <Container>
+    <div className="premium-summary" id="premiumSummary" style={containerStyle}>
+      
+      {/* Location Selection Row */}
+      <Row gutter={[16, 16]} align="middle" style={{ marginBottom: '10px', marginLeft:'12px' }}>
+        <Col xs={24} sm={12} md={12} lg={12}>
+          <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '2px' }}>
+            <span style={labelStyle}>Select Location:</span>
+            <Select
+              value={selectedBuilding}
+              onChange={handleBuildingChange}
+              style={{ 
+                minWidth: '300px',
+                maxWidth: '400px',
+                flex: '1',
+                height: '40px'
+              }}
+            >
+              <Option value="Location 1">123-05 84th Avenue, Kew Gardens, NY 11415</Option>
+              {/* <Option value="Location 2">1234 Elm Street, Apt 101, California, 90210, USA</Option> */}
+            </Select>
+          </div>
+        </Col>
+        <Col xs={24} sm={12} md={12} lg={12} >
+          <div style={{ display: 'flex', justifyContent: { xs: 'flex-start', sm: 'flex-end' }[0] || 'flex-end' }}>
+            <ButtonGroup>
+        
+        <Tooltip title={editing ? "Save" : "Edit"}>
+          <IconButton onClick={toggleEditing}>
+            {editing ? <SaveOutlined /> : <EditOutlined />}
+          </IconButton>
+        </Tooltip>
+        
+      </ButtonGroup>
+           
+          </div>
         </Col>
       </Row>
-      <WorkSection>
-        <div className="work-content">
-          <StyledCollapse defaultActiveKey={['1']}>
-            <Panel header="Building No: 123-05" key="1">
-             
-              <div className="modern-table" style={{ marginTop: '10px' }}>
+
+      {/* Coverage Table Section */}
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24}>
+          <WorkSection>
+            <div className="work-content">
+              <StyledCollapse defaultActiveKey={['1']}>
+                <Panel 
+                  header={
+                    <span style={{ 
+                      fontSize: '16px', 
+                      fontWeight: '500',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    }}>
+                      Building No: 123-05
+                    </span>
+                  } 
+                  key="1"
+                >
+                  <div className="modern-table" style={{ marginTop: '16px' }}>
+                    <Table
+                      columns={columns.map(col => ({
+                        ...col,
+                        title: <span style={{ 
+                          fontSize: '14px', 
+                          fontWeight: '600',
+                          fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                        }}>{col.title}</span>
+                      }))}
+                      dataSource={data}
+                      pagination={{ pageSize: 7 }}
+                      style={{ width: '100%' }}
+                      className="custom-table-header"
+                      tableLayout="fixed"
+                    />
+                  </div>
+                </Panel>
+              </StyledCollapse>
+            </div>
+          </WorkSection>
+        </Col>
+      </Row>
+
+      {/* Summary Table Section */}
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24}>
+          <WorkSection>
+            <div className="work-content">
+              <div className="modern-table">
                 <Table
-                  columns={columns}
-                  dataSource={data}
-                  pagination={{ pageSize: 7 }}
+                  columns={[
+                    { 
+                      title: <span style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '600',
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}></span>, 
+                      dataIndex: 'label', 
+                      key: 'label',
+                      render: (text) => <span style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '500',
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}>{text}</span>
+                    },
+                    { 
+                      title: <span style={{ 
+                        fontSize: '14px', 
+                        fontWeight: '200',
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}></span>, 
+                      dataIndex: 'value', 
+                      key: 'value',
+                      render: (text) => <span style={{ 
+                        fontSize: '14px', 
+                        
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}>{text}</span>
+                    }
+                  ]}
+                  dataSource={[
+                    { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
+                    { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350.00' },
+                    { key: 'totalPayable', label: 'Total Payable', value: '$49,350.00' }
+                  ]}
+                  pagination={false}
                   style={{ width: '100%' }}
                   className="custom-table-header"
                   tableLayout="fixed"
                 />
               </div>
-            </Panel>
-          </StyledCollapse>
-        </div>
-        <div className="work-content">
-
-          <div className="modern-table">
-            <Table
-              columns={[
-                { title: '', dataIndex: 'label', key: 'label' },
-                { title: '', dataIndex: 'value', key: 'value' }
-              ]}
-              dataSource={[
-                { key: 'totalPremium', label: 'Total Premium', value: '$47,000' },
-                { key: 'feeTaxes', label: 'Fees & Taxes', value: '$2,350.00' },
-                { key: 'totalPayable', label: 'Total Payable', value: '$49,350.00' }
-              ]}
-              pagination={false}
-              style={{ width: '100%' }}
-              className="custom-table-header"
-              tableLayout="fixed"
-            />
-          </div>
-        </div>
-      </WorkSection>
-
-      {/* Total Premiums */}
-
+            </div>
+          </WorkSection>
+        </Col>
+      </Row>
 
       {/* Notes Section */}
-      <div style={{ marginTop: '10px', marginBottom: '10px' }}>
-        <NotesHeader>
-          <FileTextOutlined className="icon" />
-          <span className="title">Notes</span>
-        </NotesHeader>
-        <WorkSection>
-          <Input.TextArea
-            placeholder="Enter notes here"
-            rows={4}
-          />
-        </WorkSection>
-      </div>
-      <Row gutter={16}>
-        <Col span={20}></Col>
-        <Col span={4}>
-          <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>
-            <Button
-              type="primary"
+      <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
+        <Col xs={24}>
+          <NotesHeader style={{ marginBottom: '16px' }}>
+            <FileTextOutlined className="icon" />
+            <span className="title" style={{ 
+              fontSize: '22px', 
+              fontWeight: '600',
+              fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+            }}>
+              Notes
+            </span>
+          </NotesHeader>
+          <WorkSection>
+            <Input.TextArea
+              placeholder="Enter notes here"
+              rows={4}
+              style={{ 
+                fontSize: '14px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                resize: 'vertical'
+              }}
+            />
+          </WorkSection>
+        </Col>
+      </Row>
 
+      {/* Action Buttons */}
+      <Row gutter={[16, 16]} justify="end" align="middle">
+        <Col xs={24} sm={24} md={12} lg={8}>
+          <div style={{ 
+            display: 'flex', 
+            gap: '12px', 
+            justifyContent: { xs: 'stretch', md: 'flex-end' }[0] || 'flex-end',
+            flexWrap: 'wrap'
+          }}>
+            <NextButton
+              type="primary"
               style={{
-                width: "10rem",
-                marginBottom: "1rem",
-                marginTop: "2rem",
-                marginRight: "15px",
                 backgroundColor: "white",
-                border: "2px solid #004A77", // deep blue border
-                color: "#004A77",            // matching text color
-                fontWeight: "bold",
-                borderRadius: "8px",         // rounded corners
+                border: "2px solid #004A77",
+                color: "#004A77",
+                fontWeight: "500",
+                fontSize: '14px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                height: '40px',
+                minWidth: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               Recalculate
-            </Button>
-
-            <NextButtonContainer>
-              <NextButton onClick={onNext}>
-                <div className="step-content-box">
-                  {"Next "}
-                  <img
-                    src={NextArrow}
-                    alt="Exavalu"
-                    title="Exavalu"
-                    className="logobox"
-                  />
-                </div>
-              </NextButton>
-            </NextButtonContainer>
+            </NextButton>
+            <NextButton 
+              style={{
+                height: '40px',
+                minWidth: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '14px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                fontWeight: '500'
+              }}
+            >
+              <div className="step-content-box" style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '8px',
+                fontSize: '14px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+              }}>
+                Next
+                <img
+                  src={NextArrow}
+                  alt="Next"
+                  title="Next"
+                  className="logobox"
+                  style={{ width: '16px', height: '16px' }}
+                />
+              </div>
+            </NextButton>
           </div>
         </Col>
       </Row>
     </div>
+    </Container>
   );
 };
 

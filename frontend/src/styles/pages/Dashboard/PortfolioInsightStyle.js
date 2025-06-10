@@ -88,7 +88,7 @@ export const Card = styled.div`
 `;
 
 export const CardTitle = styled.h3`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   color: #374151;
   margin: 0 0 20px 0;
@@ -186,7 +186,7 @@ export const StatValue = styled.div`
 `;
 
 export const StatLabel = styled.div`
-  font-size: 11px;
+  font-size: 16px;
   color: #6b7280;
   margin: 0;
   line-height: 1.2;
@@ -315,7 +315,7 @@ export const DashedLine = styled.div`
 `;
 
 export const TargetLabel = styled.div`
-  font-size: 11px;
+  font-size: 16px;
   color: #6b7280;
 `;
 
@@ -373,7 +373,7 @@ export const ClaimCircleChart = styled.div`
 `;
 
 export const CircleLabel = styled.div`
-  font-size: 11px;
+  font-size: 16px;
   color: #6b7280;
   text-align: center;
   max-width: 120px;
@@ -397,7 +397,7 @@ export const ClaimAmountSection = styled.div`
 `;
 
 export const ClaimAmountLabel = styled.div`
-  font-size: 12px;
+  font-size: 16px;
   color: #6b7280;
   margin-bottom: 4px;
 
@@ -413,5 +413,31 @@ export const ClaimAmountValue = styled.div`
 
   @media (max-width: 480px) {
     font-size: 15px;
+  }
+`;
+export const LegendContainer = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-shrink: 0;
+
+  @media (max-width: 480px) {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+`;
+
+export const LegendItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #8C8C8C;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  @media (max-width: 480px) {
+    font-size: 12px;
   }
 `;

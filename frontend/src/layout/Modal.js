@@ -113,7 +113,7 @@ const ModalDesign = () => {
 
   return (
     <>
-      <VerticalButtonGroup>
+      <VerticalButtonGroup style={{marginRight:'15px'}}>
         {actions.map(({ label, color, index }) => (
           <Button
             key={label}

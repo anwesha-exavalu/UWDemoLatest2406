@@ -36,8 +36,8 @@ export const NavigationTabs = styled.div`
     }
     
     &.active {
-      color: #2563eb;
-      border-bottom-color: #2563eb;
+      color: #054F7D;
+      border-bottom-color: #054F7D;
       background: #f8faff;
     }
   }
@@ -68,8 +68,8 @@ export const ContentWrapper = styled.div`
 // Controls container for year selection and action buttons
 export const ControlsContainer = styled.div`
   padding: 16px 20px;
-  background: #f8faff;
-  border-bottom: 1px solid #e5e7eb;
+  
+ 
   
   .controls-left {
     display: flex;
@@ -131,12 +131,16 @@ export const ControlsContainer = styled.div`
 `;
 
 // Main content tabs
+
+
 export const MainTabsContainer = styled.div`
   .main-tabs {
     display: flex;
     background: #f8faff;
-    border-bottom: 1px solid #e5e7eb;
-    
+   
+    border-radius: 6px 6px 0 0;
+    overflow: hidden;
+
     .main-tab {
       flex: 1;
       padding: 16px 24px;
@@ -146,32 +150,26 @@ export const MainTabsContainer = styled.div`
       color: white;
       cursor: pointer;
       border-radius: 6px 6px 0 0;
-      margin: 4px 4px 0 4px;
+      margin: 0;
       transition: all 0.2s ease;
-      
-      &.all-boroughs {
-        background: #2563eb;
-      }
-      
-      &.borough-specific {
-        background: #6b7280;
-        
-        &:hover {
-          background: #4b5563;
-        }
-      }
-      
+      background: #dde5f9;
+
       &.active {
-        background: #2563eb;
+        background: #204FC2;
+      }
+
+      &.borough-specific:hover:not(.active) {
+        background: #cbd7f5;
       }
     }
   }
-`;
+`
+
 
 // Chart container
 export const ChartContainer = styled.div`
   background: white;
-  padding: 24px;
+
   
   .chart-title {
     font-size: 16px;

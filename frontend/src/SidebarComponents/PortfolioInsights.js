@@ -29,7 +29,9 @@ import {
   CircleLabel,
   ClaimAmountSection,
   ClaimAmountLabel,
-  ClaimAmountValue
+  ClaimAmountValue,
+  LegendContainer,
+  LegendItem
 } from "../styles/pages/Dashboard/PortfolioInsightStyle";
 import { Container } from "../styles/components/Layout";
 
@@ -329,7 +331,7 @@ const createFloatingBarChart = () => {
           const centerY = chart.height / 2;
           
           ctx.save();
-          ctx.font = 'bold 14px Arial';
+          ctx.font = 'bold 14px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
           ctx.fillStyle = '#111827';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
@@ -364,7 +366,6 @@ const createFloatingBarChart = () => {
   }, []);
 
   return (
-
     <Dashboard>
       <Container>
       {/* Top Row */}
@@ -418,16 +419,16 @@ const createFloatingBarChart = () => {
         {/* Written Premium By Product */}
         <Card className="product-card">
           <CardTitle>Written Premium By Product (YTD)</CardTitle>
-          <div className="card-subtitle" style={{ marginBottom: '16px', display: 'flex', gap: '16px', fontSize: '12px', color: '#8C8C8C' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <LegendContainer>
+            <LegendItem>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
               <span>Commercial Property</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            </LegendItem>
+            <LegendItem>
               <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#D2DAF2' }}></div>
               <span>General Liability</span>
-            </div>
-          </div>
+            </LegendItem>
+          </LegendContainer>
           <div style={{ height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <canvas ref={productDonutRef} style={{ width: '100%', height: '100%' }}></canvas>
           </div>
@@ -452,12 +453,12 @@ const createFloatingBarChart = () => {
         {/* Written Premium By Year */}
         <Card className="large-card">
           <CardTitle>Written Premium By Year</CardTitle>
-          <div className="card-subtitle" style={{ marginBottom: '16px', display: 'flex', gap: '16px', fontSize: '12px', color: '#8C8C8C' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#4A90E2' }}></div>
+          <LegendContainer>
+            <LegendItem>
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
               <span>Premium Amount</span>
-            </div>
-          </div>
+            </LegendItem>
+          </LegendContainer>
           <div style={{ height: '300px', width: '100%' }}>
             <canvas ref={premiumBarRef} style={{ width: '100%', height: '100%' }}></canvas>
           </div>
@@ -470,7 +471,7 @@ const createFloatingBarChart = () => {
             <ClaimCirclesRow>
               <ClaimCircleItem>
                 <ClaimCircleChart>
-                  <div style={{ height: '200px', width: '120px' }}>
+                  <div style={{ height: '120px', width: '120px' }}>
                     <canvas ref={claimRadial1Ref} style={{ width: '100%', height: '100%' }}></canvas>
                   </div>
                 </ClaimCircleChart>

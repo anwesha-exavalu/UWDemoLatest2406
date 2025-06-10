@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, Alert, Spin, Select, Image, Button, Switch } from 'antd';
+import { Card, Alert, Spin, Select, Image, Button, Switch, Row, Col } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import inspectionReport from '../../assets/documents/Sample Inspection Report.pdf'
 import corelogicReport from '../../assets/documents/riskmeter_report.pdf'
 import {
   WorkSection
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
+import { Container } from '../../styles/components/Layout';
+import { RoundedAddButton } from '../../styles';
 
 const { Option } = Select;
 
@@ -43,7 +45,7 @@ function OverallInsights() {
   });
   const [doc, setDoc] = useState(null);
   const [uploadStatus, setUploadStatus] = useState(false);
-  const [publicData, setPublicData] = useState(false);
+  const [publicData, setPublicData] = useState(true);
 
   const inspectionOptions = [
     { value: 'overall-summary such as building details, inspection summary and risks', label: 'Inspection Details' },
@@ -319,156 +321,194 @@ function OverallInsights() {
   }, [query.value, publicData]);  // Dependency on `query` only, not `payload`
 
   return (
-    <div style={{ padding: '40px' }}>
-     
-        <Switch
-          checked={publicData}
-          onChange={() => setPublicData(!publicData)}
-          style={{ width: '1.5%', marginBottom: '10px',marginLeft: '950px' }}
-        />
-        <span style={{ marginLeft: '10px' }}>Include Public Data</span>
-      
-
-
-      <WorkSection>
-        <div className="work-content" style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-
-          <Select
-            placeholder="Select Document"
-            style={{ width: '100%', marginBottom: '20px' }}
-            value={doc}
-            onChange={(value) => {
-              setDoc(value);
-              handleUploadFile(value); // Call the function inside onChange
-            }}
-            disabled={uploadStatus}
-          >
-            <Option value="inspectionReport">Inspection Report</Option>
-            <Option value="corelogicReport">Corelogic Report</Option>
-          </Select>
-          <Select
-            placeholder="Select an option"
-            style={{ width: '100%', marginBottom: '20px' }}
-            value={query.value}
-            onChange={(value) => {
-              const options = doc === 'inspectionReport' ? inspectionOptions : corelogicOptions;
-              const selectedOption = options.find(option => option.value === value);
-              setQuery({
-                value: value,
-                label: selectedOption ? selectedOption.label : "",
-              });
-            }}
-            disabled={!uploadStatus}
-          >
-            {(doc === 'inspectionReport' ? inspectionOptions : corelogicOptions).map((option) => (
-              <Option key={option.value} value={option.value}>
-                {option.label}
-              </Option>
-            ))}
-          </Select>
-          <Button
-            type="primary"
-            className={"tablinks"}
-            onClick={() => {
-              setUploadStatus(false);
-              setInsights(null);
-              setRefImages(null);
-              setLoading(false);
-              setErrorMessage("");
-              setDoc(null);
-              setQuery({
-                value: null,
-                label: null
-              });
-              setPublicData(false);
-            }}
-            style={{
-              borderRadius: '8px',
-              fontSize: '16px',
-              padding: '8px 16px',
-              marginBottom: '20px',
-
-
-            }}
-          >
-            Reset
-          </Button>
-        </div>
-      </WorkSection>
-      <WorkSection>
-        <div className="work-header">Document Insights</div>
-        {loading ? (
-          <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
-        ) : errorMessage ? (
-          <Alert message={errorMessage} type="error" showIcon />
-        ) : (
-          <Card disabled={!uploadStatus}>
-
-            <div style={{ display: 'flex', width: '100%' }} >
-              {refImages && (
-                <div style={{ flex: '1', width: '50%', maxHeight: '600px', overflowY: 'scroll' }}>
-                  {refImages.map((image, index) => (
-                    <Image
-                      key={index}
-                      src={image}
-                      alt={`Reference ${index + 1}`}
-                      style={{ width: '100%', height: 'auto', marginBottom: '10px' }}
-                    />
-                  ))}
-                </div>
-              )}
-              <div style={{ flex: '1', width: '50%', maxHeight: '600px', overflowY: 'scroll', padding: '0 10px' }}>
-                {insights
-                  ? (
-                    <>
-                      <Card>
-                        {insights.summary.title && <h5>{insights.summary.title}</h5>}
-                        <ul>
-                          {insights.summary.content.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      </Card>
-                      <Card>
-                        {insights.highlights.title && <h5>{insights.highlights.title}</h5>}
-                        <ul>
-                          {insights.highlights.content.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      </Card>
-                      <Card>
-                        {insights.underwriting_risks.title && <h5>{insights.underwriting_risks.title}</h5>}
-                        <ul>
-                          {insights.underwriting_risks.content.map((item, index) => (
-                            <li key={index}>{item}</li>
-                          ))}
-                        </ul>
-                      </Card>
-                      {insights.public_data && (
-                        <Card>
-                          {insights.public_data.title && <h5 style={{ color: 'blue' }}>{insights.public_data.title}</h5>}
-                          {insights.public_data.content.map((item, index) => {
-                            const [question, answer] = item.split("\n"); // Splitting into question and answer
-
-                            return (
-                              <div key={index} style={{ marginBottom: "10px" }}>
-                                <strong style={{ color: "black" }}>Question: {question}</strong>
-                                <p style={{ marginLeft: "10px", color: "green" }}>{answer}</p>
-                              </div>
-                            );
-                          })}
-                        </Card>
-                      )}
-                    </>
-                  )
-                  : 'Select the document and then query from dropdown to generate Insights'}
-              </div>
+    <Container>
+      <div>
+        {/* Public Data Switch */}
+        <Row justify="end" style={{ marginBottom: '40px', marginTop: '-40px', marginRight: '30px' }}>
+          <Col>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <Switch
+                checked={publicData}
+                onChange={(checked) => setPublicData(checked)}
+                style={{
+                  backgroundColor: publicData ? '#204FC2' : undefined,
+                  width: 40,
+                }}
+              />
+              <span>Include Public Data</span>
             </div>
-          </Card>
+          </Col>
+        </Row>
+
+        {/* Controls Section */}
+        <WorkSection style={{ marginLeft: '2px', marginRight: '10px' }}>
+          <Row gutter={[16, 16]} className="work-content">
+            <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+              <Select
+                placeholder="Select Document"
+                style={{ width: '100%' }}
+                value={doc}
+                onChange={(value) => {
+                  setDoc(value);
+                  handleUploadFile(value); // Call the function inside onChange
+                }}
+                disabled={uploadStatus}
+              >
+                <Option value="inspectionReport">Inspection Report</Option>
+                <Option value="corelogicReport">Corelogic Report</Option>
+              </Select>
+            </Col>
+            <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+              <Select
+                placeholder="Select an option"
+                style={{ width: '100%' }}
+                value={query.value}
+                onChange={(value) => {
+                  const options = doc === 'inspectionReport' ? inspectionOptions : corelogicOptions;
+                  const selectedOption = options.find(option => option.value === value);
+                  setQuery({
+                    value: value,
+                    label: selectedOption ? selectedOption.label : "",
+                  });
+                }}
+                disabled={!uploadStatus}
+              >
+                {(doc === 'inspectionReport' ? inspectionOptions : corelogicOptions).map((option) => (
+                  <Option key={option.value} value={option.value}>
+                    {option.label}
+                  </Option>
+                ))}
+              </Select>
+            </Col>
+            <Col xs={24} sm={24} md={4} lg={4} xl={4}>
+
+              <RoundedAddButton style={{ padding: '8px 16px', }} onClick={() => {
+                setUploadStatus(false);
+                setInsights(null);
+                setRefImages(null);
+                setLoading(false);
+                setErrorMessage("");
+                setDoc(null);
+                setQuery({
+                  value: null,
+                  label: null
+                });
+                setPublicData(false);
+              }}>
+                Reset
+              </RoundedAddButton>
+            </Col>
+          </Row>
+        </WorkSection>
+
+        {/* Document Insights section - only shown when a document is selected */}
+        {doc && (
+          <WorkSection style={{ marginLeft: '2px', marginRight: '10px' }}>
+            <div className="work-header">Document Insights</div>
+            {loading ? (
+              <Row justify="center" style={{ padding: '40px' }}>
+                <Col>
+                  <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+                </Col>
+              </Row>
+            ) : errorMessage ? (
+              <Row>
+                <Col span={24}>
+                  <Alert message={errorMessage} type="error" showIcon />
+                </Col>
+              </Row>
+            ) : (
+              <Card disabled={!uploadStatus}>
+                <Row gutter={[16, 16]}>
+                  {/* Images Column */}
+                  {refImages && refImages.length > 0 && (
+                    <Col xs={24} sm={24} md={12} lg={12} xl={12}>
+                      <div style={{ maxHeight: '600px', overflowY: 'auto', paddingRight: '10px' }}>
+                        {refImages.map((image, index) => (
+                          <Image
+                            key={index}
+                            src={image}
+                            alt={`Reference ${index + 1}`}
+                            style={{ width: '100%', height: 'auto', marginBottom: '10px' }}
+                          />
+                        ))}
+                      </div>
+                    </Col>
+                  )}
+
+                  {/* Insights Column */}
+                  <Col xs={24} sm={24} md={refImages && refImages.length > 0 ? 12 : 24} lg={refImages && refImages.length > 0 ? 12 : 24} xl={refImages && refImages.length > 0 ? 12 : 24}>
+                    <div style={{ maxHeight: '600px', overflowY: 'auto', paddingLeft: refImages && refImages.length > 0 ? '10px' : '0' }}>
+                      {insights
+                        ? (
+                          <Row gutter={[0, 16]}>
+                            <Col span={24}>
+                              <Card>
+                                {insights.summary.title && <h5>{insights.summary.title}</h5>}
+                                <ul>
+                                  {insights.summary.content.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </Card>
+                            </Col>
+                            <Col span={24}>
+                              <Card>
+                                {insights.highlights.title && <h5>{insights.highlights.title}</h5>}
+                                <ul>
+                                  {insights.highlights.content.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </Card>
+                            </Col>
+                            <Col span={24}>
+                              <Card>
+                                {insights.underwriting_risks.title && <h5>{insights.underwriting_risks.title}</h5>}
+                                <ul>
+                                  {insights.underwriting_risks.content.map((item, index) => (
+                                    <li key={index}>{item}</li>
+                                  ))}
+                                </ul>
+                              </Card>
+                            </Col>
+                            {insights.public_data && (
+                              <Col span={24}>
+                                <Card>
+                                  {insights.public_data.title && <h5 style={{ color: 'blue' }}>{insights.public_data.title}</h5>}
+                                  {insights.public_data.content.map((item, index) => {
+                                    const [question, answer] = item.split("\n"); // Splitting into question and answer
+
+                                    return (
+                                      <div key={index} style={{ marginBottom: "10px" }}>
+                                        <strong style={{ color: "black" }}>Question: {question}</strong>
+                                        <p style={{ marginLeft: "10px", color: "green" }}>{answer}</p>
+                                      </div>
+                                    );
+                                  })}
+                                </Card>
+                              </Col>
+                            )}
+                          </Row>
+                        )
+                        : (
+                          <Row justify="center">
+                            <Col>
+                              <div style={{ textAlign: 'center', padding: '40px', color: '#666' }}>
+                                Select the document and then query from dropdown to generate Insights
+                              </div>
+                            </Col>
+                          </Row>
+                        )}
+                    </div>
+                  </Col>
+                </Row>
+              </Card>
+            )}
+          </WorkSection>
         )}
-      </WorkSection>
-    </div>
+      </div>
+    </Container>
   );
 
 }

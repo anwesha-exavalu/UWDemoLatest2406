@@ -145,7 +145,7 @@ function CreateSubmission({ onNext }) {
     });
   };
 
-  
+
 
   const handleCreateNewLocationInfo = () => {
     setLocationInfo({
@@ -155,7 +155,7 @@ function CreateSubmission({ onNext }) {
     });
   };
 
- 
+
 
   const handleCreateNewInsuredInfo = () => {
     setInsuredInfo({
@@ -209,7 +209,7 @@ function CreateSubmission({ onNext }) {
     setIsModalOpen(false);
   };
 
- 
+
 
   const handlePrefill = async () => {
     try {
@@ -310,10 +310,78 @@ function CreateSubmission({ onNext }) {
     }
   };
   // Function to handle file upload
-  const handleUploadFile = ({ file, fileList }) => {
-    setFileList(fileList);
+  // Replace your current handleUploadFile function with this corrected version:
+
+  const handleUploadFile = (event) => {
+    const file = event.target.files[0]; // Get the first selected file
+
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    // Validate file type
+    if (file.type !== "application/pdf") {
+      message.error("Please select a PDF file only");
+      return;
+    }
+
+    // Update file list state
+    setFileList([file]);
     message.success(`${file.name} uploaded successfully`);
+
+    // Close the modal
+    setIsModalOpen(false);
+
+    // Optionally, you can call the handleUpload function to process the file immediately
+    // handleUpload({ file });
   };
+
+  // Alternative approach: If you want to process the file immediately after upload,
+  // you can combine both functions:
+
+  const handleUploadFileAndProcess = async (event) => {
+    const file = event.target.files[0];
+
+    if (!file) {
+      console.log("No file selected");
+      return;
+    }
+
+    if (file.type !== "application/pdf") {
+      message.error("Please select a PDF file only");
+      return;
+    }
+
+    // Update file list state
+    setFileList([file]);
+    message.success(`${file.name} selected successfully`);
+
+    // Close the modal
+    setIsModalOpen(false);
+
+    // Process the file immediately
+    await handleUpload({ file });
+  };
+
+  // Also, make sure your input element in JSX is updated:
+  // Replace the input in your modal with:
+  /*
+  <input
+    type="file"
+    accept=".pdf"
+    onChange={handleUploadFile} // or handleUploadFileAndProcess if you want immediate processing
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      opacity: 0,
+      cursor: 'pointer'
+    }}
+  />
+  */
 
   const updateFormStates = (data) => {
     if (!data) return;
@@ -369,446 +437,446 @@ function CreateSubmission({ onNext }) {
     }
   };
   return (
-  <Container>
-    <MainContainer>
-      <Row gutter={[24, 24]}>
-  <Col flex="1"></Col>
-  <Col flex="none">
-    <HeaderContainer>
-      <ButtonGroup>
-        <ActionButton onClick={onUpload}>Upload</ActionButton>
-        <ActionButton onClick={handlePrefill} disabled={loading}>
-          {loading ? "Loading..." : "Prefill"}
-        </ActionButton>
-        <Tooltip title={isEditMode ? "Save" : "Edit"}>
-          <IconButton onClick={handleEditInsured}>
-            {isEditMode ? <SaveOutlined /> : <EditOutlined />}
-          </IconButton>
-        </Tooltip>
-        <Tooltip title="Search">
-          <IconButton onClick={handleSearchClick}>
-            <SearchOutlined />
-          </IconButton>
-        </Tooltip>
-      </ButtonGroup>
-    </HeaderContainer>
-  </Col>
-</Row>
-
-      <ContentContainer>
+    <Container>
+      <MainContainer>
         <Row gutter={[24, 24]}>
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-            <LeftColumn>
+          <Col flex="1"></Col>
+          <Col flex="none">
+            <HeaderContainer>
+              <ButtonGroup>
+                <ActionButton onClick={onUpload}>Upload</ActionButton>
+                <ActionButton onClick={handlePrefill} disabled={loading}>
+                  {loading ? "Loading..." : "Prefill"}
+                </ActionButton>
+                <Tooltip title={isEditMode ? "Save" : "Edit"}>
+                  <IconButton onClick={handleEditInsured}>
+                    {isEditMode ? <SaveOutlined /> : <EditOutlined />}
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title="Search">
+                  <IconButton onClick={handleSearchClick}>
+                    <SearchOutlined />
+                  </IconButton>
+                </Tooltip>
+              </ButtonGroup>
+            </HeaderContainer>
+          </Col>
+        </Row>
+
+        <ContentContainer>
+          <Row gutter={[24, 24]}>
+            <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+              <LeftColumn>
+                <Card>
+                  <CardHeader>
+                    <div className="step-content-box">
+                      <img
+                        src={PrimaryInsured}
+                        alt="Exavalu"
+                        title="Exavalu"
+                        className="logobox"
+                      />
+                    </div>
+                    <h3>Primary Insured</h3>
+                  </CardHeader>
+                  <CardContent>
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Insured Name"
+                          value={basicInfo.orgName}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "orgName")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <DropdownSelect
+                          theme={theme}
+                          label="Organisation Type"
+                          name="organizationType"
+                          options={[
+                            { label: "Proprietary", value: "proprietary" },
+                            { label: "Partnership", value: "partnership" },
+                            { label: "llb", value: "LLB" },
+                            {
+                              label: "Private Limited Company",
+                              value: "privateLimitedCompany",
+                            },
+                            {
+                              label: "Public Limited Company",
+                              value: "publicLimitedCompany",
+                            },
+                          ]}
+                          required={false}
+                          onChange={(value) =>
+                            handleInputChange(
+                              { target: { value } },
+                              "basicInfo",
+                              "orgType"
+                            )
+                          }
+                          layout="vertical"
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="DBA"
+                          value={basicInfo.dba}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "dba")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="FEIN"
+                          value={basicInfo.fein}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "fein")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Tax Identification Number"
+                          value={basicInfo.tin}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(
+                              e,
+                              "basicInfo",
+                              "taxIdentificationNumber"
+                            )
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Business Activity"
+                          value={basicInfo.businessActivity}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "businessActivity")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="SIC Code"
+                          value={basicInfo.sicCode}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "sicCode")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="SIC Description"
+                          value={basicInfo.sicDescription}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "sicDescription")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="NAICS"
+                          value={basicInfo.naics}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "naics")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="NAICS Description"
+                          value={basicInfo.naicsDescription}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "naicsDescription")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Year in Business"
+                          value={basicInfo.yearsInBusiness}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "basicInfo", "yearsInBusiness")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+                    </Row>
+                  </CardContent>
+                </Card>
+              </LeftColumn>
+            </Col>
+
+            <Col xs={24} sm={24} md={24} lg={12} xl={12}>
+              <RightColumn>
+                <Card>
+                  <CardHeader>
+                    <div className="step-content-box">
+                      <img
+                        src={ContactInfo}
+                        alt="Exavalu"
+                        title="Exavalu"
+                        className="logobox"
+                      />
+                    </div>
+                    <h3>Contact Information</h3>
+                  </CardHeader>
+                  <CardContent>
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="First Name"
+                          value={insuredInfo.firstName}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "firstName")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Middle Name"
+                          value={insuredInfo.middleName}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "middleName")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Last Name"
+                          value={insuredInfo.lastName}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "lastName")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Business Email ID"
+                          value={insuredInfo.emailId}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "businessEmailId")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Country Code"
+                          value={insuredInfo.countryCode}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "countryCode")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Phone Number"
+                          value={insuredInfo.phoneNumber}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "phoneNumber")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+
+                      <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                        <FormInput
+                          label="Website"
+                          value={insuredInfo.website}
+                          required={true}
+                          onChange={(e) =>
+                            handleInputChange(e, "insuredInfo", "website")
+                          }
+                          readOnly={!basicInfo.isEditing}
+                        />
+                      </Col>
+                    </Row>
+                  </CardContent>
+                </Card>
+              </RightColumn>
+            </Col>
+
+            <Col span={24}>
               <Card>
                 <CardHeader>
                   <div className="step-content-box">
                     <img
-                      src={PrimaryInsured}
+                      src={mailAdd}
                       alt="Exavalu"
                       title="Exavalu"
                       className="logobox"
                     />
                   </div>
-                  <h3>Primary Insured</h3>
+                  <h3>Mailing Address</h3>
                 </CardHeader>
                 <CardContent>
                   <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                       <FormInput
-                        label="Insured Name"
-                        value={basicInfo.orgName}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "orgName")
-                        }
-                        readOnly={!basicInfo.isEditing}
+                        label="Postal Code"
+                        value={locationInfo.pinCode}
+                        field="pinCode"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
 
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <DropdownSelect
-                        theme={theme}
-                        label="Organisation Type"
-                        name="organizationType"
-                        options={[
-                          { label: "Proprietary", value: "proprietary" },
-                          { label: "Partnership", value: "partnership" },
-                          { label: "llb", value: "LLB" },
-                          {
-                            label: "Private Limited Company",
-                            value: "privateLimitedCompany",
-                          },
-                          {
-                            label: "Public Limited Company",
-                            value: "publicLimitedCompany",
-                          },
-                        ]}
-                        required={false}
-                        onChange={(value) =>
-                          handleInputChange(
-                            { target: { value } },
-                            "basicInfo",
-                            "orgType"
-                          )
-                        }
-                        layout="vertical"
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
+                      <FormInput
+                        label="Address Line 1"
+                        value={locationInfo.addressLine1}
+                        field="addressLine1"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
 
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                       <FormInput
-                        label="DBA"
-                        value={basicInfo.dba}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "dba")
-                        }
-                        readOnly={!basicInfo.isEditing}
+                        label="Address Line 2"
+                        value={locationInfo.addressLine2}
+                        field="addressLine2"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
 
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                       <FormInput
-                        label="FEIN"
-                        value={basicInfo.fein}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "fein")
-                        }
-                        readOnly={!basicInfo.isEditing}
+                        label="County"
+                        value={locationInfo.county}
+                        field="county"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
 
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                       <FormInput
-                        label="Tax Identification Number"
-                        value={basicInfo.tin}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(
-                            e,
-                            "basicInfo",
-                            "taxIdentificationNumber"
-                          )
-                        }
-                        readOnly={!basicInfo.isEditing}
+                        label="City"
+                        value={locationInfo.city}
+                        field="city"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
 
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
+                    <Col xs={24} sm={24} md={6} lg={24} xl={6}>
                       <FormInput
-                        label="Business Activity"
-                        value={basicInfo.businessActivity}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "businessActivity")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="SIC Code"
-                        value={basicInfo.sicCode}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "sicCode")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="SIC Description"
-                        value={basicInfo.sicDescription}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "sicDescription")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="NAICS"
-                        value={basicInfo.naics}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "naics")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="NAICS Description"
-                        value={basicInfo.naicsDescription}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "naicsDescription")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Year in Business"
-                        value={basicInfo.yearsInBusiness}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "basicInfo", "yearsInBusiness")
-                        }
-                        readOnly={!basicInfo.isEditing}
+                        label="State"
+                        value={locationInfo.state}
+                        field="state"
+                        section="locationInfo"
+                        required
                       />
                     </Col>
                   </Row>
                 </CardContent>
               </Card>
-            </LeftColumn>
-          </Col>
+            </Col>
+          </Row>
+        </ContentContainer>
 
-          <Col xs={24} sm={24} md={24} lg={12} xl={12}>
-            <RightColumn>
-              <Card>
-                <CardHeader>
-                  <div className="step-content-box">
-                    <img
-                      src={ContactInfo}
-                      alt="Exavalu"
-                      title="Exavalu"
-                      className="logobox"
-                    />
-                  </div>
-                  <h3>Contact Information</h3>
-                </CardHeader>
-                <CardContent>
-                  <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="First Name"
-                        value={insuredInfo.firstName}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "firstName")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Middle Name"
-                        value={insuredInfo.middleName}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "middleName")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Last Name"
-                        value={insuredInfo.lastName}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "lastName")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Business Email ID"
-                        value={insuredInfo.emailId}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "businessEmailId")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Country Code"
-                        value={insuredInfo.countryCode}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "countryCode")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Phone Number"
-                        value={insuredInfo.phoneNumber}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "phoneNumber")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-
-                    <Col xs={24} sm={24} md={12} lg={24} xl={12}>
-                      <FormInput
-                        label="Website"
-                        value={insuredInfo.website}
-                        required={true}
-                        onChange={(e) =>
-                          handleInputChange(e, "insuredInfo", "website")
-                        }
-                        readOnly={!basicInfo.isEditing}
-                      />
-                    </Col>
-                  </Row>
-                </CardContent>
-              </Card>
-            </RightColumn>
-          </Col>
-
-          <Col span={24}>
-            <Card>
-              <CardHeader>
+        <Row gutter={[24, 24]}>
+          <Col flex="1"></Col>
+          <Col flex="None">
+            <NextButtonContainer>
+              <NextButton onClick={onNext}>
                 <div className="step-content-box">
+                  {"Next "}
                   <img
-                    src={mailAdd}
+                    src={NextArrow}
                     alt="Exavalu"
                     title="Exavalu"
                     className="logobox"
                   />
                 </div>
-                <h3>Mailing Address</h3>
-              </CardHeader>
-              <CardContent>
-                <Row gutter={[16, 16]}>
-                  <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="Postal Code"
-                      value={locationInfo.pinCode}
-                      field="pinCode"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-
-                 <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="Address Line 1"
-                      value={locationInfo.addressLine1}
-                      field="addressLine1"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-
-                  <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="Address Line 2"
-                      value={locationInfo.addressLine2}
-                      field="addressLine2"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-
-                 <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="County"
-                      value={locationInfo.county}
-                      field="county"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-
-                 <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="City"
-                      value={locationInfo.city}
-                      field="city"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-
-                 <Col xs={24} sm={24} md={6} lg={24} xl={6}>
-                    <FormInput
-                      label="State"
-                      value={locationInfo.state}
-                      field="state"
-                      section="locationInfo"
-                      required
-                    />
-                  </Col>
-                </Row>
-              </CardContent>
-            </Card>
+              </NextButton>
+            </NextButtonContainer>
           </Col>
         </Row>
-      </ContentContainer>
 
-      <Row gutter={[24, 24]}>
-        <Col flex="1"></Col>
-        <Col flex="None">
-          <NextButtonContainer>
-            <NextButton onClick={onNext}>
-              <div className="step-content-box">
-                {"Next "}
-                <img
-                  src={NextArrow}
-                  alt="Exavalu"
-                  title="Exavalu"
-                  className="logobox"
+        {isModalOpen && (
+          <Modal>
+            <ModalContent>
+              <h3>Upload File</h3>
+              <UploadArea>
+                <UploadOutlined className="upload-icon" />
+                <div className="upload-text">Click or Drag File to Upload</div>
+                <div className="upload-hint">Only PDF files are allowed</div>
+                <input
+                  type="file"
+                  accept=".pdf"
+                  onChange={handleUploadFile} // or handleUploadFileAndProcess if you want immediate processing
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer'
+                  }}
                 />
+              </UploadArea>
+              <div style={{ textAlign: 'right', marginTop: '16px' }}>
+                <ActionButton onClick={handleCancel}>OK</ActionButton>
               </div>
-            </NextButton>
-          </NextButtonContainer>
-        </Col>
-      </Row>
-
-      {isModalOpen && (
-        <Modal>
-          <ModalContent>
-            <h3>Upload File</h3>
-            <UploadArea>
-              <UploadOutlined className="upload-icon" />
-              <div className="upload-text">Click or Drag File to Upload</div>
-              <div className="upload-hint">Only PDF files are allowed</div>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={handleUploadFile}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  opacity: 0,
-                  cursor: 'pointer'
-                }}
-              />
-            </UploadArea>
-            <div style={{ textAlign: 'right', marginTop: '16px' }}>
-              <ActionButton onClick={handleCancel}>OK</ActionButton>
-            </div>
-          </ModalContent>
-        </Modal>
-      )}
-    </MainContainer>
-  </Container>
-);
+            </ModalContent>
+          </Modal>
+        )}
+      </MainContainer>
+    </Container>
+  );
 }
 
 export default CreateSubmission;

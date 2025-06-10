@@ -24,8 +24,6 @@ import NextArrow from "../../assets/img/nextArrow.png";
 import { ScreenHeader } from '../../styles';
 import Uwicon from "../../assets/img/Uwicon.png"
 
-
-
 const PRODUCTIONURL = process.env.REACT_APP_UWQUESTIONS_URL;
 const uwquestionsData = [
   {
@@ -86,24 +84,16 @@ const UWQuestions = ({ onNext }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
 
-  // Remove the useEffect that was calling the API on component mount
-  // useEffect(() => {
-  //   fetch(`${PRODUCTIONURL}/api/questions`)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       console.log("Fetched dynamic questions:", data);
-  //       if (Array.isArray(data)) {
-  //         setDynamicQuestions(data);
-  //       } else {
-  //         console.warn("Unexpected API response:", data);
-  //         setDynamicQuestions([]);
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.error("Error fetching dynamic questions:", err);
-  //       setDynamicQuestions([]);
-  //     });
-  // }, []);
+  // Font styles
+  const fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+  const normalTextStyle = {
+    fontSize: '14px',
+    fontFamily: fontFamily
+  };
+  const headerTextStyle = {
+    fontSize: '22px',
+    fontFamily: fontFamily
+  };
 
   // New function to handle Generate button click
   const handleGenerateQuestions = () => {
@@ -154,108 +144,31 @@ const UWQuestions = ({ onNext }) => {
           <Col span={24}>
             <div id="uw">
               <UWQuestionsContainer>
-                <ScreenHeader>
-                  <div className="icon-wrapper">
-                    <img src={Uwicon} alt="UW Icon" className="icon" />
-                  </div>
-                  <h3>UW Questions</h3>
-                </ScreenHeader>
-                <table id="underwriting-Table">
-                  <thead>
-                    <tr>
-                      <th style={{ width: "40%" }}>Questions</th>
-                      <th style={{ width: "15%" }}>Response</th>
-                      <th style={{ width: "45%" }}>Comment</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {questions.map((item, index) => (
-                      <tr key={index}>
-                        <td><b>{item.question}</b></td>
-                        <td>
-                          <DropdownSelect
-                            options={[
-                              { value: "yes", label: "Yes" },
-                              { value: "no", label: "No" },
-                              { value: "na", label: "can't be determined" },
-                            ]}
-                            required={true}
-                            value={item.response}
-                          />
-                        </td>
-                        <td>
-                          <FormInput
-                            value={item.comment}
-                            onChange={(e) => handleCommentChange(index, e.target.value)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </UWQuestionsContainer>
-
-              {/* Updated Dynamic Section with Generate Button */}
-              <UWQuestionsContainer>
-                <div style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  marginBottom: "16px"
-                }}>
-                  <h2>UW Questions(AI)</h2>
-                  <Button
-                    type="primary"
-                    onClick={handleGenerateQuestions}
-                    loading={isLoading}
-                    disabled={isLoading}
-                    style={{
-                      backgroundColor: "#054F7D",
-                      borderColor: "#054F7D",
-                      fontWeight: "600",
-                      height: "36px",
-                      paddingLeft: "20px",
-                      paddingRight: "20px",
-                      marginLeft: "25px"
-                    }}
-                  >
-                    {isLoading ? "Generating..." : "Generate"}
-                  </Button>
-                </div>
-
-                {/* Loading State */}
-                {isLoading && (
-                  <div style={{
-                    textAlign: "center",
-                    padding: "40px 0",
-                    backgroundColor: "#fafafa",
-                    borderRadius: "8px",
-                    border: "1px solid #e1e1e1"
-                  }}>
-                    <Spin size="large" />
-                    <div style={{ marginTop: "16px", fontSize: "16px", color: "#666" }}>
-                      Dynamic responses are loading...
-                    </div>
-                  </div>
-                )}
-
-                {/* Dynamic Questions Table - Only show if not loading and has generated */}
-                {!isLoading && hasGenerated && (
-                  <table id="underwriting-Table">
-                    <thead>
-                      <tr>
-                        <th style={{ width: "40%" }}>Questions</th>
-                        <th style={{ width: "15%" }}>Response</th>
-                        <th style={{ width: "45%" }}>Comment</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {Array.isArray(dynamicQuestions) && dynamicQuestions.length > 0 ? (
-                        dynamicQuestions.map((item, index) => (
+                <Row align="middle" style={{ marginBottom: '16px' }}>
+                  <Col>
+                    <ScreenHeader>
+                      <div className="icon-wrapper">
+                        <img src={Uwicon} alt="UW Icon" className="icon" />
+                      </div>
+                      <h3 style={headerTextStyle}>UW Questions</h3>
+                    </ScreenHeader>
+                  </Col>
+                </Row>
+                
+                <Row>
+                  <Col span={24}>
+                    <table id="underwriting-Table" style={normalTextStyle}>
+                      <thead>
+                        <tr>
+                          <th style={{ width: "40%", ...normalTextStyle }}>Questions</th>
+                          <th style={{ width: "15%", ...normalTextStyle }}>Response</th>
+                          <th style={{ width: "45%", ...normalTextStyle }}>Comment</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {questions.map((item, index) => (
                           <tr key={index}>
-                            <td>
-                              <b>{item.Question}</b>
-                            </td>
+                            <td><b style={normalTextStyle}>{item.question}</b></td>
                             <td>
                               <DropdownSelect
                                 options={[
@@ -264,129 +177,234 @@ const UWQuestions = ({ onNext }) => {
                                   { value: "na", label: "can't be determined" },
                                 ]}
                                 required={true}
-                                value={item.Response?.toLowerCase()}
+                                value={item.response}
                               />
                             </td>
                             <td>
                               <FormInput
-                                value={item.Comment || ""}
-                                onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
+                                value={item.comment}
+                                onChange={(e) => handleCommentChange(index, e.target.value)}
+                                style={normalTextStyle}
                               />
                             </td>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="3" style={{ textAlign: "center", color: "#666", padding: "20px" }}>
-                            No dynamic questions available
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                        ))}
+                      </tbody>
+                    </table>
+                  </Col>
+                </Row>
+              </UWQuestionsContainer>
+
+              {/* Dynamic Section with Generate Button */}
+              <UWQuestionsContainer>
+                <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
+                  <Col>
+                    <h2 style={headerTextStyle}>UW Questions(AI)</h2>
+                  </Col>
+                  <Col>
+                    <Button
+                      type="primary"
+                      onClick={handleGenerateQuestions}
+                      loading={isLoading}
+                      disabled={isLoading}
+                      style={{
+                        backgroundColor: "#054F7D",
+                        borderColor: "#054F7D",
+                        fontWeight: "600",
+                        height: "36px",
+                        paddingLeft: "20px",
+                        paddingRight: "20px",
+                        ...normalTextStyle
+                      }}
+                    >
+                      {isLoading ? "Generating..." : "Generate"}
+                    </Button>
+                  </Col>
+                </Row>
+
+                {/* Loading State */}
+                {isLoading && (
+                  <Row>
+                    <Col span={24}>
+                      <div style={{
+                        textAlign: "center",
+                        padding: "40px 0",
+                        backgroundColor: "#fafafa",
+                        borderRadius: "8px",
+                        border: "1px solid #e1e1e1"
+                      }}>
+                        <Spin size="large" />
+                        <div style={{ marginTop: "16px", ...normalTextStyle, color: "#666" }}>
+                          Dynamic responses are loading...
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
                 )}
 
-                {/* Show placeholder message if not generated yet */}
+                {/* Dynamic Questions Table */}
+                {!isLoading && hasGenerated && (
+                  <Row>
+                    <Col span={24}>
+                      <table id="underwriting-Table" style={normalTextStyle}>
+                        <thead>
+                          <tr>
+                            <th style={{ width: "40%", ...normalTextStyle }}>Questions</th>
+                            <th style={{ width: "15%", ...normalTextStyle }}>Response</th>
+                            <th style={{ width: "45%", ...normalTextStyle }}>Comment</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Array.isArray(dynamicQuestions) && dynamicQuestions.length > 0 ? (
+                            dynamicQuestions.map((item, index) => (
+                              <tr key={index}>
+                                <td>
+                                  <b style={normalTextStyle}>{item.Question}</b>
+                                </td>
+                                <td>
+                                  <DropdownSelect
+                                    options={[
+                                      { value: "yes", label: "Yes" },
+                                      { value: "no", label: "No" },
+                                      { value: "na", label: "can't be determined" },
+                                    ]}
+                                    required={true}
+                                    value={item.Response?.toLowerCase()}
+                                  />
+                                </td>
+                                <td>
+                                  <FormInput
+                                    value={item.Comment || ""}
+                                    onChange={(e) => handleDynamicCommentChange(index, e.target.value)}
+                                    style={normalTextStyle}
+                                  />
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan="3" style={{ textAlign: "center", color: "#666", padding: "20px", ...normalTextStyle }}>
+                                No dynamic questions available
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </Col>
+                  </Row>
+                )}
+
+                {/* Placeholder message */}
                 {!isLoading && !hasGenerated && (
-                  <div style={{
-                    textAlign: "center",
-                    padding: "40px 0",
-                    backgroundColor: "#fafafa",
-                    borderRadius: "8px",
-                    border: "1px solid #e1e1e1",
-                    color: "#666"
-                  }}>
-                    Click "Generate" to load AI-generated questions
-                  </div>
+                  <Row>
+                    <Col span={24}>
+                      <div style={{
+                        textAlign: "center",
+                        padding: "40px 0",
+                        backgroundColor: "#fafafa",
+                        borderRadius: "8px",
+                        border: "1px solid #e1e1e1",
+                        color: "#666",
+                        ...normalTextStyle
+                      }}>
+                        Click "Generate" to load AI-generated questions
+                      </div>
+                    </Col>
+                  </Row>
                 )}
               </UWQuestionsContainer>
 
-              {/* System Recommended Decision */}
-              <NotesHeader>
-                <FileTextOutlined className="icon" />
-                <span className="title">Notes</span>
-              </NotesHeader>
+              {/* Notes Section */}
+              <Row style={{ marginBottom: '16px' }}>
+                <Col span={24}>
+                  <NotesHeader style={{ marginBottom: '1px', marginLeft: '20px' }}>
+                    <FileTextOutlined className="icon" />
+                    <span className="title" style={headerTextStyle}>Notes</span>
+                  </NotesHeader>
+                </Col>
+              </Row>
 
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "flex-start",
-                  marginBottom: "20px",
-                }}
-              >
+              <Row gutter={16} align="top" style={{ marginBottom: "20px" }}>
                 {/* Notes TextArea */}
-                <div style={{ flex: 1, marginRight: "20px" }}>
+                <Col flex="auto">
                   <WorkSection>
                     <Input.TextArea
                       placeholder="Enter notes here"
                       rows={4}
                       style={{
                         borderRadius: "8px",
-                        fontSize: "14px",
-                        height: "120px"
+                        height: "120px",
+                        ...normalTextStyle
                       }}
                     />
                   </WorkSection>
-                </div>
+                </Col>
 
                 {/* Buttons from ModalDesign */}
-                <div style={{ display: "flex", flexDirection: "column", gap: "8px",marginTop: "30px"}}>
-                  <ModalDesign />
-                </div>
-              </div>
+                <Col flex="none">
+                  <div style={{ marginTop: "30px" }}>
+                    <ModalDesign />
+                  </div>
+                </Col>
+              </Row>
 
-              {/* Override Decision Section */}
-              <div style={{ marginBottom: 20 }}>
-                <h5 style={{ marginTop: "20px" }}>Claim Propensity</h5>
-                <div
-                  style={{
-                    padding: '16px',
-                    border: '1px solid #e1e1e1',
-                    borderRadius: '12px',
-                    display: 'block',
-                    width: '100%',
-                    backgroundColor: 'white',
-                    boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
-                    transition: 'box-shadow 0.2s ease-in-out',
-                    marginBottom: '20px'
-                  }}
-                >
-                  <Popover
-                    content={<PriorityPopup predictionData="Medium" record={record} />}
-                    trigger="click"
-                    placement="topLeft"
-                    overlayStyle={{ width: 500 }}
+              {/* Claim Propensity Section */}
+              <Row style={{ marginBottom: 20 }}>
+                <Col span={24}>
+                  <h5 style={{ marginTop: "20px", marginLeft: '20px', ...headerTextStyle }}>
+                    Claim Propensity
+                  </h5>
+                  <div
+                    style={{
+                      padding: '16px',
+                      border: '1px solid #e1e1e1',
+                      borderRadius: '12px',
+                      display: 'block',
+                      width: '98%',
+                      backgroundColor: 'white',
+                      boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.2)",
+                      transition: 'box-shadow 0.2s ease-in-out',
+                      marginBottom: '20px',
+                      marginLeft: '20px'
+                    }}
                   >
-                    <Button
-                      onClick={(e) => e.stopPropagation()}
-                      style={{
-                        fontSize: "16px",
-                        width: "150px",
-                        height: "40px",
-                        padding: "5px 20px",
-                        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
-                        fontWeight: "600",
-                        borderRadius: "4px",
-                        color: "white",
-                        backgroundColor: "#FAAF25",
-                        border: "none",
-                        cursor: "pointer",
-                        lineHeight: "1.5",
-                        display: "inline-block",
-                        textAlign: "center",
-                      }}
+                    <Popover
+                      content={<PriorityPopup predictionData="Medium" record={record} />}
+                      trigger="click"
+                      placement="topLeft"
+                      overlayStyle={{ width: 500 }}
                     >
-                      Risk - Medium
-                    </Button>
-                  </Popover>
-                </div>
-              </div>
-              <Row gutter={16}>
-                <Col span={20}></Col>
-                <Col span={4}>
+                      <Button
+                        onClick={(e) => e.stopPropagation()}
+                        style={{
+                          width: "150px",
+                          height: "40px",
+                          padding: "5px 20px",
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
+                          fontWeight: "600",
+                          borderRadius: "4px",
+                          color: "white",
+                          backgroundColor: "#FAAF25",
+                          border: "none",
+                          cursor: "pointer",
+                          lineHeight: "1.5",
+                          display: "inline-block",
+                          textAlign: "center",
+                          ...normalTextStyle
+                        }}
+                      >
+                        Risk - Medium
+                      </Button>
+                    </Popover>
+                  </div>
+                </Col>
+              </Row>
+
+              {/* Next Button */}
+              <Row gutter={16} justify="end">
+                <Col>
                   <NextButtonContainer>
-                    <NextButton onClick={onNext}>
+                    <NextButton onClick={onNext} style={normalTextStyle}>
                       <div className="step-content-box">
                         {"Next "}
                         <img

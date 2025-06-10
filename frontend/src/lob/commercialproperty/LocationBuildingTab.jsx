@@ -396,7 +396,7 @@ export function LocationBuildingTab() {
                 <div id={config.ui.tabs.tab1.id}>
                   {/* Building List Section */}
                   
-                  <WorkSection style={{ margin: '1px 1px', marginTop: '20px'}}>
+                  <WorkSection style={{marginLeft:'2px', marginRight:'10px'}}>
                     <div className="work-header">{config.ui.tabs.tab1.title}</div>
                     <div className="work-content">
                       <div>

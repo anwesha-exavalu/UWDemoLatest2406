@@ -316,12 +316,20 @@ const LossRun = () => {
                     </Divider>
 
                     <Row gutter={24}>
-                      <Col span={12}>
+                      <Col span={24}>
                         <Card
                           title={
                             <div className="flex items-center">
                               <FilePdfOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
                               <span>PDF Preview</span>
+                              <Button
+                              type="default"
+                              icon={<DownloadOutlined />}
+                              onClick={handleDownloadJson}
+                              style={{width: '180px', marginLeft:'10px', backgroundColor:'#F3F3F3'}}
+                            >
+                              Export as JSON
+                            </Button>
                             </div>
                           }
                           
@@ -343,7 +351,7 @@ const LossRun = () => {
                         </Card>
                       </Col>
 
-                      <Col span={12}>
+                      {/* <Col span={12}>
                         <Card
                           title={
                             <div className="flex items-center">
@@ -367,7 +375,7 @@ const LossRun = () => {
                             <pre className="text-xs whitespace-pre-wrap">{JSON.stringify(extractedData, null, 2)}</pre>
                           </div>
                         </Card>
-                      </Col>
+                      </Col> */}
                     </Row>
                   </div>
                 ) : (
