@@ -7,6 +7,7 @@ import PolicyCards from '../layout/PolicyCards';
 import AccountInfoSublobs from './AccountInfoSublobs';
 import AccountDashboard from './AccountDashboard';
 import { FloatButton } from 'antd';
+import { Container } from '../styles/components/Layout';
 
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -47,42 +48,14 @@ const AccountInfo = () => {
   };
 
   return (
-    <Layout style={{ backgroundColor: "white" }}>
+    <Container>
       {/* Account Information Section */}
-      <div className="" style={{
-        // padding: "5px 4px",
-        marginBottom: "4px",
-        // border: "1px solid #ccc",
-        maxWidth: "1000px",
-        marginLeft: "0"
-      }}>
-        <div
-          className="account-info-content"
-          style={{
-            display: "flex",
-            
-            gap: "10px",
-            // alignItems: "center",
-            // fontSize: "0.9em"
-          }}
-        >
-          <p style={{ display: "inline",  fontSize: "1.15rem" }}>
-            <strong>Account Name:</strong> Skyline Property Inc.
-          </p>
-          <p style={{ display: "inline",  fontSize: "1.15rem" }}>
-            <strong>Account No:</strong> 123456789
-          </p>
-          <p style={{ display: "inline",  fontSize: "1.15rem" }}>
-            <strong>Organization Type:</strong> Property Management
-          </p>
-        </div>
-      </div>
-
+     
       <PolicyCards />
 
-      <AccountInfoSublobs showAccount={setShowAccountInfo} />
-      <FloatButton.BackTop />
-    </Layout>
+      {/* <AccountInfoSublobs showAccount={setShowAccountInfo} /> */}
+      {/* <FloatButton.BackTop /> */}
+    </Container>
   );
 };
 

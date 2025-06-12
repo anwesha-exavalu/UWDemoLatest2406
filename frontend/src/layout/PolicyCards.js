@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import styles from "./PolicyCards.module.css";
-import { Card, Col, Row } from "antd";
+import AccountInfoSublobs from "../SidebarComponents/AccountInfoSublobs";
+import { Container } from "../styles/components/Layout";
+import Sublob2 from "./Sublob2";
 
 export function PolicyCards() {
   // State to keep track of the active policy
@@ -8,75 +9,203 @@ export function PolicyCards() {
 
   const policies = [
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/b4e5b89c7fe49a3fae359da4f36eec68945dcde61890aecd430ef4ce59a054c1?placeholderIfAbsent=true&apiKey=d51d7313bdca4fcf802b81d20b6296aa",
+      icon: "",
       name: "Commercial Property",
+      component: "CommercialPropertyComponent"
     },
-    // {
-    //   icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/688eeecf7f9bb910c08e4d204d0fc814d63ef100aeda5f3221d814b91089db41?placeholderIfAbsent=true&apiKey=d51d7313bdca4fcf802b81d20b6296aa",
-    //   name: "Commercial Auto",
-    // },
-    // {
-    //   icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/43e91dd543a8c6d01bf96f5db18767ca9e996dc38eaf24bc0b1821d699bba4d7?placeholderIfAbsent=true&apiKey=d51d7313bdca4fcf802b81d20b6296aa",
-    //   name: "Worker Compensation",
-    // },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/b843deeb74bf6b82930f8df13bb17a40e849c878762295a9db87885d570ee9c4?placeholderIfAbsent=true&apiKey=d51d7313bdca4fcf802b81d20b6296aa",
+      icon: " ", 
       name: "General Liability",
+      component: "GeneralLiabilityComponent"
     },
     {
-      icon: "https://cdn.builder.io/api/v1/image/assets/TEMP/3ea1e8212960372688bf642fde669f9a35c12cde8a29f1827f86d871b9328022?placeholderIfAbsent=true&apiKey=d51d7313bdca4fcf802b81d20b6296aa",
-      name: "Professional Liability",
+      icon: " ",
+      name: "Professional Liability", 
+      component: "ProfessionalLiabilityComponent"
     },
   ];
 
-  return (
-    <section >
-      <Row gutter={[4, 4]} justify={"space-between"} >
-        {policies.map((policy, index) => (
-          <Col
-            key={index}
-            xs={20}
-            sm={10}
-            md={12}
-            lg={10}
-            xl={6}
-            className={`${styles.policyCard} ${
-              activePolicy === policy.name ? styles.activeCard : ""
-            }`}
-          >
-            <Card
-              bordered={true}
-              className="policyCard"
-              onClick={() => setActivePolicy(policy.name)}  // Set active policy on click
-              style={{
-                height: "100px",
-                width: "330px",
-                borderRadius: "12px",
-                boxShadow: "0 30px 60px rgba(138, 159, 158, 0.2)",
-                borderTopColor: "steelblue",
-                backgroundColor: activePolicy === policy.name ? "#2d67da" : "white",
-                color: activePolicy === policy.name ? "white" : "black",
-                cursor: "pointer", // Makes the card look clickable
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <img src={policy.icon} alt="" className="policyIcon" /> 
-                <p
-                  style={{
-                    fontWeight: "660",
-                    marginLeft: "10px",
-                    marginTop: "11px",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  {policy.name}
-                </p>
+  // Mock components for each policy type
+  const renderPolicyComponent = () => {
+    switch(activePolicy) {
+      case "Commercial Property":
+        return (
+         <Sublob2/>
+        );
+      case "General Liability":
+        return (
+          <div className="policy-content">
+            <h3>General Liability Insurance</h3>
+            {/* <p>Protects your business against claims of bodily injury, property damage, and personal injury that may occur during normal business operations.</p>
+            <div className="policy-details">
+              <div className="detail-item">
+                <strong>Coverage Limits:</strong> $1,000,000 per occurrence
               </div>
-            </Card>
-          </Col>
+              <div className="detail-item">
+                <strong>Aggregate Limit:</strong> $2,000,000
+              </div>
+              <div className="detail-item">
+                <strong>Premium:</strong> Starting from $400/year
+              </div>
+            </div> */}
+          </div>
+        );
+      case "Professional Liability":
+        return (
+          <div className="policy-content">
+            <h3>Professional Liability Insurance</h3>
+            {/* <p>Also known as Errors & Omissions insurance, this protects your business against claims of negligence, mistakes, or failure to deliver professional services.</p>
+            <div className="policy-details">
+              <div className="detail-item">
+                <strong>Coverage Limits:</strong> $1,000,000 per claim
+              </div>
+              <div className="detail-item">
+                <strong>Aggregate Limit:</strong> $3,000,000
+              </div>
+              <div className="detail-item">
+                <strong>Premium:</strong> Starting from $600/year
+              </div>
+            </div> */}
+          </div>
+        );
+      default:
+        return <div>Select a policy to view details</div>;
+    }
+  };
+
+  return (
+    <Container>
+      <div style={{maxWidth:'1260px', marginLeft:'12px'}}>
+      {/* Account Header - Separate Div */}
+      <div style={{
+        backgroundColor: "#f5f5f5",
+        padding: "10px 15px",
+        borderRadius: "8px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        fontSize: "14px",
+        color: "#666",
+        marginBottom: "25px",
+        boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+      }}>
+        <div>
+          <strong>Account Name:</strong> Skyline Property Inc.
+        </div>
+        <div>
+          <strong>Account No:</strong> 123456789
+        </div>
+        <div>
+          <strong>Organization Type:</strong> Property Management
+        </div>
+      </div>
+
+      {/* Policy Tabs with Gaps */}
+      <div style={{
+        display: "flex",
+        gap: "15px",
+        marginBottom: "30px"
+      }}>
+        {policies.map((policy, index) => (
+          <div
+            key={index}
+            onClick={() => setActivePolicy(policy.name)}
+            style={{
+              flex: 1,
+              padding: "20px",
+              textAlign: "center",
+              cursor: "pointer",
+              backgroundColor: activePolicy === policy.name ? "#1890ff" : "#fff",
+              borderRadius: "12px",
+              boxShadow: activePolicy === policy.name 
+                ? "0 4px 12px rgba(24, 144, 255, 0.3)" 
+                : "0 2px 8px rgba(0,0,0,0.1)",
+              transition: "all 0.3s ease",
+              border: activePolicy === policy.name ? "2px solid #1890ff" : "2px solid #e8e8e8",
+              transform: activePolicy === policy.name ? "translateY(-2px)" : "translateY(0)"
+            }}
+            onMouseEnter={(e) => {
+              if (activePolicy !== policy.name) {
+                e.currentTarget.style.transform = "translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.15)";
+                e.currentTarget.style.borderColor = "#1890ff";
+              }
+            }}
+            onMouseLeave={(e) => {
+              if (activePolicy !== policy.name) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.boxShadow = "0 2px 8px rgba(0,0,0,0.1)";
+                e.currentTarget.style.borderColor = "#e8e8e8";
+              }
+            }}
+          >
+            <div style={{
+              fontSize: "32px",
+              marginBottom: "12px",
+              color: activePolicy === policy.name ? "#fff" : "#1890ff"
+            }}>
+              {policy.icon}
+            </div>
+            <div style={{
+              fontWeight: "600",
+              color: activePolicy === policy.name ? "#fff" : "#333",
+              fontSize: "15px",
+              lineHeight: "1.4"
+            }}>
+              {policy.name}
+            </div>
+          </div>
         ))}
-      </Row>
-    </section>
+      </div>
+</div>
+      {/* Policy Content */}
+      <div style={{
+        marginTop: "30px",
+       
+      
+      }}>
+        {renderPolicyComponent()}
+      </div>
+
+      <style jsx>{`
+        .policy-content {
+          max-width: 1300px;
+        }
+        
+        .policy-content h3 {
+          color: #1890ff;
+          margin-bottom: 15px;
+          font-size: 24px;
+          font-weight: 600;
+        }
+        
+        .policy-content p {
+          color: #666;
+          line-height: 1.6;
+          margin-bottom: 25px;
+          font-size: 16px;
+        }
+        
+        .policy-details {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 15px;
+        }
+        
+        .detail-item {
+          padding: 15px;
+          background-color: #f8f9fa;
+          border-radius: 6px;
+          border-left: 4px solid #1890ff;
+        }
+        
+        .detail-item strong {
+          color: #333;
+          display: block;
+          margin-bottom: 5px;
+        }
+      `}</style>
+    </Container>
   );
 }
 

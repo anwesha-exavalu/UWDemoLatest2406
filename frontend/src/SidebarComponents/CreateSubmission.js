@@ -10,24 +10,17 @@ import {
   Col,
   Row,
   Tooltip,
-  Button,
-  Radio,
-  Form,
-
-  AutoComplete, message
+  message
 } from "antd";
 import FormInput from "../components/FormInput";
 import DropdownSelect from "../components/FormDropdown";
-import Documents from "../layout/RightSidebar";
+
 import {
   EditOutlined,
   SaveOutlined,
   SearchOutlined,
   UploadOutlined,
-  UserOutlined,
-  MailOutlined,
-  HomeOutlined,
-  RightOutlined
+
 } from "@ant-design/icons";
 import {
   MainContainer,
@@ -39,11 +32,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  FormRow,
-  FormField,
-  Label,
-  Input,
-  Select,
+  
   NextButtonContainer,
   NextButton,
   ActionButton,
@@ -55,15 +44,16 @@ import {
 import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
-import axios from "axios";
+
 import useMetaData from "../context/metaData";
 
-const PROD_URL = process.env.REACT_APP_PREFILL_URL;
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 function CreateSubmission({ onNext }) {
   const { theme } = useMetaData();
   // Separate state for each widget section's form data and editing state
   const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -135,34 +125,10 @@ function CreateSubmission({ onNext }) {
 
 
 
-  const handleCreateNewBasicInfo = () => {
-    console.log("Edit icon clicked!"); // Log for debugging
-    setBasicInfo({
-      insuredName: "",
-      insuredType: "",
-      firstName: "",
-      isEditing: true, // Enable editing for new entries
-    });
-  };
 
 
 
-  const handleCreateNewLocationInfo = () => {
-    setLocationInfo({
-      baseState: "",
-      zipCode: "",
-      isEditing: true, // Enable editing for new entries
-    });
-  };
 
-
-
-  const handleCreateNewInsuredInfo = () => {
-    setInsuredInfo({
-      primaryNameInsured: "",
-      isEditing: true, // Enable editing for new entries
-    });
-  };
   const handleInputChange = (e, section, field) => {
     const value = e.target ? e.target.value : e;
     if (section === "basicInfo") {
@@ -173,9 +139,7 @@ function CreateSubmission({ onNext }) {
       setInsuredInfo((prev) => ({ ...prev, [field]: value }));
     }
   };
-  const handleClick = () => {
-    navigate("/accountinfo"); // Navigate to accountinfo with row data
-  };
+  
   const accountInfo = {
     accountHolder: "Wilson Properties", // Full name as "Account Holder" from AccountInfo
   };
@@ -191,11 +155,8 @@ function CreateSubmission({ onNext }) {
     if (firstName === accountFirstName && lastName === accountLastName) {
       navigate("/accountInfo"); // Navigate if names match
     } else {
-      // Show a pop-up if names don't match
-      Modal.error({
-        title: "No such account",
-        content: "The person is not insured.",
-      });
+      setIsErrorModalOpen(true);
+
     }
   };
 
@@ -207,6 +168,7 @@ function CreateSubmission({ onNext }) {
   // Function to handle modal close
   const handleCancel = () => {
     setIsModalOpen(false);
+    setIsErrorModalOpen(false);
   };
 
 
@@ -230,7 +192,7 @@ function CreateSubmission({ onNext }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      const apiResponse = await fetch(`${PROD_URL}/api/process_doc`, {
+      const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
         method: "POST",
         body: formData,
       });
@@ -274,9 +236,9 @@ function CreateSubmission({ onNext }) {
       const formData = new FormData();
       formData.append("file", file);
 
-      console.log("Sending request to:", `${PROD_URL}/api/process_doc`);
+      console.log("Sending request to:", `${BASE_URL}/api/process_doc`);
 
-      const response = await fetch(`${PROD_URL}/api/process_doc`, {
+      const response = await fetch(`${BASE_URL}/api/process_doc`, {
         method: "POST",
         body: formData,
       });
@@ -295,7 +257,6 @@ function CreateSubmission({ onNext }) {
         throw new Error("Invalid response format from API");
       }
 
-      // Update form states with response data
       updateFormStates(responseData.application_details);
 
       setFileList([file]);
@@ -309,79 +270,11 @@ function CreateSubmission({ onNext }) {
       setLoading(false);
     }
   };
-  // Function to handle file upload
-  // Replace your current handleUploadFile function with this corrected version:
 
-  const handleUploadFile = (event) => {
-    const file = event.target.files[0]; // Get the first selected file
 
-    if (!file) {
-      console.log("No file selected");
-      return;
-    }
+ 
 
-    // Validate file type
-    if (file.type !== "application/pdf") {
-      message.error("Please select a PDF file only");
-      return;
-    }
 
-    // Update file list state
-    setFileList([file]);
-    message.success(`${file.name} uploaded successfully`);
-
-    // Close the modal
-    setIsModalOpen(false);
-
-    // Optionally, you can call the handleUpload function to process the file immediately
-    // handleUpload({ file });
-  };
-
-  // Alternative approach: If you want to process the file immediately after upload,
-  // you can combine both functions:
-
-  const handleUploadFileAndProcess = async (event) => {
-    const file = event.target.files[0];
-
-    if (!file) {
-      console.log("No file selected");
-      return;
-    }
-
-    if (file.type !== "application/pdf") {
-      message.error("Please select a PDF file only");
-      return;
-    }
-
-    // Update file list state
-    setFileList([file]);
-    message.success(`${file.name} selected successfully`);
-
-    // Close the modal
-    setIsModalOpen(false);
-
-    // Process the file immediately
-    await handleUpload({ file });
-  };
-
-  // Also, make sure your input element in JSX is updated:
-  // Replace the input in your modal with:
-  /*
-  <input
-    type="file"
-    accept=".pdf"
-    onChange={handleUploadFile} // or handleUploadFileAndProcess if you want immediate processing
-    style={{
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
-      opacity: 0,
-      cursor: 'pointer'
-    }}
-  />
-  */
 
   const updateFormStates = (data) => {
     if (!data) return;
@@ -453,11 +346,11 @@ function CreateSubmission({ onNext }) {
                     {isEditMode ? <SaveOutlined /> : <EditOutlined />}
                   </IconButton>
                 </Tooltip>
-                {/* <Tooltip title="Search">
+                <Tooltip title="Search">
                   <IconButton onClick={handleSearchClick}>
                     <SearchOutlined />
                   </IconButton>
-                </Tooltip> */}
+                </Tooltip>
               </ButtonGroup>
             </HeaderContainer>
           </Col>
@@ -856,7 +749,7 @@ function CreateSubmission({ onNext }) {
                 <input
                   type="file"
                   accept=".pdf"
-                  onChange={handleUploadFile} // or handleUploadFileAndProcess if you want immediate processing
+                  onChange={handleUpload} // or handleUploadFileAndProcess if you want immediate processing
                   style={{
                     position: 'absolute',
                     top: 0,
@@ -874,6 +767,16 @@ function CreateSubmission({ onNext }) {
             </ModalContent>
           </Modal>
         )}
+        {isErrorModalOpen && (
+
+          <Modal>
+            <ModalContent>
+              <div className="upload-text">No such account, the person is not insured.</div>
+              <div style={{ textAlign: 'right', marginTop: '16px' }}>
+                <ActionButton onClick={handleCancel}>Close</ActionButton>
+              </div>
+            </ModalContent>
+          </Modal>)}
       </MainContainer>
     </Container>
   );
