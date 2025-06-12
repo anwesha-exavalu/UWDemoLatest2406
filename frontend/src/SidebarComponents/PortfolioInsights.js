@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { Chart } from 'chart.js/auto';
+import { Row, Col } from 'antd';
 import {
   FileTextOutlined,
   SafetyOutlined,
@@ -8,8 +9,6 @@ import {
 } from "@ant-design/icons";
 import {
   Dashboard,
-  TopRow,
-  BottomRow,
   Card,
   CardTitle,
   StatsGrid,
@@ -368,133 +367,143 @@ const createFloatingBarChart = () => {
   return (
     <Dashboard>
       <Container>
-      {/* Top Row */}
-      <TopRow>
-        {/* Book of Business Card */}
-        <Card className="business-card">
-          <CardTitle>Book Of Business (YTD)</CardTitle>
-          <StatsGrid>
-            <StatItem>
-              <StatIcon className="blue">
-                <FileTextOutlined style={{ fontSize: '16px' }} />
-              </StatIcon>
-              <StatContent>
-                <StatValue>$25 M</StatValue>
-                <StatLabel>Written Premium</StatLabel>
-              </StatContent>
-            </StatItem>
+        {/* Top Row - 3 Cards */}
+        <Row style={{ marginBottom: '24px' }} gutter={[24, 24]}>
+          {/* Book of Business Card */}
+          <Col xs={24} sm={24} md={7} lg={7} xl={7}>
+            <Card className="business-card">
+              <CardTitle>Book Of Business (YTD)</CardTitle>
+              <StatsGrid>
+                <StatItem>
+                  <StatIcon className="blue">
+                    <FileTextOutlined style={{ fontSize: '16px' }} />
+                  </StatIcon>
+                  <StatContent>
+                    <StatValue>$25 M</StatValue>
+                    <StatLabel>Written Premium</StatLabel>
+                  </StatContent>
+                </StatItem>
 
-            <StatItem>
-              <StatIcon className="green">
-                <SafetyOutlined style={{ fontSize: '16px' }} />
-              </StatIcon>
-              <StatContent>
-                <StatValue>5000</StatValue>
-                <StatLabel>Policy Count</StatLabel>
-              </StatContent>
-            </StatItem>
+                <StatItem>
+                  <StatIcon className="green">
+                    <SafetyOutlined style={{ fontSize: '16px' }} />
+                  </StatIcon>
+                  <StatContent>
+                    <StatValue>5000</StatValue>
+                    <StatLabel>Policy Count</StatLabel>
+                  </StatContent>
+                </StatItem>
 
-            <StatItem>
-              <StatIcon className="purple">
-                <DollarOutlined style={{ fontSize: '16px' }} />
-              </StatIcon>
-              <StatContent>
-                <StatValue>$500,000</StatValue>
-                <StatLabel>Claim Amount</StatLabel>
-              </StatContent>
-            </StatItem>
+                <StatItem>
+                  <StatIcon className="purple">
+                    <DollarOutlined style={{ fontSize: '16px' }} />
+                  </StatIcon>
+                  <StatContent>
+                    <StatValue>$500,000</StatValue>
+                    <StatLabel>Claim Amount</StatLabel>
+                  </StatContent>
+                </StatItem>
 
-            <StatItem>
-              <StatIcon className="teal">
-                <WarningOutlined style={{ fontSize: '16px' }} />
-              </StatIcon>
-              <StatContent>
-                <StatValue>5</StatValue>
-                <StatLabel>Claim Count</StatLabel>
-              </StatContent>
-            </StatItem>
-          </StatsGrid>
-        </Card>
+                <StatItem>
+                  <StatIcon className="teal">
+                    <WarningOutlined style={{ fontSize: '16px' }} />
+                  </StatIcon>
+                  <StatContent>
+                    <StatValue>5</StatValue>
+                    <StatLabel>Claim Count</StatLabel>
+                  </StatContent>
+                </StatItem>
+              </StatsGrid>
+            </Card>
+          </Col>
 
-        {/* Written Premium By Product */}
-        <Card className="product-card">
-          <CardTitle>Written Premium By Product (YTD)</CardTitle>
-          <LegendContainer>
-            <LegendItem>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
-              <span>Commercial Property</span>
-            </LegendItem>
-            <LegendItem>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#D2DAF2' }}></div>
-              <span>General Liability</span>
-            </LegendItem>
-          </LegendContainer>
-          <div style={{ height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <canvas ref={productDonutRef} style={{ width: '100%', height: '100%' }}></canvas>
-          </div>
-        </Card>
+          {/* Written Premium By Product */}
+          <Col xs={24} sm={24} md={8} lg={8} xl={8}>
+            <Card className="product-card">
+              <CardTitle>Written Premium By Product (YTD)</CardTitle>
+              <LegendContainer>
+                <LegendItem>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
+                  <span>Commercial Property</span>
+                </LegendItem>
+                <LegendItem>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#D2DAF2' }}></div>
+                  <span>General Liability</span>
+                </LegendItem>
+              </LegendContainer>
+              <div style={{ height: '200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <canvas ref={productDonutRef} style={{ width: '100%', height: '100%' }}></canvas>
+              </div>
+            </Card>
+          </Col>
 
-        {/* Revenue by Brokerages */}
-        <Card className="revenue-card">
-          <CardTitle>Revenue by Brokerages (YTD)</CardTitle>
-          <StatusIndicator>
-            <StatusDot className="green" />
-            <StatusText>On track</StatusText>
-            <StatusPercentage>+2.45%</StatusPercentage>
-          </StatusIndicator>
-          <div style={{ height: '250px', width: '100%', padding: '10px' }}>
-            <canvas ref={revenueBarRef} style={{ width: '100%', height: '100%' }}></canvas>
-          </div>
-        </Card>
-      </TopRow>
+          {/* Revenue by Brokerages */}
+           <Col xs={24} sm={24} md={9} lg={9} xl={9}>
+            <Card className="revenue-card">
+              <CardTitle>Revenue by Brokerages (YTD)</CardTitle>
+              <StatusIndicator>
+                <StatusDot className="green" />
+                <StatusText>On track</StatusText>
+                <StatusPercentage>+2.45%</StatusPercentage>
+              </StatusIndicator>
+              <div style={{ height: '250px', width: '100%', padding: '10px' }}>
+                <canvas ref={revenueBarRef} style={{ width: '100%', height: '100%' }}></canvas>
+              </div>
+            </Card>
+          </Col>
+        </Row>
 
-      {/* Bottom Row */}
-      <BottomRow>
-        {/* Written Premium By Year */}
-        <Card className="large-card">
-          <CardTitle>Written Premium By Year</CardTitle>
-          <LegendContainer>
-            <LegendItem>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
-              <span>Premium Amount</span>
-            </LegendItem>
-          </LegendContainer>
-          <div style={{ height: '300px', width: '100%' }}>
-            <canvas ref={premiumBarRef} style={{ width: '100%', height: '100%' }}></canvas>
-          </div>
-        </Card>
+        {/* Bottom Row - 2 Cards */}
+        <Row gutter={[24, 24]}>
+          {/* Written Premium By Year */}
+          <Col xs={24} sm={24} md={15} lg={15} xl={15}>
+            <Card className="large-card">
+              <CardTitle>Written Premium By Year</CardTitle>
+              <LegendContainer>
+                <LegendItem>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#204FC2' }}></div>
+                  <span>Premium Amount</span>
+                </LegendItem>
+              </LegendContainer>
+              <div style={{ height: '300px', width: '100%' }}>
+                <canvas ref={premiumBarRef} style={{ width: '100%', height: '100%' }}></canvas>
+              </div>
+            </Card>
+          </Col>
 
-        {/* Claim History */}
-        <Card>
-          <CardTitle>Claim History</CardTitle>
-          <ClaimHistoryContainer>
-            <ClaimCirclesRow>
-              <ClaimCircleItem>
-                <ClaimCircleChart>
-                  <div style={{ height: '120px', width: '120px' }}>
-                    <canvas ref={claimRadial1Ref} style={{ width: '100%', height: '100%' }}></canvas>
-                  </div>
-                </ClaimCircleChart>
-                <CircleLabel>General Liability</CircleLabel>
-              </ClaimCircleItem>
+          {/* Claim History */}
+          <Col xs={24} sm={24} md={9} lg={9} xl={9}>
+            <Card>
+              <CardTitle>Claim History</CardTitle>
+              <ClaimHistoryContainer>
+                <ClaimCirclesRow>
+                  <ClaimCircleItem>
+                    <ClaimCircleChart>
+                      <div style={{ height: '140px', width: '120px' }}>
+                        <canvas ref={claimRadial1Ref} style={{ width: '100%', height: '100%' }}></canvas>
+                      </div>
+                    </ClaimCircleChart>
+                    <CircleLabel>General Liability</CircleLabel>
+                  </ClaimCircleItem>
 
-              <ClaimCircleItem>
-                <ClaimCircleChart>
-                  <div style={{ height: '120px', width: '120px' }}>
-                    <canvas ref={claimRadial2Ref} style={{ width: '100%', height: '100%' }}></canvas>
-                  </div>
-                </ClaimCircleChart>
-                <CircleLabel>Commercial Property</CircleLabel>
-              </ClaimCircleItem>
-            </ClaimCirclesRow>
+                  <ClaimCircleItem>
+                    <ClaimCircleChart>
+                      <div style={{ height: '140px', width: '120px' }}>
+                        <canvas ref={claimRadial2Ref} style={{ width: '100%', height: '100%' }}></canvas>
+                      </div>
+                    </ClaimCircleChart>
+                    <CircleLabel>Commercial Property</CircleLabel>
+                  </ClaimCircleItem>
+                </ClaimCirclesRow>
 
-            <ClaimAmountSection>
-              <ClaimAmountLabel>Claim Amount</ClaimAmountLabel>
-              <ClaimAmountValue>$500,000</ClaimAmountValue>
-            </ClaimAmountSection>
-          </ClaimHistoryContainer>
-        </Card>
-      </BottomRow>
+                <ClaimAmountSection>
+                  <ClaimAmountLabel>Claim Amount</ClaimAmountLabel>
+                  <ClaimAmountValue>$500,000</ClaimAmountValue>
+                </ClaimAmountSection>
+              </ClaimHistoryContainer>
+            </Card>
+          </Col>
+        </Row>
       </Container>
     </Dashboard>
   );

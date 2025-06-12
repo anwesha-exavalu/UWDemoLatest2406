@@ -4,40 +4,8 @@ export const Dashboard = styled.div`
   padding: 14px;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-`;
-
-export const TopRow = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1.5fr;
-  gap: 24px;
-  margin-bottom: 24px;
-
-  @media (max-width: 1200px) {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (max-width: 480px) {
-    gap: 16px;
-  }
-`;
-
-export const BottomRow = styled.div`
-  display: grid;
-  grid-template-columns: 2fr 1fr;
-  gap: 24px;
-  margin-bottom: 24px;
-
-  @media (max-width: 1024px) {
-    grid-template-columns: 1fr;
-  }
-
-  @media (max-width: 480px) {
-    gap: 16px;
-  }
+  max-width: 100%;
+  overflow-x: hidden;
 `;
 
 export const Card = styled.div`
@@ -46,30 +14,34 @@ export const Card = styled.div`
   padding: 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   border: 1px solid #e5e7eb;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 350px;
 
   &.large-card {
     padding: 24px;
+    min-height: 400px;
   }
 
   &.business-card {
-    grid-column: span 1;
+    min-height: 350px;
   }
 
   &.product-card {
-    grid-column: span 1;
+    min-height: 350px;
   }
 
   &.revenue-card {
-    grid-column: span 1;
-   
+    min-height: 350px;
   }
 
   .chart-container {
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-   
     width: 100%;
+    flex: 1;
 
     &.stretched {
       width: 100%;
@@ -77,13 +49,26 @@ export const Card = styled.div`
       
       > div {
         width: 100% !important;
-        
       }
     }
   }
 
   @media (max-width: 768px) {
     padding: 16px;
+    min-height: 300px;
+    
+    &.large-card {
+      min-height: 350px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 14px;
+    min-height: 280px;
+    
+    &.large-card {
+      min-height: 320px;
+    }
   }
 `;
 
@@ -93,36 +78,56 @@ export const CardTitle = styled.h3`
   color: #374151;
   margin: 0 0 20px 0;
   line-height: 1.4;
+  flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    font-size: 15px;
+    margin-bottom: 18px;
+  }
 
   @media (max-width: 480px) {
-    font-size: 13px;
+    font-size: 14px;
     margin-bottom: 16px;
   }
 `;
 
 export const StatsGrid = styled.div`
-margin-top: 50px;
+  margin-top: 30px;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 66px;
+  gap: 24px;
+  flex: 1;
+
+  @media (max-width: 1400px) {
+    gap: 20px;
+    margin-top: 25px;
+  }
 
   @media (max-width: 1200px) {
-    gap: 12px;
+    gap: 16px;
+    margin-top: 20px;
+  }
+
+  @media (max-width: 992px) {
+    gap: 14px;
+    margin-top: 15px;
   }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
     gap: 12px;
+    margin-top: 20px;
   }
 
   @media (max-width: 480px) {
     gap: 10px;
+    margin-top: 15px;
   }
 `;
 
 export const StatItem = styled.div`
   display: flex;
- 
+  align-items: flex-start;
   gap: 12px;
 
   @media (max-width: 480px) {
@@ -175,6 +180,7 @@ export const StatValue = styled.div`
   font-weight: 700;
   color: #111827;
   margin: 0 0 2px 0;
+  word-break: break-word;
 
   @media (max-width: 1200px) {
     font-size: 15px;
@@ -186,13 +192,13 @@ export const StatValue = styled.div`
 `;
 
 export const StatLabel = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   color: #6b7280;
   margin: 0;
   line-height: 1.2;
 
   @media (max-width: 480px) {
-    font-size: 10px;
+    font-size: 11px;
   }
 `;
 
@@ -201,6 +207,7 @@ export const StatusIndicator = styled.div`
   align-items: center;
   gap: 8px;
   margin-bottom: 20px;
+  flex-shrink: 0;
 
   @media (max-width: 480px) {
     margin-bottom: 16px;
@@ -238,96 +245,22 @@ export const StatusPercentage = styled.span`
   }
 `;
 
-export const LineChart = styled.div`
-  display: flex;
-  gap: 16px;
-  height: 160px;
-`;
-
-export const YAxis = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 20px 0;
-`;
-
-export const YLabel = styled.div`
-  font-size: 12px;
-  color: #9ca3af;
-`;
-
-export const ChartArea = styled.div`
-  flex: 1;
-  position: relative;
-`;
-
-export const ChartBars = styled.div`
-  display: flex;
-  justify-content: space-around;
-  align-items: end;
-  height: 120px;
-  position: relative;
-`;
-
-export const ChartColumn = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-
-  &.active .bar-value {
-    background: #3b82f6;
-    color: white;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 10px;
-    margin-bottom: 4px;
-  }
-`;
-
-export const BarItem = styled.div`
-  width: 24px;
-  border-radius: 2px;
-`;
-
-export const XLabel = styled.div`
-  font-size: 11px;
-  color: #6b7280;
-`;
-
-export const BarValue = styled.div`
-  /* Styles will be applied via ChartColumn.active */
-`;
-
-export const TargetLine = styled.div`
-  position: absolute;
-  top: 30px;
-  right: 0;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-export const DashedLine = styled.div`
-  width: 40px;
-  height: 1px;
-  border-top: 2px dashed #9ca3af;
-`;
-
-export const TargetLabel = styled.div`
-  font-size: 16px;
-  color: #6b7280;
-`;
-
 // Claim History Styles
 export const ClaimHistoryContainer = styled.div`
-margin-top: 50px;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
-  gap: 54px;
+  gap: 30px;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    margin-top: 25px;
+    gap: 25px;
+  }
 
   @media (max-width: 480px) {
     gap: 20px;
+    margin-top: 20px;
   }
 `;
 
@@ -335,6 +268,11 @@ export const ClaimCirclesRow = styled.div`
   display: flex;
   justify-content: space-around;
   gap: 16px;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    gap: 14px;
+  }
 
   @media (max-width: 480px) {
     gap: 12px;
@@ -347,6 +285,11 @@ export const ClaimCircleItem = styled.div`
   align-items: center;
   gap: 8px;
   flex: 1;
+  max-width: 140px;
+
+  @media (max-width: 480px) {
+    max-width: 120px;
+  }
 `;
 
 export const ClaimCircleChart = styled.div`
@@ -356,6 +299,7 @@ export const ClaimCircleChart = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+ 
 
   .apexcharts-canvas {
     margin: 0 auto;
@@ -366,6 +310,11 @@ export const ClaimCircleChart = styled.div`
     font-size: 14px !important;
   }
 
+  @media (max-width: 768px) {
+    width: 110px;
+    height: 110px;
+  }
+
   @media (max-width: 480px) {
     width: 100px;
     height: 100px;
@@ -373,12 +322,18 @@ export const ClaimCircleChart = styled.div`
 `;
 
 export const CircleLabel = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   color: #6b7280;
   text-align: center;
   max-width: 120px;
   line-height: 1.2;
   margin-top: 8px;
+  word-wrap: break-word;
+
+  @media (max-width: 768px) {
+    font-size: 11px;
+    max-width: 110px;
+  }
 
   @media (max-width: 480px) {
     font-size: 10px;
@@ -390,6 +345,7 @@ export const ClaimAmountSection = styled.div`
   text-align: center;
   padding-top: 16px;
   border-top: 1px solid #e5e7eb;
+  margin-top: "40px";
 
   @media (max-width: 480px) {
     padding-top: 14px;
@@ -397,7 +353,7 @@ export const ClaimAmountSection = styled.div`
 `;
 
 export const ClaimAmountLabel = styled.div`
-  font-size: 16px;
+  font-size: 12px;
   color: #6b7280;
   margin-bottom: 4px;
 
@@ -415,6 +371,7 @@ export const ClaimAmountValue = styled.div`
     font-size: 15px;
   }
 `;
+
 export const LegendContainer = styled.div`
   display: flex;
   gap: 16px;
@@ -422,6 +379,11 @@ export const LegendContainer = styled.div`
   flex-wrap: wrap;
   align-items: center;
   flex-shrink: 0;
+
+  @media (max-width: 768px) {
+    gap: 14px;
+    margin-bottom: 14px;
+  }
 
   @media (max-width: 480px) {
     gap: 12px;
@@ -433,11 +395,22 @@ export const LegendItem = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
+  font-size: 12px;
   color: #8C8C8C;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  white-space: nowrap;
 
   @media (max-width: 480px) {
-    font-size: 12px;
+    font-size: 11px;
+    gap: 5px;
   }
+`;
+
+// Remove the old styled components that are no longer needed
+export const TopRow = styled.div`
+  /* This component is no longer used - replaced with Ant Design Row/Col */
+`;
+
+export const BottomRow = styled.div`
+  /* This component is no longer used - replaced with Ant Design Row/Col */
 `;
