@@ -10,7 +10,9 @@ import {
   Col,
   Row,
   Tooltip,
-  message
+  message,
+  Progress,
+  notification
 } from "antd";
 import FormInput from "../components/FormInput";
 import DropdownSelect from "../components/FormDropdown";
@@ -48,6 +50,7 @@ import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
 import useMetaData from "../context/metaData";
 
 const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 function CreateSubmission({ onNext }) {
   const { theme } = useMetaData();
   // Separate state for each widget section's form data and editing state
@@ -55,11 +58,15 @@ function CreateSubmission({ onNext }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [fileList, setFileList] = useState([]);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState(null);
   const [formData, setFormData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  
   // Separate state for each widget section's form data and editing state
   const [basicInfo, setBasicInfo] = useState({
     orgName: "",
@@ -95,7 +102,7 @@ function CreateSubmission({ onNext }) {
     emailId: "",
     countryCode: "",
     phoneNumber: "",
-    website: " ",
+    website: "",
     isEditing: false,
   });
 
@@ -115,6 +122,7 @@ function CreateSubmission({ onNext }) {
     // Toggle edit mode
     setIsEditMode(!isEditMode);
   };
+
   useEffect(() => {
     console.log("Edit Mode State:", {
       basicInfo: basicInfo.isEditing,
@@ -122,12 +130,6 @@ function CreateSubmission({ onNext }) {
       insuredInfo: insuredInfo.isEditing,
     });
   }, [basicInfo.isEditing, locationInfo.isEditing, insuredInfo.isEditing]);
-
-
-
-
-
-
 
   const handleInputChange = (e, section, field) => {
     const value = e.target ? e.target.value : e;
@@ -150,13 +152,12 @@ function CreateSubmission({ onNext }) {
 
   // Function to check if names match and navigate or show a pop-up
   const handleSearchClick = () => {
-    const { firstName, lastName } = basicInfo;
+    const { firstName, lastName } = insuredInfo; // Fixed: should be insuredInfo, not basicInfo
 
     if (firstName === accountFirstName && lastName === accountLastName) {
       navigate("/accountInfo"); // Navigate if names match
     } else {
       setIsErrorModalOpen(true);
-
     }
   };
 
@@ -169,9 +170,9 @@ function CreateSubmission({ onNext }) {
   const handleCancel = () => {
     setIsModalOpen(false);
     setIsErrorModalOpen(false);
+    setUploadProgress(0);
+    setIsUploading(false);
   };
-
-
 
   const handlePrefill = async () => {
     try {
@@ -179,38 +180,64 @@ function CreateSubmission({ onNext }) {
       setError(null);
       setSuccess(false);
 
-      const pdfResponse = await fetch(pdfData);
-      if (!pdfResponse.ok) {
-        throw new Error("Failed to load PDF file");
+      // Check if a file has been uploaded
+      if (!uploadedFile) {
+        // If no file uploaded, use the default PDF
+        const pdfResponse = await fetch(pdfData);
+        if (!pdfResponse.ok) {
+          throw new Error("Failed to load PDF file");
+        }
+
+        const pdfBlob = await pdfResponse.blob();
+        const file = new File([pdfBlob], "DocumentForExtraction02.pdf", {
+          type: "application/pdf",
+        });
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          throw new Error(errorData.message || "Failed to process PDF");
+        }
+
+        const responseData = await apiResponse.json();
+        console.log("API Response:", responseData);
+
+        if (!responseData.application_details) {
+          throw new Error("Invalid response data received");
+        }
+
+        updateFormStates(responseData.application_details[0]);
+      } else {
+        // Use uploaded file for API call
+        const formData = new FormData();
+        formData.append("file", uploadedFile);
+
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          throw new Error(errorData.message || "Failed to process PDF");
+        }
+
+        const responseData = await apiResponse.json();
+        console.log("API Response:", responseData);
+
+        if (!responseData.application_details) {
+          throw new Error("Invalid response data received");
+        }
+
+        updateFormStates(responseData.application_details[0]);
       }
-
-      const pdfBlob = await pdfResponse.blob();
-      const file = new File([pdfBlob], "DocumentForExtraction02.pdf", {
-        type: "application/pdf",
-      });
-
-      const formData = new FormData();
-      formData.append("file", file);
-
-      const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!apiResponse.ok) {
-        const errorData = await apiResponse.json();
-        throw new Error(errorData.message || "Failed to process PDF");
-      }
-
-      const responseData = await apiResponse.json();
-      console.log("API Response:", responseData);
-
-      if (!responseData.application_details) {
-        throw new Error("Invalid response data received");
-      }
-
-      // Update form states with response data
-      updateFormStates(responseData.application_details);
 
       setSuccess(true);
       message.success("Form prefilled successfully");
@@ -222,60 +249,82 @@ function CreateSubmission({ onNext }) {
       setLoading(false);
     }
   };
-  const handleUpload = async ({ file }) => {
+
+  // Handle file upload (only upload, no API processing)
+  const handleUpload = async (event) => {
+    const file = event.target.files[0];
+    
+    if (!file) {
+      return;
+    }
+
     console.log("Starting upload for file:", file.name);
+    
+    // Basic file validation
+    if (file.type !== "application/pdf") {
+      message.error("Please upload a valid PDF file");
+      return;
+    }
+
     try {
-      setLoading(true);
-      setError(null);
+      setIsUploading(true);
+      setUploadProgress(0);
 
-      // Basic file validation
-      if (!file || file.type !== "application/pdf") {
-        throw new Error("Please upload a valid PDF file");
-      }
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 100);
 
-      const formData = new FormData();
-      formData.append("file", file);
+      // Simulate upload delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
 
-      console.log("Sending request to:", `${BASE_URL}/api/process_doc`);
+      // Complete the progress
+      setUploadProgress(100);
+      clearInterval(progressInterval);
 
-      const response = await fetch(`${BASE_URL}/api/process_doc`, {
-        method: "POST",
-        body: formData,
+      // Store the uploaded file
+      setUploadedFile(file);
+      setFileList([file]);
+
+      // Show success notification
+      notification.success({
+        message: 'Upload Successful',
+        description: `${file.name} has been uploaded successfully. Click 'Prefill' to process the document.`,
+        duration: 4,
+        placement: 'topRight'
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `Upload failed with status: ${response.status}`
-        );
-      }
+      // Close modal after a short delay
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setUploadProgress(0);
+        setIsUploading(false);
+      }, 1000);
 
-      const responseData = await response.json();
-      console.log("Upload API Response:", responseData);
-
-      if (!responseData.application_details) {
-        throw new Error("Invalid response format from API");
-      }
-
-      updateFormStates(responseData.application_details);
-
-      setFileList([file]);
-      message.success(`${file.name} processed successfully`);
-      setSuccess(true);
     } catch (error) {
       console.error("Upload Error:", error);
       message.error(`Upload failed: ${error.message}`);
-      setError(error.message);
-    } finally {
-      setLoading(false);
+      setUploadProgress(0);
+      setIsUploading(false);
     }
+
+    // Reset file input
+    event.target.value = '';
   };
 
+  // Function to handle file upload (if you need this for other purposes)
+  const handleUploadFile = ({ file, fileList }) => {
+    setFileList(fileList);
+    message.success(`${file.name} uploaded successfully`);
+  };
 
- 
-
-
-
+  // Fixed updateFormStates function to match API response structure
   const updateFormStates = (data) => {
     if (!data) return;
 
@@ -301,7 +350,7 @@ function CreateSubmission({ onNext }) {
     }
 
     // Update locationInfo state - handle first address from insuredMailingAddress array
-    if (insuredMailingAddress && insuredMailingAddress[0]) {
+    if (insuredMailingAddress && insuredMailingAddress.length > 0) {
       const address = insuredMailingAddress[0];
       setLocationInfo((prevState) => ({
         ...prevState,
@@ -329,6 +378,7 @@ function CreateSubmission({ onNext }) {
       }));
     }
   };
+
   return (
     <Container>
       <MainContainer>
@@ -391,6 +441,7 @@ function CreateSubmission({ onNext }) {
                           theme={theme}
                           label="Organisation Type"
                           name="organizationType"
+                          value={basicInfo.orgType} // Added value prop
                           options={[
                             { label: "Proprietary", value: "proprietary" },
                             { label: "Partnership", value: "partnership" },
@@ -406,13 +457,10 @@ function CreateSubmission({ onNext }) {
                           ]}
                           required={false}
                           onChange={(value) =>
-                            handleInputChange(
-                              { target: { value } },
-                              "basicInfo",
-                              "orgType"
-                            )
+                            handleInputChange(value, "basicInfo", "orgType")
                           }
                           layout="vertical"
+                          // disabled={!basicInfo.isEditing}
                         />
                       </Col>
 
@@ -446,11 +494,7 @@ function CreateSubmission({ onNext }) {
                           value={basicInfo.tin}
                           required={true}
                           onChange={(e) =>
-                            handleInputChange(
-                              e,
-                              "basicInfo",
-                              "taxIdentificationNumber"
-                            )
+                            handleInputChange(e, "basicInfo", "tin") // Fixed field name
                           }
                           readOnly={!basicInfo.isEditing}
                         />
@@ -557,7 +601,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "firstName")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -569,7 +613,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "middleName")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -581,7 +625,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "lastName")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -591,9 +635,9 @@ function CreateSubmission({ onNext }) {
                           value={insuredInfo.emailId}
                           required={true}
                           onChange={(e) =>
-                            handleInputChange(e, "insuredInfo", "businessEmailId")
+                            handleInputChange(e, "insuredInfo", "emailId") // Fixed field name
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -605,7 +649,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "countryCode")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -617,7 +661,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "phoneNumber")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
 
@@ -629,7 +673,7 @@ function CreateSubmission({ onNext }) {
                           onChange={(e) =>
                             handleInputChange(e, "insuredInfo", "website")
                           }
-                          readOnly={!basicInfo.isEditing}
+                          readOnly={!insuredInfo.isEditing} // Fixed: should be insuredInfo.isEditing
                         />
                       </Col>
                     </Row>
@@ -657,8 +701,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="Postal Code"
                         value={locationInfo.pinCode}
-                        field="pinCode"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "pinCode")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -667,8 +713,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="Address Line 1"
                         value={locationInfo.addressLine1}
-                        field="addressLine1"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "addressLine1")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -677,8 +725,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="Address Line 2"
                         value={locationInfo.addressLine2}
-                        field="addressLine2"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "addressLine2")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -687,8 +737,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="County"
                         value={locationInfo.county}
-                        field="county"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "county")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -697,8 +749,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="City"
                         value={locationInfo.city}
-                        field="city"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "city")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -707,8 +761,10 @@ function CreateSubmission({ onNext }) {
                       <FormInput
                         label="State"
                         value={locationInfo.state}
-                        field="state"
-                        section="locationInfo"
+                        onChange={(e) =>
+                          handleInputChange(e, "locationInfo", "state")
+                        }
+                        readOnly={!locationInfo.isEditing}
                         required
                       />
                     </Col>
@@ -742,33 +798,56 @@ function CreateSubmission({ onNext }) {
           <Modal>
             <ModalContent>
               <h3>Upload File</h3>
-              <UploadArea>
-                <UploadOutlined className="upload-icon" />
-                <div className="upload-text">Click or Drag File to Upload</div>
-                <div className="upload-hint">Only PDF files are allowed</div>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={handleUpload} // or handleUploadFileAndProcess if you want immediate processing
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    opacity: 0,
-                    cursor: 'pointer'
-                  }}
-                />
-              </UploadArea>
+              {!isUploading ? (
+                <UploadArea>
+                  <UploadOutlined className="upload-icon" />
+                  <div className="upload-text">Click or Drag File to Upload</div>
+                  <div className="upload-hint">Only PDF files are allowed</div>
+                  <input
+                    type="file"
+                    accept=".pdf"
+                    onChange={handleUpload}
+                    style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      width: '100%',
+                      height: '100%',
+                      opacity: 0,
+                      cursor: 'pointer'
+                    }}
+                  />
+                </UploadArea>
+              ) : (
+                <div style={{ padding: '20px', textAlign: 'center' }}>
+                  <div className="upload-text" style={{ marginBottom: '16px' }}>
+                    Uploading PDF...
+                  </div>
+                  <Progress 
+                    percent={uploadProgress} 
+                    status={uploadProgress === 100 ? "success" : "active"}
+                    strokeColor={{
+                      '0%': '#108ee9',
+                      '100%': '#87d068',
+                    }}
+                  />
+                  {uploadProgress === 100 && (
+                    <div style={{ marginTop: '12px', color: '#52c41a' }}>
+                      Upload completed successfully!
+                    </div>
+                  )}
+                </div>
+              )}
               <div style={{ textAlign: 'right', marginTop: '16px' }}>
-                <ActionButton onClick={handleCancel}>OK</ActionButton>
+                <ActionButton onClick={handleCancel} disabled={isUploading}>
+                  {isUploading ? 'Uploading...' : 'Cancel'}
+                </ActionButton>
               </div>
             </ModalContent>
           </Modal>
         )}
+        
         {isErrorModalOpen && (
-
           <Modal>
             <ModalContent>
               <div className="upload-text">No such account, the person is not insured.</div>
@@ -776,7 +855,8 @@ function CreateSubmission({ onNext }) {
                 <ActionButton onClick={handleCancel}>Close</ActionButton>
               </div>
             </ModalContent>
-          </Modal>)}
+          </Modal>
+        )}
       </MainContainer>
     </Container>
   );
