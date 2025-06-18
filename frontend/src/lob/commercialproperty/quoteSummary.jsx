@@ -205,7 +205,7 @@ const QuoteSummary = () => {
                 key="1"
               >
                 <StyledLocationText style={globalFontStyle}>
-                  Location – 123–05 84th Avenue, Kew Gardens, NY 11415
+                  Building No: 123-05
                 </StyledLocationText>
                 <div className="modern-table">
                   <Table
@@ -316,7 +316,7 @@ const QuoteSummary = () => {
                <Col xs={24} sm={24} md={12} lg={8}>
                  <div style={{ 
                    display: 'flex', 
-                   gap: '12px', 
+                   gap: '2px', 
                    justifyContent: { xs: 'stretch', md: 'flex-end' }[0] || 'flex-end',
                    flexWrap: 'wrap'
                  }}>
@@ -334,6 +334,7 @@ const QuoteSummary = () => {
                        display: 'flex',
                        alignItems: 'center',
                        justifyContent: 'center',
+                       marginLeft:'100px'
                      }}
                    >
                      Create Quote

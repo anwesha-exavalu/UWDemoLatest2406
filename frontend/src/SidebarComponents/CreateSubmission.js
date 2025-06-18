@@ -396,11 +396,11 @@ function CreateSubmission({ onNext }) {
                     {isEditMode ? <SaveOutlined /> : <EditOutlined />}
                   </IconButton>
                 </Tooltip>
-                <Tooltip title="Search">
+                {/* <Tooltip title="Search">
                   <IconButton onClick={handleSearchClick}>
                     <SearchOutlined />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
               </ButtonGroup>
             </HeaderContainer>
           </Col>

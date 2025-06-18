@@ -298,8 +298,6 @@ const PublicData = ({ onCaptureComplete }) => {
                           fontSize: '18px',
                           cursor: 'pointer',
                           color: '#64748b',
-
-
                           borderRadius: '4px',
                           padding: '4px'
                         }}
@@ -310,7 +308,6 @@ const PublicData = ({ onCaptureComplete }) => {
                   <Col>
                     <span style={{
                       fontSize: '14px',
-                     
                       color: '#1f2937',
                       fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
                     }}>
@@ -318,31 +315,6 @@ const PublicData = ({ onCaptureComplete }) => {
                     </span>
                   </Col>
                 </Row>
-              </Col>
-            </Row>
-
-            <Row justify="end" align="middle" style={{ marginBottom: '24px' }}>
-              <Col xs={24} sm={12} md={8} lg={6}>
-                <Select
-                  value={selectedYear}
-                  onChange={setSelectedYear}
-                  placeholder="Select Year"
-                  style={{
-                    width: '100%',
-                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                  }}
-                  dropdownStyle={{
-                    
-                    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
-                  }}
-                >
-                  <Option value="all">All Years (2016-2024)</Option>
-                  {years.map((year) => (
-                    <Option key={year} value={year}>
-                      {year}
-                    </Option>
-                  ))}
-                </Select>
               </Col>
             </Row>
           </ControlsContainer>
@@ -371,16 +343,44 @@ const PublicData = ({ onCaptureComplete }) => {
           </MainTabsContainer>
 
           {activeTab === 'all-boroughs' && (
-            <ChartContainer>
-              <Row>
-                <Col xs={24}>
-                  <ProgressBarChart
-                    data={topAllBoroughCauses}
-                    title={`Top 10 Causes of Fire (All Boroughs) in ${getYearRangeText(selectedYear)}`}
-                  />
-                </Col>
-              </Row>
-            </ChartContainer>
+            <>
+              <BoroughSelectContainer>
+                <Row justify="start">
+                  <Col xs={24} sm={12} md={8} lg={6}>
+                    <Select
+                      value={selectedYear}
+                      onChange={setSelectedYear}
+                      placeholder="Select Year"
+                      style={{
+                        width: '100%',
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                        fontSize: '14px'
+                      }}
+                      dropdownStyle={{
+                        fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                      }}
+                    >
+                      <Option value="all">All Years (2016-2024)</Option>
+                      {years.map((year) => (
+                        <Option key={year} value={year}>
+                          {year}
+                        </Option>
+                      ))}
+                    </Select>
+                  </Col>
+                </Row>
+              </BoroughSelectContainer>
+              <ChartContainer>
+                <Row>
+                  <Col xs={24}>
+                    <ProgressBarChart
+                      data={topAllBoroughCauses}
+                      title={`Top 10 Causes of Fire (All Boroughs) in ${getYearRangeText(selectedYear)}`}
+                    />
+                  </Col>
+                </Row>
+              </ChartContainer>
+            </>
           )}
 
           {activeTab === 'borough-specific' && (

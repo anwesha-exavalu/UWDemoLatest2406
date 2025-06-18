@@ -276,7 +276,7 @@ const PremiumSummary = ({ onNext }) => {
       {/* Notes Section */}
       <Row gutter={[16, 16]} style={{ marginBottom: '24px' }}>
         <Col xs={24}>
-          <NotesHeader style={{ marginBottom: '16px' }}>
+          <NotesHeader style={{ marginBottom: '16px', marginLeft: '20px' }}>
             <FileTextOutlined className="icon" />
             <span className="title" style={{ 
               fontSize: '22px', 
@@ -305,7 +305,7 @@ const PremiumSummary = ({ onNext }) => {
         <Col xs={24} sm={24} md={12} lg={8}>
           <div style={{ 
             display: 'flex', 
-            gap: '12px', 
+            gap: '2px', 
             justifyContent: { xs: 'stretch', md: 'flex-end' }[0] || 'flex-end',
             flexWrap: 'wrap'
           }}>
@@ -323,6 +323,8 @@ const PremiumSummary = ({ onNext }) => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                marginLeft:'100px'
+                
               }}
             >
               Recalculate

@@ -8,7 +8,7 @@ import {
 } from '../../styles/pages/Dashboard/MyDashboardStyle';
 import { StyledLocationText, StyledCollapse } from "../../styles/index";
 import { NotesWrapper, NotesHeader } from "../../styles/index";
-import { RoundedAddButton } from "../../styles/index";
+
 import {
   NextButtonContainer,
   NextButton,
@@ -242,12 +242,16 @@ const Coverages = ({ onNext }) => {
                 <div className="work-content">
                   <StyledCollapse defaultActiveKey={['1']}>
                     <Panel 
-                      header={<span style={headerFontStyle}>Coverages</span>} 
+                      header={ <span style={{ 
+                      fontSize: '16px', 
+                      fontWeight: '500',
+                      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+                    }}>Building No: 123-05</span>} 
                       key="1"
                     >
-                      <StyledLocationText style={globalFontStyle}>
+                      {/* <StyledLocationText style={globalFontStyle}>
                         Location – 123–05 84th Avenue, Kew Gardens, NY 11415
-                      </StyledLocationText>
+                      </StyledLocationText> */}
                       <div className="modern-table" style={{ overflowX: 'auto' }}>
                         <Table
                           columns={columns}

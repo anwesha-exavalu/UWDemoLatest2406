@@ -55,10 +55,13 @@ const LossInfo = ({ onNext }) => {
   const normalTextStyle = {
     fontFamily,
     fontSize: '14px',
-    margin: 0
+    margin: 0,
+    align: 'center',
   };
+
   
   const rowSelection = {
+    type: 'radio',
     selectedRowKeys: selectedPolicies,
     onChange: (selectedRowKeys) => setSelectedPolicies(selectedRowKeys)
   };
@@ -225,7 +228,7 @@ const LossInfo = ({ onNext }) => {
                             <Button
                               type="primary"
                               onClick={handleDelete}
-                              style={{ ...normalTextStyle, marginBottom: "20px" }}
+                              style={{ ...normalTextStyle, marginBottom: "10px" }}
                             >
                               Delete
                             </Button>
@@ -238,7 +241,7 @@ const LossInfo = ({ onNext }) => {
                             <div className="work-content">
                               <div className="modern-table">
                                 <Table
-                                  rowSelection={rowSelection}
+                                  // rowSelection={rowSelection}
                                   columns={tableColumns.priorPolicy}
                                   dataSource={policies.map((item, index) => ({ key: index, ...item }))}
                                   pagination={{ pageSize: 4 }}
@@ -297,7 +300,7 @@ const LossInfo = ({ onNext }) => {
                   {activeTab === "2" && (
                     <Row gutter={[16, 16]}>
                       <Col span={24}>
-                        <WorkSection style={{marginLeft:'2px', marginRight:'10px'}}>
+                        <WorkSection style={{marginLeft:'2px', marginRight:'10px', marginBottom:'5px'}}>
                           <div className="work-header" style={headerTextStyle}>Loss Details</div>
                           <div className="work-content">
                             <div className="modern-table">
