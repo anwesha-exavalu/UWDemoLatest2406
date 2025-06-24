@@ -280,7 +280,7 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
               {
                 riskFactorTitle: 'Flood',
                 riskFactorDetails: {
-                  'Flood Risk Score': '60',
+                  'Flood Risk Score': '80',
                   'Flood Zone': 'AE',
                   'Elevation Variance': '-1.1ft',
                   'Property Elevation': '5.9ft',
@@ -289,7 +289,7 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
               {
                 riskFactorTitle: 'WildFire',
                 riskFactorDetails: {
-                  'Wildfire Risk Score': '60',
+                  'Wildfire Risk Score': '80',
                   'Risk Description': 'Urban',
                   'Number of Past Fires': '0',
                 }

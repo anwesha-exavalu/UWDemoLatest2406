@@ -15,14 +15,41 @@ const RiskCard = ({ card }) => {
   const [isVisible, setISVisible] = useState(false);
   const [documentUrl, setDocumentUrl] = useState('');
 
-  const openDocument = (url) => {
-    setDocumentUrl(url);
+  // Define page mappings for different risk factors
+  const getPageNumber = (riskFactor) => {
+    const pageMapping = {
+      'Flood': 10,
+      'WildFire': 4,
+      'Earthquake': 3,
+      'StormSurge': 2,
+      'Sinkhole': 2,
+      'FireStation': 2
+    };
+    return pageMapping[riskFactor] || 1;
+  };
+
+  const openDocument = (riskFactor) => {
+    const pageNumber = getPageNumber(riskFactor);
+    const pdfUrl = `${riskmeter_report}#page=${pageNumber}`;
+    setDocumentUrl(pdfUrl);
     setISVisible(true);
   };
 
   const closeModal = () => {
     setISVisible(false);
     setDocumentUrl('');
+  };
+
+  // Check if any risk score is greater than 60
+  const hasHighRisk = () => {
+    return Object.values(card.riskFactorDetails).some(value => {
+      // Convert value to number if it's a string, handle percentage signs
+      const numericValue = typeof value === 'string' 
+        ? parseFloat(value.replace('%', '').replace(/[^\d.-]/g, ''))
+        : parseFloat(value);
+      
+      return !isNaN(numericValue) && numericValue > 60;
+    });
   };
 
   const renderImage = (riskfactor) => {
@@ -44,24 +71,27 @@ const RiskCard = ({ card }) => {
     }
   };
 
+  const isHighRisk = hasHighRisk();
+
   const cardStyle = {
     width: '100%',
     minHeight: 250,
     height: 'auto',
-    background: '#f6faff',
+    background: isHighRisk ? '#ffebee' : '#f6faff', // Light red for high risk, original blue for normal
     borderRadius: 12,
     padding: 16,
     display: 'flex',
     flexDirection: 'column',
     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
-    position: 'relative'
+    position: 'relative',
+    border: isHighRisk ? '2px solid #f44336' : 'none' // Optional: add red border for high risk
   };
 
   const valueStyle = {
     background: '#ffffff',
     padding: '2px 12px',
     borderRadius: 8,
-    color: '#1890ff',
+    color: isHighRisk ? '#d32f2f' : '#1890ff', // Red text for high risk values
     fontWeight: 600,
     fontSize: '14px',
     boxShadow: '0 1px 4px rgba(0, 0, 0, 0.1)'
@@ -108,17 +138,37 @@ const RiskCard = ({ card }) => {
             flexShrink: 0
           }}>
             {renderImage(card.riskFactorTitle)}
-            <span style={{ fontSize: 20, fontWeight: 'bold' }}>{card.riskFactorTitle}</span>
+            <span style={{ 
+              fontSize: 20, 
+              fontWeight: 'bold',
+              color: isHighRisk ? '#d32f2f' : 'inherit' // Red title for high risk
+            }}>
+              {card.riskFactorTitle}
+            </span>
           </div>
 
           {/* Details - Scrollable Content */}
           <div style={contentStyle}>
-            {Object.entries(card.riskFactorDetails).map(([key, value], idx) => (
-              <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <span style={{ fontSize: 14, color: '#555' }}>{key}</span>
-                <span style={valueStyle}>{value}</span>
-              </div>
-            ))}
+            {Object.entries(card.riskFactorDetails).map(([key, value], idx) => {
+              // Check if this specific value is > 60
+              const numericValue = typeof value === 'string' 
+                ? parseFloat(value.replace('%', '').replace(/[^\d.-]/g, ''))
+                : parseFloat(value);
+              const isHighValue = !isNaN(numericValue) && numericValue > 60;
+
+              return (
+                <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <span style={{ fontSize: 14, color: '#555' }}>{key}</span>
+                  <span style={{
+                    ...valueStyle,
+                    background: isHighValue ? '#ffffff' : '#ffffff', // Light red background for high values
+                    color: isHighValue ? '#d32f2f' : (isHighRisk ? '#d32f2f' : '#1890ff')
+                  }}>
+                    {value}
+                  </span>
+                </div>
+              );
+            })}
           </div>
 
           {/* View More Button using Row/Col - Always at bottom */}
@@ -135,7 +185,7 @@ const RiskCard = ({ card }) => {
                   alignItems: 'center',
                   gap: 6
                 }}
-                onClick={() => openDocument(riskmeter_report)}
+                onClick={() => openDocument(card.riskFactorTitle)}
               >
                 View more
                 <img src={ViewMore} alt="view more" style={{ width: 20, height: 20 }} />
@@ -146,8 +196,19 @@ const RiskCard = ({ card }) => {
       </Card>
 
       {/* Modal */}
-      <Modal title="Document Viewer" open={isVisible} onCancel={closeModal} footer={null} width="60%">
-        <iframe src={documentUrl} title="Document Viewer" style={{ width: '100%', height: '80vh', border: 'none' }} />
+      <Modal 
+        title="Document Viewer" 
+        open={isVisible} 
+        onCancel={closeModal} 
+        footer={null} 
+        width="80%"
+        style={{ top: 20 }}
+      >
+        <iframe 
+          src={documentUrl} 
+          title="Document Viewer" 
+          style={{ width: '100%', height: '80vh', border: 'none' }} 
+        />
       </Modal>
     </>
   );
