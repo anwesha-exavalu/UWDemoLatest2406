@@ -30,6 +30,9 @@ const Sublob2 = () => {
   ];
 
   const [activeSection, setActiveSection] = useState(sections[0]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dynamicQuestions, setDynamicQuestions] = useState([]);
+  const [hasGenerated, setHasGenerated] = useState(false);
 
   const showSublob = (sectionId) => {
     setActiveSection(sectionId);
@@ -54,35 +57,46 @@ const Sublob2 = () => {
 
   return (
     <Container>
-    <div style={{ width: '100%' }}>
-      <SublobTabContainer>
-        {buttonData.map(section => (
-          <SublobTab
-            key={section.key}
-            className={activeSection === section.key ? 'active' : ''}
-            onClick={() => showSublob(section.key)}
-          >
-            <SublobTabIcon>
-              <i className={`fas fa-${section.icon}`} />
-            </SublobTabIcon>
-            {section.text}
-          </SublobTab>
-        ))}
-      </SublobTabContainer>
+      <div style={{ width: '100%' }}>
+        <SublobTabContainer>
+          {buttonData.map(section => (
+            <SublobTab
+              key={section.key}
+              className={activeSection === section.key ? 'active' : ''}
+              onClick={() => showSublob(section.key)}
+            >
+              <SublobTabIcon>
+                <i className={`fas fa-${section.icon}`} />
+              </SublobTabIcon>
+              {section.text}
+            </SublobTab>
+          ))}
+        </SublobTabContainer>
 
-      <div>
-        {activeSection === 'policyInfo' && <CreateSubmission onNext={goToNextSection} />}
-        {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
-        {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
-        {activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}
-        {activeSection === 'uw' && <UWQuestions onNext={goToNextSection} />}
-        {activeSection === 'premiumSummary' && <PremiumSummary onNext={goToNextSection} />}
-        {activeSection === 'quoteSummary' && <QuoteSummary onNext={goToNextSection} />}
+        <div>
+          {activeSection === 'policyInfo' && <CreateSubmission onNext={goToNextSection} />}
+          {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
+          {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
+          {activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}
+          {activeSection === 'uw' && (
+            <UWQuestions
+              onNext={goToNextSection}
+              isLoading={isLoading}
+              setIsLoading={setIsLoading}
+              dynamicQuestions={dynamicQuestions}
+              setDynamicQuestions={setDynamicQuestions}
+              hasGenerated={hasGenerated}
+              setHasGenerated={setHasGenerated}
+            />
+          )}
+
+          {activeSection === 'premiumSummary' && <PremiumSummary onNext={goToNextSection} />}
+          {activeSection === 'quoteSummary' && <QuoteSummary onNext={goToNextSection} />}
+        </div>
+
+        <Documents />
       </div>
-
-      <Documents />
-    </div>
-   </Container>
+    </Container>
   );
 };
 
