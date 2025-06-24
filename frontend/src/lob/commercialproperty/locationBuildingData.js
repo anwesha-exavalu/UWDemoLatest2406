@@ -167,7 +167,7 @@ const LocationBuildingConfig = () => {
       "tabs": {
         "tab1": {
           "id": "Tab1",
-          "label": "Add Buildings",
+          "label": "Building Info",
           "title": "Building Management"
         },
         "tab2": {

@@ -475,7 +475,7 @@ const Dashboard = () => {
           <Row justify="space-between" align="middle" style={{ width: '99.5%' }}>
             <Col flex={1}>
               <div className="left-section">
-                <span className="greeting">Hi Andrei,</span>
+                <span className="greeting">Hi Haydenson,</span>
               </div>
             </Col>
             <Col flex={'none'}>

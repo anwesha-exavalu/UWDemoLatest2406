@@ -399,7 +399,7 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
           onCancel={handleCancel}
         >
           <Form form={form} layout="vertical" name="form_in_modal">
-            <Form.Item>
+            {/* <Form.Item>
               <Radio.Group
                 onChange={(e) => {
                   setSameAsRiskLocation(e.target.value);
@@ -419,7 +419,7 @@ const LocationTable = ({ nextTab, isModalVisible, setIsModalVisible }) => {
               >
                 <Radio value={true}>Same as mailing address</Radio>
               </Radio.Group>
-            </Form.Item>
+            </Form.Item> */}
             <Form.Item
               name="address1"
               label="AddressLine 1"
