@@ -77,12 +77,16 @@ const uwquestionsData = [
   },
 ];
 
-const UWQuestions = ({ onNext }) => {
-  const [questions, setQuestions] = useState(uwquestionsData);
-  const [notes, setNotes] = useState(" ");
-  const [dynamicQuestions, setDynamicQuestions] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasGenerated, setHasGenerated] = useState(false);
+const UWQuestions = ({
+  onNext,
+  isLoading,
+  setIsLoading,
+  dynamicQuestions,
+  setDynamicQuestions,
+  hasGenerated,
+  setHasGenerated
+}) => {
+  const [questions, setQuestions] = React.useState(uwquestionsData);
 
   // Font styles
   const fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
