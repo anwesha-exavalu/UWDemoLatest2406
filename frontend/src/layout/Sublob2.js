@@ -28,11 +28,56 @@ const Sublob2 = () => {
     'premiumSummary',
     'quoteSummary'
   ];
+  const defaultBasicInfo = {
+    orgName: "",
+    orgType: "",
+    dba: "",
+    fein: "",
+    tin: "",
+    businessActivity: "",
+    sicCode: "",
+    sicDescription: "",
+    naics: "",
+    naicsDescription: "",
+    yearsInBusiness: "",
+    status: "active",
+    isEditing: false,
+  };
+
+  const defaultLocationInfo = {
+    pinCode: "",
+    addressLine1: "",
+    addressLine2: "",
+    county: "",
+    city: "",
+    state: "",
+    country: "",
+    isEditing: false,
+  };
+
+  const defaultInsuredInfo = {
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    emailId: "",
+    countryCode: "",
+    phoneNumber: "",
+    website: "",
+    isEditing: false,
+  };
+  const [basicInfo, setBasicInfo] = useState(defaultBasicInfo);
+  const [locationInfo, setLocationInfo] = useState(defaultLocationInfo);
+  const [insuredInfo, setInsuredInfo] = useState(defaultInsuredInfo);
+
+
 
   const [activeSection, setActiveSection] = useState(sections[0]);
   const [isLoading, setIsLoading] = useState(false);
   const [dynamicQuestions, setDynamicQuestions] = useState([]);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [prefillLoading, setPrefillLoading] = useState(false);
+
+
 
   const showSublob = (sectionId) => {
     setActiveSection(sectionId);
@@ -74,7 +119,20 @@ const Sublob2 = () => {
         </SublobTabContainer>
 
         <div>
-          {activeSection === 'policyInfo' && <CreateSubmission onNext={goToNextSection} />}
+          {activeSection === 'policyInfo' && (
+            <CreateSubmission
+              onNext={goToNextSection}
+              prefillLoading={prefillLoading}
+              setPrefillLoading={setPrefillLoading}
+              basicInfo={basicInfo}
+              setBasicInfo={setBasicInfo}
+              locationInfo={locationInfo}
+              setLocationInfo={setLocationInfo}
+              insuredInfo={insuredInfo}
+              setInsuredInfo={setInsuredInfo}
+            />
+          )}
+
           {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
           {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
           {activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}

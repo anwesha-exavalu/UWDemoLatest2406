@@ -34,7 +34,7 @@ import {
   Card,
   CardHeader,
   CardContent,
-  
+
   NextButtonContainer,
   NextButton,
   ActionButton,
@@ -49,9 +49,18 @@ import pdfData from "../assets/documents/DocumentForExtraction02.pdf";
 
 import useMetaData from "../context/metaData";
 
-const BASE_URL =  'http://localhost:5000';
+const BASE_URL = 'http://localhost:5000';
 
-function CreateSubmission({ onNext }) {
+const CreateSubmission = ({ onNext,
+  prefillLoading,
+  setPrefillLoading,
+  basicInfo,
+  setBasicInfo,
+  locationInfo,
+  setLocationInfo,
+  insuredInfo,
+  setInsuredInfo }) => {
+
   const { theme } = useMetaData();
   // Separate state for each widget section's form data and editing state
   const navigate = useNavigate();
@@ -62,49 +71,13 @@ function CreateSubmission({ onNext }) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [formData, setFormData] = useState(null);
-  const [loading, setLoading] = useState(false);
+
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
-  
+
   // Separate state for each widget section's form data and editing state
-  const [basicInfo, setBasicInfo] = useState({
-    orgName: "",
-    orgType: "",
-    dba: "",
-    fein: "",
-    tin: "",
-    businessActivity: "",
-    sicCode: "",
-    sicDescription: "",
-    naics: "",
-    naicsDescription: "",
-    yearsInBusiness: "",
-    status: "active",
-    isEditing: false,
-  });
 
-  const [locationInfo, setLocationInfo] = useState({
-    pinCode: "",
-    addressLine1: "",
-    addressLine2: "",
-    county: "",
-    city: "",
-    state: "",
-    country: "",
-    isEditing: false,
-  });
-
-  const [insuredInfo, setInsuredInfo] = useState({
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    emailId: "",
-    countryCode: "",
-    phoneNumber: "",
-    website: "",
-    isEditing: false,
-  });
 
   // Toggle editing mode for Basic Information
   const handleEditInsured = () => {
@@ -141,7 +114,7 @@ function CreateSubmission({ onNext }) {
       setInsuredInfo((prev) => ({ ...prev, [field]: value }));
     }
   };
-  
+
   const accountInfo = {
     accountHolder: "Wilson Properties", // Full name as "Account Holder" from AccountInfo
   };
@@ -176,7 +149,7 @@ function CreateSubmission({ onNext }) {
 
   const handlePrefill = async () => {
     try {
-      setLoading(true);
+      setPrefillLoading(true);
       setError(null);
       setSuccess(false);
 
@@ -246,20 +219,20 @@ function CreateSubmission({ onNext }) {
       setError(error.message);
       message.error(`Failed to prefill form: ${error.message}`);
     } finally {
-      setLoading(false);
+      setPrefillLoading(false);
     }
   };
 
   // Handle file upload (only upload, no API processing)
   const handleUpload = async (event) => {
     const file = event.target.files[0];
-    
+
     if (!file) {
       return;
     }
 
     console.log("Starting upload for file:", file.name);
-    
+
     // Basic file validation
     if (file.type !== "application/pdf") {
       message.error("Please upload a valid PDF file");
@@ -388,8 +361,8 @@ function CreateSubmission({ onNext }) {
             <HeaderContainer>
               <ButtonGroup>
                 <ActionButton onClick={onUpload}>Upload</ActionButton>
-                <ActionButton onClick={handlePrefill} disabled={loading}>
-                  {loading ? "Loading..." : "Prefill"}
+                <ActionButton onClick={handlePrefill} disabled={prefillLoading}>
+                  {prefillLoading ? "Loading..." : "Prefill"}
                 </ActionButton>
                 <Tooltip title={isEditMode ? "Save" : "Edit"}>
                   <IconButton onClick={handleEditInsured}>
@@ -460,7 +433,7 @@ function CreateSubmission({ onNext }) {
                             handleInputChange(value, "basicInfo", "orgType")
                           }
                           layout="vertical"
-                          // disabled={!basicInfo.isEditing}
+                        // disabled={!basicInfo.isEditing}
                         />
                       </Col>
 
@@ -823,8 +796,8 @@ function CreateSubmission({ onNext }) {
                   <div className="upload-text" style={{ marginBottom: '16px' }}>
                     Uploading PDF...
                   </div>
-                  <Progress 
-                    percent={uploadProgress} 
+                  <Progress
+                    percent={uploadProgress}
                     status={uploadProgress === 100 ? "success" : "active"}
                     strokeColor={{
                       '0%': '#108ee9',
@@ -846,7 +819,7 @@ function CreateSubmission({ onNext }) {
             </ModalContent>
           </Modal>
         )}
-        
+
         {isErrorModalOpen && (
           <Modal>
             <ModalContent>
