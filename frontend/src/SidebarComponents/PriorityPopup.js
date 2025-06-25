@@ -4,7 +4,7 @@ import { Card, Row, Col, Typography, Progress, Spin, message } from 'antd';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LabelList } from 'recharts';
 
 const { Title, Text } = Typography;
-const claimPropensityAPI = process.env.REACT_APP_CLAIM_PROPENSITY;
+const claimPropensityAPI = process.env.REACT_APP_CP_URL;
 
 const PriorityPopup = ({ priority, record }) => {
   const [predictionData, setPredictionData] = useState(null);

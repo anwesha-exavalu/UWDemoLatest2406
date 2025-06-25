@@ -24,7 +24,7 @@ import NextArrow from "../../assets/img/nextArrow.png";
 import { ScreenHeader } from '../../styles';
 import Uwicon from "../../assets/img/Uwicon.png"
 
-const PRODUCTIONURL = process.env.REACT_APP_UWQUESTIONS_URL;
+const PRODUCTIONURL = process.env.REACT_APP_PROD_URL;
 const uwquestionsData = [
   {
     question: "Is the applicant a subsidiary of another entity?",

@@ -40,7 +40,7 @@ const { Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
 const { Dragger } = Upload;
 
-const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+const BASE_URL = process.env.REACT_APP_PROD_URL;
 
 const LossRun = () => {
   const [activeTab, setActiveTab] = useState('lossRun');
