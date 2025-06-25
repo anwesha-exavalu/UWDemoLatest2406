@@ -615,9 +615,9 @@ export function LocationBuildingTab() {
             {/* Tab 2: Other Insights */}
             {activeTab === config.ui.tabs.tab2.id && (
               <div id={config.ui.tabs.tab2.id}>
-                <Container>
+                
                   <Rpa />
-                </Container>
+                
               </div>
             )}
 

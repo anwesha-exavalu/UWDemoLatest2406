@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Radio, Modal, Typography, Row, Col, Checkbox } from 'antd';
 import { Container } from '../../styles/components/Layout';
 import { MainContainer } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
+import { WorkSection } from '../../styles/pages/Dashboard/MyDashboardStyle';
 
 const { Text } = Typography;
 
@@ -16,7 +17,7 @@ function Rpa() {
   // Sample addresses
   const addresses = {
     nyAddress1: '123-05 84th Avenue, Kew Gardens, NY 11415',
-    
+
   };
   // nyAddress2: '1234 Elm Street',
 
@@ -52,76 +53,83 @@ function Rpa() {
 
   return (
     <Container>
-      <MainContainer>
-    <div >
-      <div style={{ fontSize: '16px', marginBottom: '20px' }}>Search Address</div>
-      <div style={{ display: 'flex', alignItems: 'flex-start', flexDirection: 'column' }}>
+
+      <WorkSection style={{ marginLeft: '1px', maxWidth:'1158px', marginRight:'10px' }}>
+        <div className="work-header">Search Address</div>
+        <div className="work-content">
+         
+
+            {/* Checkbox Controls for Zillow and StreetEasy */}
+            <div style={{ marginBottom: '10px' }}>
+              <Checkbox
+                checked={showZillow}
+                onChange={(e) => setShowZillow(e.target.checked)}
+              >
+                Zillow
+              </Checkbox>
+              <Checkbox
+                checked={showStreetEasy}
+                onChange={(e) => setShowStreetEasy(e.target.checked)}
+              >
+                StreetEasy
+              </Checkbox>
+            </div>
+
+            {/* Radio Buttons for Sample Addresses */}
+            <div style={{ marginRight: '20px', minWidth: '200px' }}>
+              <Radio.Group onChange={handleAddressChange} value={address}>
+                {Object.keys(addresses).map((key) => (
+                  <Radio.Button key={key} value={addresses[key]} style={{ display: 'block', marginBottom: '10px' }}>
+                    {addresses[key]}
+                  </Radio.Button>
+                ))}
+              </Radio.Group>
+            </div>
+
+            <Modal
+              title="Address Details"
+              visible={showRpa}
+              onCancel={closeRpa}
+              footer={null}
+              width="90%"
+              style={{ top: 0, height: '95vh', overflow: 'hidden' }}
+              bodyStyle={{ overflowY: 'auto', height: 'calc(90vh - 55px)', padding: 0 }}
+            >
+              <RpaWindow
+                address={address}
+                zillowUrl={generateZillowSearchUrl(address)}
+                streetEasyUrl={generateStreetEasyUrl(address)}
+                zillowIframeError={zillowIframeError}
+                streetEasyIframeError={streetEasyIframeError}
+                setZillowIframeError={setZillowIframeError}
+                setStreetEasyIframeError={setStreetEasyIframeError}
+                showZillow={showZillow}
+                showStreetEasy={showStreetEasy}
+              />
+            </Modal>
         
-        {/* Checkbox Controls for Zillow and StreetEasy */}
-        <div style={{ marginBottom: '10px' }}>
-          <Checkbox 
-            checked={showZillow} 
-            onChange={(e) => setShowZillow(e.target.checked)}
-          >
-            Zillow
-          </Checkbox>
-          <Checkbox 
-            checked={showStreetEasy} 
-            onChange={(e) => setShowStreetEasy(e.target.checked)}
-          >
-            StreetEasy
-          </Checkbox>
         </div>
 
-        {/* Radio Buttons for Sample Addresses */}
-        <div style={{ marginRight: '20px', minWidth: '200px' }}>
-          <Radio.Group onChange={handleAddressChange} value={address}>
-            {Object.keys(addresses).map((key) => (
-              <Radio.Button key={key} value={addresses[key]} style={{ display: 'block', marginBottom: '10px' }}>
-                {addresses[key]}
-              </Radio.Button>
-            ))}
-          </Radio.Group>
-        </div>
 
-        <Modal
-          title="Address Details"
-          visible={showRpa}
-          onCancel={closeRpa}
-          footer={null}
-          width="90%"
-          style={{ top: 0, height: '95vh', overflow: 'hidden' }}
-          bodyStyle={{ overflowY: 'auto', height: 'calc(90vh - 55px)', padding: 0 }}
-        >
-          <RpaWindow
-            address={address}
-            zillowUrl={generateZillowSearchUrl(address)}
-            streetEasyUrl={generateStreetEasyUrl(address)}
-            zillowIframeError={zillowIframeError}
-            streetEasyIframeError={streetEasyIframeError}
-            setZillowIframeError={setZillowIframeError}
-            setStreetEasyIframeError={setStreetEasyIframeError}
-            showZillow={showZillow}
-            showStreetEasy={showStreetEasy}
-          />
-        </Modal>
-      </div>
-    </div>
-    </MainContainer>
+
+
+
+      </WorkSection>
+
     </Container>
   );
 }
 
-function RpaWindow({ 
-  address, 
-  zillowUrl, 
-  streetEasyUrl, 
-  zillowIframeError, 
-  streetEasyIframeError, 
-  setZillowIframeError, 
-  setStreetEasyIframeError, 
-  showZillow, 
-  showStreetEasy 
+function RpaWindow({
+  address,
+  zillowUrl,
+  streetEasyUrl,
+  zillowIframeError,
+  streetEasyIframeError,
+  setZillowIframeError,
+  setStreetEasyIframeError,
+  showZillow,
+  showStreetEasy
 }) {
   const colSpan = (showZillow && showStreetEasy) ? 12 : 24;
 
@@ -160,7 +168,7 @@ function RpaWindow({
             </div>
           </Col>
         )}
-        
+
         {showStreetEasy && streetEasyIframeError && (
           <Col span={colSpan} style={{ width: '100%', textAlign: 'center' }}>
             <Text type="danger">StreetEasy iframe could not load. Try searching directly on their website.</Text>

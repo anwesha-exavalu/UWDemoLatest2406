@@ -322,14 +322,14 @@ const LossRun = () => {
                             <div className="flex items-center">
                               <FilePdfOutlined style={{ color: '#1890ff', marginRight: '8px' }} />
                               <span>PDF Preview</span>
-                              <Button
+                              {/* <Button
                               type="default"
                               icon={<DownloadOutlined />}
                               onClick={handleDownloadJson}
                               style={{width: '180px', marginLeft:'10px', backgroundColor:'#F3F3F3'}}
                             >
                               Export as JSON
-                            </Button>
+                            </Button> */}
                             </div>
                           }
                           

@@ -218,6 +218,7 @@ const UWQuestions = ({
                         height: "36px",
                         paddingLeft: "20px",
                         paddingRight: "20px",
+                        color:'#ffffff',
                         ...normalTextStyle
                       }}
                     >
