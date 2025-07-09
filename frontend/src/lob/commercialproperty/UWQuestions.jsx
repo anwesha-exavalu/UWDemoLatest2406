@@ -45,7 +45,7 @@ const uwquestionsData = [
   },
   {
     question: "Any exposure to flammables, explosives, and chemicals?",
-    response: "na",
+    response: "no",
     comment:
       "Not applicable; the applicant does not engage in activities involving flammables or explosives.",
   },
@@ -58,7 +58,7 @@ const uwquestionsData = [
   {
     question:
       "Any policy or coverage declined, canceled, or non-renewed during the prior 3 years?",
-    response: "na",
+    response: "no",
     comment:
       "can't be determined; no relevant history of declined or canceled policies.",
   },
@@ -163,6 +163,12 @@ const UWQuestions = ({
     updatedDynamicQuestions[index].Comment = newComment;
     setDynamicQuestions(updatedDynamicQuestions);
   };
+  const handleResponseChange = (index, value) => {
+  const updatedQuestions = [...questions];
+  updatedQuestions[index].response = value;
+  setQuestions(updatedQuestions);
+};
+
 
   const record = {
     client: "Kew Gardens Property",
@@ -210,6 +216,7 @@ const UWQuestions = ({
                                 ]}
                                 required={true}
                                 value={item.response}
+                                onChange={(value) => handleResponseChange(index, value)}
                               />
                             </td>
                             <td>
