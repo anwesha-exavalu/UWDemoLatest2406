@@ -116,8 +116,8 @@ async def loss_run_data_extraction(file: UploadFile = File(...)):
     }
 
 
-@app.get("/api/questions")
-async def get_questions_with_answers():
+@app.get("/api/uw_questions")
+async def get_questions_only():
     try:
         questions = []
         if os.path.exists(QUESTIONS_PATH):
@@ -148,7 +148,16 @@ async def get_questions_with_answers():
                     pass
 
         questions = list(set(q.strip() for q in questions if q.strip()))
+        return JSONResponse(content=questions)
 
+    except Exception as e:
+        logger.error(f"Error loading questions: {str(e)}", exc_info=True)
+        return JSONResponse(status_code=500, content={"error": str(e)})
+from fastapi import Body
+
+@app.post("/api/uw_answers")
+async def get_llm_answers(questions: List[str] = Body(...)):
+    try:
         pdf_files = [
             os.path.join(DOCS_DIR, f)
             for f in os.listdir(DOCS_DIR)
@@ -165,53 +174,36 @@ async def get_questions_with_answers():
                 "Examine the document and extract the answer to the following underwriting question:\n"
                 f"\"{q}\"\n\n"
                 "If the answer is found, respond with one of: 'yes', 'no', or 'can't be determined'.\n"
-                "If the answer is implied but not directly stated, use your best judgment.\n"
-                "Format your response as a JSON object: {\"answer\": \"yes/no/can't be determined\"}\n"
-                "Provide only this JSON object as your response without any additional text."
+                "Format your response as: {\"answer\": \"yes\"}"
             )
 
             answers = []
             for pdf_path in pdf_files:
                 submission_id = uuid.uuid4().hex
-                logger.info(f"Processing {pdf_path} for question: {q}")
-
                 response = extract_data_from_gemini_vision(pdf_path, submission_id, prompt)
-                logger.info(f"Raw response: {response}")
 
                 answer = None
                 if isinstance(response, dict):
-                    for key, value in response.items():
-                        if isinstance(value, str) and value.lower() in ["yes", "no", "can't be determined"]:
-                            answer = value.lower()
-                            break
-                    if not answer:
-                        for value in response.values():
-                            if isinstance(value, str) and value.lower() in ["yes", "no", "can't be determined"]:
-                                answer = value.lower()
-                                break
+                    answer = response.get("answer", "").lower()
                 elif isinstance(response, str):
-                    response_lower = response.lower()
-                    if "yes" in response_lower:
+                    if "yes" in response.lower():
                         answer = "yes"
-                    elif "no" in response_lower:
+                    elif "no" in response.lower():
                         answer = "no"
-                    elif "can't be determined" in response_lower or "n/a" in response_lower:
+                    elif "can't be determined" in response.lower():
                         answer = "can't be determined"
 
                 if answer:
-                    logger.info(f"Found answer: {answer}")
                     answers.append(answer)
                     if answer in ["yes", "no"]:
                         break
 
             final_answer = "can't be determined"
             if answers:
-                for ans in ["yes", "no"]:
-                    if ans in answers:
-                        final_answer = ans.capitalize()
+                for a in ["yes", "no"]:
+                    if a in answers:
+                        final_answer = a.capitalize()
                         break
-                if final_answer == "can't be determined" and "can't be determined" in answers:
-                    final_answer = "can't be determined"
 
             enriched_data.append({
                 "Question": q,
@@ -222,7 +214,8 @@ async def get_questions_with_answers():
         return JSONResponse(content=enriched_data)
 
     except Exception as e:
-        logger.error(f"Error processing questions: {str(e)}", exc_info=True)
+        logger.error(f"Error generating answers: {str(e)}", exc_info=True)
         return JSONResponse(status_code=500, content={"error": str(e)})
+
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0", port=5000, reload=True)

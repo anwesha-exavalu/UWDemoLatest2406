@@ -82,11 +82,16 @@ const UWQuestions = ({
   isLoading,
   setIsLoading,
   dynamicQuestions,
+
   setDynamicQuestions,
   hasGenerated,
+
   setHasGenerated
 }) => {
   const [questions, setQuestions] = React.useState(uwquestionsData);
+  const [answerLoading, setAnswerLoading] = useState(false);
+  const [questionLoading, setQuestionLoading] = useState(false);
+
 
   // Font styles
   const fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -101,28 +106,51 @@ const UWQuestions = ({
 
   // New function to handle Generate button click
   const handleGenerateQuestions = () => {
-    setIsLoading(true);
-    fetch(`${PRODUCTIONURL}/api/questions`)
+    setQuestionLoading(true);
+    fetch(`${PRODUCTIONURL}/api/uw_questions`)
       .then((res) => res.json())
       .then((data) => {
-        console.log("Fetched dynamic questions:", data);
-        if (Array.isArray(data)) {
-          setDynamicQuestions(data);
-        } else {
-          console.warn("Unexpected API response:", data);
-          setDynamicQuestions([]);
-        }
+        const formatted = data.map((q) => ({
+          Question: q,
+          Response: "",
+          Comment: "",
+        }));
+        setDynamicQuestions(formatted);
         setHasGenerated(true);
       })
       .catch((err) => {
-        console.error("Error fetching dynamic questions:", err);
+        console.error("Error fetching questions:", err);
         setDynamicQuestions([]);
         setHasGenerated(true);
       })
       .finally(() => {
-        setIsLoading(false);
+        setQuestionLoading(false);
       });
   };
+
+  const handleGenerateAnswers = () => {
+    setAnswerLoading(true);
+    const questionOnlyList = dynamicQuestions.map((q) => q.Question);
+
+    fetch(`${PRODUCTIONURL}/api/uw_answers`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(questionOnlyList),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (Array.isArray(data)) {
+          setDynamicQuestions(data);
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching answers:", err);
+      })
+      .finally(() => {
+        setAnswerLoading(false);
+      });
+  };
+
 
   const handleCommentChange = (index, newComment) => {
     const updatedQuestions = [...questions];
@@ -158,7 +186,7 @@ const UWQuestions = ({
                     </ScreenHeader>
                   </Col>
                 </Row>
-                
+
                 <Row>
                   <Col span={24}>
                     <table id="underwriting-Table" style={normalTextStyle}>
@@ -209,26 +237,50 @@ const UWQuestions = ({
                     <Button
                       type="primary"
                       onClick={handleGenerateQuestions}
-                      loading={isLoading}
-                      disabled={isLoading}
+                      loading={questionLoading}
+                      disabled={questionLoading || answerLoading}  // disable when either is loading
                       style={{
                         backgroundColor: "#054F7D",
                         borderColor: "#054F7D",
+                        color:"white",
                         fontWeight: "600",
                         height: "36px",
                         paddingLeft: "20px",
                         paddingRight: "20px",
-                        color:'#ffffff',
+                        width: "auto",
                         ...normalTextStyle
                       }}
                     >
-                      {isLoading ? "Generating..." : "Generate"}
+                      {questionLoading ? "Generating Question..." : "Generate Question"}
                     </Button>
+
+                    {hasGenerated && (
+                      <Button
+                        type="default"
+                        onClick={handleGenerateAnswers}
+                        loading={answerLoading}
+                        disabled={answerLoading}
+                        style={{
+                          marginLeft: "12px",
+                          backgroundColor: "#2E8B57",
+                          color: "white",
+                          borderColor: "#2E8B57",
+                          fontWeight: "600",
+                          height: "36px",
+                          paddingLeft: "20px",
+                          paddingRight: "20px",
+                          width: "auto",
+                          ...normalTextStyle
+                        }}
+                      >
+                        {answerLoading ? "Generating Answers..." : "Generate Answers"}
+                      </Button>
+                    )}
                   </Col>
                 </Row>
 
                 {/* Loading State */}
-                {isLoading && (
+                {/* {isLoading && (
                   <Row>
                     <Col span={24}>
                       <div style={{
@@ -245,27 +297,42 @@ const UWQuestions = ({
                       </div>
                     </Col>
                   </Row>
-                )}
+                )} */}
 
                 {/* Dynamic Questions Table */}
-                {!isLoading && hasGenerated && (
+                {questionLoading ? (
+                  <Row>
+                    <Col span={24}>
+                       <div style={{
+                        textAlign: "center",
+                        padding: "40px 0",
+                        backgroundColor: "#fafafa",
+                        borderRadius: "8px",
+                        border: "1px solid #e1e1e1"
+                      }}>
+                        <Spin size="large" />
+                        <div style={{ marginTop: "16px", color: "#666", ...normalTextStyle }}>
+                          Fetching questions...
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                ) : hasGenerated && (
                   <Row>
                     <Col span={24}>
                       <table id="underwriting-Table" style={normalTextStyle}>
                         <thead>
                           <tr>
-                            <th style={{ width: "40%", ...normalTextStyle }}>Questions</th>
-                            <th style={{ width: "15%", ...normalTextStyle }}>Response</th>
-                            <th style={{ width: "45%", ...normalTextStyle }}>Comment</th>
+                            <th style={{ width: "40%" }}>Questions</th>
+                            <th style={{ width: "15%" }}>Response</th>
+                            <th style={{ width: "45%" }}>Comment</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {Array.isArray(dynamicQuestions) && dynamicQuestions.length > 0 ? (
+                          {dynamicQuestions.length > 0 ? (
                             dynamicQuestions.map((item, index) => (
                               <tr key={index}>
-                                <td>
-                                  <b style={normalTextStyle}>{item.Question}</b>
-                                </td>
+                                <td><b style={normalTextStyle}>{item.Question}</b></td>
                                 <td>
                                   <DropdownSelect
                                     options={[
@@ -288,8 +355,8 @@ const UWQuestions = ({
                             ))
                           ) : (
                             <tr>
-                              <td colSpan="3" style={{ textAlign: "center", color: "#666", padding: "20px", ...normalTextStyle }}>
-                                No dynamic questions available
+                              <td colSpan="3" style={{ textAlign: "center", color: "#666", padding: "20px" }}>
+                                No questions available.
                               </td>
                             </tr>
                           )}
@@ -299,8 +366,9 @@ const UWQuestions = ({
                   </Row>
                 )}
 
+
                 {/* Placeholder message */}
-                {!isLoading && !hasGenerated && (
+                {!questionLoading && !hasGenerated && (
                   <Row>
                     <Col span={24}>
                       <div style={{
@@ -312,7 +380,7 @@ const UWQuestions = ({
                         color: "#666",
                         ...normalTextStyle
                       }}>
-                        Click "Generate" to load AI-generated questions
+                        Click "Generate Question" to load AI-generated questions
                       </div>
                     </Col>
                   </Row>
