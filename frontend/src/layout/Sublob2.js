@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Button } from 'antd';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -11,6 +11,7 @@ import PremiumSummary from '../lob/commercialproperty/PremiumSummary';
 import Coverages from '../lob/commercialproperty/Coverages';
 import Documents from './Documents';
 import { Container } from '../styles/components/Layout';
+import { AppContext } from '../App'; // Import the context
 
 import {
   SublobTabContainer,
@@ -28,65 +29,18 @@ const Sublob2 = () => {
     'premiumSummary',
     'quoteSummary'
   ];
-  const defaultBasicInfo = {
-    orgName: "",
-    orgType: "",
-    dba: "",
-    fein: "",
-    tin: "",
-    businessActivity: "",
-    sicCode: "",
-    sicDescription: "",
-    naics: "",
-    naicsDescription: "",
-    yearsInBusiness: "",
-    status: "active",
-    isEditing: false,
-  };
 
-  const defaultLocationInfo = {
-    pinCode: "",
-    addressLine1: "",
-    addressLine2: "",
-    county: "",
-    city: "",
-    state: "",
-    country: "",
-    isEditing: false,
-  };
-
-  const defaultInsuredInfo = {
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    emailId: "",
-    countryCode: "",
-    phoneNumber: "",
-    website: "",
-    isEditing: false,
-  };
-  const [basicInfo, setBasicInfo] = useState(defaultBasicInfo);
-  const [locationInfo, setLocationInfo] = useState(defaultLocationInfo);
-  const [insuredInfo, setInsuredInfo] = useState(defaultInsuredInfo);
-
-
-
-  const [activeSection, setActiveSection] = useState(sections[0]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [dynamicQuestions, setDynamicQuestions] = useState([]);
-  const [hasGenerated, setHasGenerated] = useState(false);
-  const [prefillLoading, setPrefillLoading] = useState(false);
-
-
+  // Get global state from context
+  const { globalFormState, updateGlobalState } = useContext(AppContext);
 
   const showSublob = (sectionId) => {
-    setActiveSection(sectionId);
+    updateGlobalState({ activeSection: sectionId });
   };
 
   const goToNextSection = () => {
-    const currentIndex = sections.indexOf(activeSection);
+    const currentIndex = sections.indexOf(globalFormState.activeSection);
     if (currentIndex < sections.length - 1) {
-      setActiveSection(sections[currentIndex + 1]);
+      updateGlobalState({ activeSection: sections[currentIndex + 1] });
     }
   };
 
@@ -107,7 +61,7 @@ const Sublob2 = () => {
           {buttonData.map(section => (
             <SublobTab
               key={section.key}
-              className={activeSection === section.key ? 'active' : ''}
+              className={globalFormState.activeSection === section.key ? 'active' : ''}
               onClick={() => showSublob(section.key)}
             >
               <SublobTabIcon>
@@ -119,37 +73,58 @@ const Sublob2 = () => {
         </SublobTabContainer>
 
         <div>
-          {activeSection === 'policyInfo' && (
+          {globalFormState.activeSection === 'policyInfo' && (
             <CreateSubmission
               onNext={goToNextSection}
-              prefillLoading={prefillLoading}
-              setPrefillLoading={setPrefillLoading}
-              basicInfo={basicInfo}
-              setBasicInfo={setBasicInfo}
-              locationInfo={locationInfo}
-              setLocationInfo={setLocationInfo}
-              insuredInfo={insuredInfo}
-              setInsuredInfo={setInsuredInfo}
+              prefillLoading={globalFormState.prefillLoading}
+              setPrefillLoading={(loading) => updateGlobalState({ prefillLoading: loading })}
+              basicInfo={globalFormState.basicInfo}
+              setBasicInfo={(updates) => {
+                if (typeof updates === 'function') {
+                  const newBasicInfo = updates(globalFormState.basicInfo);
+                  updateGlobalState({ basicInfo: newBasicInfo });
+                } else {
+                  updateGlobalState({ basicInfo: updates });
+                }
+              }}
+              locationInfo={globalFormState.locationInfo}
+              setLocationInfo={(updates) => {
+                if (typeof updates === 'function') {
+                  const newLocationInfo = updates(globalFormState.locationInfo);
+                  updateGlobalState({ locationInfo: newLocationInfo });
+                } else {
+                  updateGlobalState({ locationInfo: updates });
+                }
+              }}
+              insuredInfo={globalFormState.insuredInfo}
+              setInsuredInfo={(updates) => {
+                if (typeof updates === 'function') {
+                  const newInsuredInfo = updates(globalFormState.insuredInfo);
+                  updateGlobalState({ insuredInfo: newInsuredInfo });
+                } else {
+                  updateGlobalState({ insuredInfo: updates });
+                }
+              }}
             />
           )}
 
-          {activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
-          {activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
-          {activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}
-          {activeSection === 'uw' && (
+          {globalFormState.activeSection === 'locationInfo' && <LocationComponent onNext={goToNextSection} />}
+          {globalFormState.activeSection === 'lossInfo' && <LossInfo onNext={goToNextSection} />}
+          {globalFormState.activeSection === 'coverages' && <Coverages onNext={goToNextSection} />}
+          {globalFormState.activeSection === 'uw' && (
             <UWQuestions
               onNext={goToNextSection}
-              isLoading={isLoading}
-              setIsLoading={setIsLoading}
-              dynamicQuestions={dynamicQuestions}
-              setDynamicQuestions={setDynamicQuestions}
-              hasGenerated={hasGenerated}
-              setHasGenerated={setHasGenerated}
+              isLoading={globalFormState.isLoading}
+              setIsLoading={(loading) => updateGlobalState({ isLoading: loading })}
+              dynamicQuestions={globalFormState.dynamicQuestions}
+              setDynamicQuestions={(questions) => updateGlobalState({ dynamicQuestions: questions })}
+              hasGenerated={globalFormState.hasGenerated}
+              setHasGenerated={(generated) => updateGlobalState({ hasGenerated: generated })}
             />
           )}
 
-          {activeSection === 'premiumSummary' && <PremiumSummary onNext={goToNextSection} />}
-          {activeSection === 'quoteSummary' && <QuoteSummary onNext={goToNextSection} />}
+          {globalFormState.activeSection === 'premiumSummary' && <PremiumSummary onNext={goToNextSection} />}
+          {globalFormState.activeSection === 'quoteSummary' && <QuoteSummary onNext={goToNextSection} />}
         </div>
 
         <Documents />

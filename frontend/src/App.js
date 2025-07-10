@@ -19,10 +19,11 @@ import DashboardAdmin from './SidebarComponents/DashboardAdmin';
 import Report from './SidebarComponents/Report';
 import PrivateFooter from './components/Footer/PrivateFooter';
 
-
-
 const { Content, Footer } = Layout;
 const { SubMenu } = Menu;
+
+// Create a Context for global state management
+const AppContext = React.createContext();
 
 const MyMenu = ({ collapsed }) => {
   const location = useLocation();
@@ -91,14 +92,12 @@ const MyMenu = ({ collapsed }) => {
           <Menu.Item key="4" icon={<EditFilled />} title={"Create Submission"}>
             {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }} />}
           </Menu.Item>
-
         </>
       )}
 
       {/* Show these items only for admin role */}
       {userRole === 'admin' && (
         <>
-
           <Menu.Item key="5" icon={<HomeOutlined />}>
             {!collapsed ?
               <Link to="/dashboardAdmin" style={{ textDecoration: 'none' }}>My Workbench</Link> :
@@ -114,7 +113,6 @@ const MyMenu = ({ collapsed }) => {
           <Menu.Item key="8" icon={<EditFilled />} title={"Create Submission"}>
             {!collapsed ? <Link to="/createsubmission" style={{ textDecoration: 'none' }}>Create Submission</Link> : <Link to="/createsubmission" style={{ textDecoration: 'none' }} />}
           </Menu.Item>
-
         </>
       )}
     </Menu>
@@ -124,6 +122,91 @@ const MyMenu = ({ collapsed }) => {
 const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [userRole, setUserRole] = useState('');
+
+  // Global state for form data and prefill functionality
+  const [globalFormState, setGlobalFormState] = useState({
+    // Default form data states
+    basicInfo: {
+      orgName: "",
+      orgType: "",
+      dba: "",
+      fein: "",
+      tin: "",
+      businessActivity: "",
+      sicCode: "",
+      sicDescription: "",
+      naics: "",
+      naicsDescription: "",
+      yearsInBusiness: "",
+      status: "active",
+      isEditing: false,
+    },
+    locationInfo: {
+      pinCode: "",
+      addressLine1: "",
+      addressLine2: "",
+      county: "",
+      city: "",
+      state: "",
+      country: "",
+      isEditing: false,
+    },
+    insuredInfo: {
+      firstName: "",
+      middleName: "",
+      lastName: "",
+      emailId: "",
+      countryCode: "",
+      phoneNumber: "",
+      website: "",
+      isEditing: false,
+    },
+    // Prefill functionality states
+    prefillLoading: false,
+    isLoading: false,
+    dynamicQuestions: [],
+    hasGenerated: false,
+    // Active section state
+    activeSection: 'policyInfo',
+  });
+
+  // Functions to update global state
+  const updateGlobalState = (updates) => {
+    setGlobalFormState(prev => ({
+      ...prev,
+      ...updates
+    }));
+  };
+
+  const updateBasicInfo = (updates) => {
+    setGlobalFormState(prev => ({
+      ...prev,
+      basicInfo: {
+        ...prev.basicInfo,
+        ...updates
+      }
+    }));
+  };
+
+  const updateLocationInfo = (updates) => {
+    setGlobalFormState(prev => ({
+      ...prev,
+      locationInfo: {
+        ...prev.locationInfo,
+        ...updates
+      }
+    }));
+  };
+
+  const updateInsuredInfo = (updates) => {
+    setGlobalFormState(prev => ({
+      ...prev,
+      insuredInfo: {
+        ...prev.insuredInfo,
+        ...updates
+      }
+    }));
+  };
 
   const {
     token: { colorBgContainer, borderRadiusLG },
@@ -183,82 +266,51 @@ const AppLayout = () => {
     };
   }, [location.pathname, navigate]);
 
+  // Context value to provide to all components
+  const contextValue = {
+    globalFormState,
+    updateGlobalState,
+    updateBasicInfo,
+    updateLocationInfo,
+    updateInsuredInfo,
+  };
+
   return (
-    <Layout>
-      {/* {!isLoginPage && (
-        <Sider
-          trigger={null}
-          collapsible
-          collapsed={collapsed}
-          style={{
-            backgroundColor: '#2457d3',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            overflow: 'hidden'
-          }}
-          width={220} // Set a fixed width for the Sider
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined style={{ color: "white" }} /> : <MenuFoldOutlined style={{ color: "white" }} />}
-            onClick={() => setCollapsed(!collapsed)}
-            style={{
-              fontSize: '46px',
-              width: '50px',
-              height: '60px',
-            }}
-          />
-          {!collapsed && <h4 style={{ color: 'white', textAlign: 'center' }}>Intelligent Risk Assessment</h4>}
-          <Divider
-            variant="dotted"
-            style={{
-              borderColor: 'black',
-              width: '100%',
-            }}
-          />
-          <div className="demo-logo-vertical" />
-          <div style={{ width: '100%', overflow: 'hidden' }}>
-            <MyMenu collapsed={collapsed} />
-          </div>
-        </Sider>
-      )} */}
+    <AppContext.Provider value={contextValue}>
       <Layout>
-        {!isLoginPage && <HeaderDesign />}
-        <Content
-          style={{
-            margin: '5px 9px',
-            padding: 24,
-            minHeight: 560,
-            background: colorBgContainer,
-            borderRadius: borderRadiusLG,
-          }}
-        >
-          <Routes>
-            <Route exact path="/" element={<Login />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="createsubmission" element={<Sublob2 />} />
-            <Route path="audit-trail" element={<AuditTrail />} />
-            <Route path="accountdashboard" element={<AccountDashboard />} />
-            <Route path="accountinfo" element={<AccountInfo />} />
-            <Route path="documentscreen" element={<DocumentScreen />} />
-            <Route path="clearancescreen" element={<ClearanceScreen />} />
-            <Route path="searchinsured" element={<SearchInsured />} />
-            <Route path="dashboardAdmin" element={<DashboardAdmin />} />
-            <Route path="report" element={<Report />} />
-          </Routes>
-
-
-        </Content>
-        {!isLoginPage && (
-          <PrivateFooter >
-          </PrivateFooter>
-        )}
+        <Layout>
+          {!isLoginPage && <HeaderDesign />}
+          <Content
+            style={{
+              margin: '5px 9px',
+              padding: 24,
+              minHeight: 560,
+              background: colorBgContainer,
+              borderRadius: borderRadiusLG,
+            }}
+          >
+            <Routes>
+              <Route exact path="/" element={<Login />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="createsubmission" element={<Sublob2 />} />
+              <Route path="audit-trail" element={<AuditTrail />} />
+              <Route path="accountdashboard" element={<AccountDashboard />} />
+              <Route path="accountinfo" element={<AccountInfo />} />
+              <Route path="documentscreen" element={<DocumentScreen />} />
+              <Route path="clearancescreen" element={<ClearanceScreen />} />
+              <Route path="searchinsured" element={<SearchInsured />} />
+              <Route path="dashboardAdmin" element={<DashboardAdmin />} />
+              <Route path="report" element={<Report />} />
+            </Routes>
+          </Content>
+          {!isLoginPage && (
+            <PrivateFooter />
+          )}
+        </Layout>
       </Layout>
-    </Layout>
+    </AppContext.Provider>
   );
 };
-
 
 const App = () => {
   return (
@@ -268,4 +320,6 @@ const App = () => {
   );
 };
 
+// Export the context for use in other components
+export { AppContext };
 export default App;

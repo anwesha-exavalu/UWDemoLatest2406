@@ -47,10 +47,11 @@ const AccountDashboard = () => {
           '#FF6B5A', // Coral red
           '#10B981'  // Teal green
         ],
-        borderWidth: 6, // Creates gaps between segments
-        borderColor: '#FFFFFF', // White gaps
-        cutout: '50%', // Inner circle size
-        borderRadius: 0 // Clean straight edges
+        borderWidth: 6,
+    borderColor: '#FFFFFF',
+    borderRadius: 0,
+    cutout: '40%',    // inner radius
+    radius: '100%'     // outer radius (default is '100%')
       },
     ],
   };
@@ -74,8 +75,9 @@ const AccountDashboard = () => {
     },
     elements: {
       arc: {
-        borderWidth: 6,
-        borderColor: '#FFFFFF'
+        borderWidth: 3,
+        borderColor: '#FFFFFF',
+       
       }
     }
   };
