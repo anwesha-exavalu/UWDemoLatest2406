@@ -46,8 +46,8 @@ const Dashboard = () => {
   const [searchText, setSearchText] = useState('');
   const [searchedColumn, setSearchedColumn] = useState('');
   const [activeTab, setActiveTab] = useState('dashboard');
-  const searchInput = useRef(null);
 
+  const searchInput = useRef(null);
   const policiesChartRef = useRef(null);
   const submissionsChartRef = useRef(null);
   const donutChartRef = useRef(null);
@@ -186,24 +186,107 @@ const Dashboard = () => {
     });
   };
 
+  const createDonutChart = () => {
+    if (!donutChartRef.current) return;
+    
+    // Destroy existing chart if it exists
+    if (donutChartRef.current.chartInstance) {
+      donutChartRef.current.chartInstance.destroy();
+    }
+
+    const ctx = donutChartRef.current.getContext('2d');
+    
+    donutChartRef.current.chartInstance = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: chartData.newBusinessRenewal.labels,
+        datasets: [
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '45%',
+            radius: '90%',
+            circumference: 360,
+            rotation: 0
+          },
+          {
+            data: chartData.newBusinessRenewal.data,
+            backgroundColor: chartData.newBusinessRenewal.colors,
+            borderWidth: 0,
+            cutout: '25%',
+            radius: '100%',
+            borderRadius: 2
+          },
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '55%',
+            radius: '80%',
+            circumference: 360,
+            rotation: 0
+          },
+          {
+            data: [100],
+            backgroundColor: ['#EEF0FA'],
+            borderWidth: 0,
+            cutout: '55%',
+            radius: '80%',
+            circumference: 360,
+            rotation: 0
+          },
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          },
+          tooltip: {
+            filter: function(tooltipItem) {
+              return tooltipItem.datasetIndex === 1;
+            },
+            callbacks: {
+              label: function (context) {
+                return `${context.label}: ${context.raw}%`;
+              }
+            }
+          }
+        },
+        interaction: {
+          intersect: false
+        },
+        elements: {
+          arc: {
+            borderWidth: 0
+          }
+        },
+        layout: {
+          padding: 5,
+        }
+      },
+    });
+  };
+
   const createCharts = () => {
-    setTimeout(() => {
-      createBarChart(
-        policiesChartRef, 
-        'Policies Issued', 
-        chartData.policiesIssued.labels, 
-        chartData.policiesIssued.data, 
-        chartData.policiesIssued.colors
-      );
-      createBarChart(
-        submissionsChartRef, 
-        'Submission in Progress', 
-        chartData.submissionsInProgress.labels, 
-        chartData.submissionsInProgress.data, 
-        chartData.submissionsInProgress.colors
-      );
-      createDonutChart();
-    }, 100);
+    createBarChart(
+      policiesChartRef, 
+      'Policies Issued', 
+      chartData.policiesIssued.labels, 
+      chartData.policiesIssued.data, 
+      chartData.policiesIssued.colors
+    );
+    createBarChart(
+      submissionsChartRef, 
+      'Submission in Progress', 
+      chartData.submissionsInProgress.labels, 
+      chartData.submissionsInProgress.data, 
+      chartData.submissionsInProgress.colors
+    );
+    createDonutChart();
   };
 
   const destroyCharts = () => {
@@ -217,7 +300,9 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (activeTab === 'dashboard') {
-      createCharts();
+      setTimeout(() => {
+        createCharts();
+      }, 100);
     } else {
       destroyCharts();
     }
@@ -304,91 +389,6 @@ const Dashboard = () => {
       ),
     },
   ];
-
-  const createDonutChart = () => {
-    if (!donutChartRef.current) return;
-    
-    if (donutChartRef.current.chartInstance) {
-      donutChartRef.current.chartInstance.destroy();
-    }
-
-    const ctx = donutChartRef.current.getContext('2d');
-    
-    donutChartRef.current.chartInstance = new Chart(ctx, {
-      type: 'doughnut',
-      data: {
-        labels: chartData.newBusinessRenewal.labels,
-        datasets: [
-          {
-            data: [100],
-            backgroundColor: ['#EEF0FA'],
-            borderWidth: 0,
-            cutout: '45%',
-            radius: '90%',
-            circumference: 360,
-            rotation: 0
-          },
-          {
-            data: chartData.newBusinessRenewal.data,
-            backgroundColor: chartData.newBusinessRenewal.colors,
-            borderWidth: 0,
-            cutout: '25%',
-            radius: '100%',
-            borderRadius: 2
-          },
-          {
-            data: [100],
-            backgroundColor: ['#EEF0FA'],
-            borderWidth: 0,
-            cutout: '55%',
-            radius: '80%',
-            circumference: 360,
-            rotation: 0
-          },
-          {
-            data: [100],
-            backgroundColor: ['#EEF0FA'],
-            borderWidth: 0,
-            cutout: '55%',
-            radius: '80%',
-            circumference: 360,
-            rotation: 0
-          },
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: false
-          },
-          tooltip: {
-            filter: function(tooltipItem) {
-              return tooltipItem.datasetIndex === 1;
-            },
-            callbacks: {
-              label: function (context) {
-                return `${context.label}: ${context.raw}%`;
-              }
-            }
-          }
-        },
-        interaction: {
-          intersect: false
-        },
-        elements: {
-          arc: {
-            borderWidth: 0
-          }
-        },
-        layout: {
-          padding: 5,
-         
-        }
-      },
-    });
-  };
 
   // Dashboard content component with responsive layout
   const DashboardContent = () => (

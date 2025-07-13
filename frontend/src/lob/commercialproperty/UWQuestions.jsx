@@ -78,19 +78,20 @@ const uwquestionsData = [
 ];
 
 const UWQuestions = ({
-  onNext,
+ onNext,
   isLoading,
   setIsLoading,
   dynamicQuestions,
-
   setDynamicQuestions,
   hasGenerated,
-
-  setHasGenerated
+  setHasGenerated,
+  questionLoading,
+  setQuestionLoading,
+  answerLoading,
+  setAnswerLoading
 }) => {
   const [questions, setQuestions] = React.useState(uwquestionsData);
-  const [answerLoading, setAnswerLoading] = useState(false);
-  const [questionLoading, setQuestionLoading] = useState(false);
+
 
 
   // Font styles

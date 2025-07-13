@@ -22,9 +22,6 @@ import PrivateFooter from './components/Footer/PrivateFooter';
 const { Content, Footer } = Layout;
 const { SubMenu } = Menu;
 
-// Create a Context for global state management
-const AppContext = React.createContext();
-
 const MyMenu = ({ collapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -123,91 +120,63 @@ const AppLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [userRole, setUserRole] = useState('');
 
-  // Global state for form data and prefill functionality
-  const [globalFormState, setGlobalFormState] = useState({
-    // Default form data states
-    basicInfo: {
-      orgName: "",
-      orgType: "",
-      dba: "",
-      fein: "",
-      tin: "",
-      businessActivity: "",
-      sicCode: "",
-      sicDescription: "",
-      naics: "",
-      naicsDescription: "",
-      yearsInBusiness: "",
-      status: "active",
-      isEditing: false,
-    },
-    locationInfo: {
-      pinCode: "",
-      addressLine1: "",
-      addressLine2: "",
-      county: "",
-      city: "",
-      state: "",
-      country: "",
-      isEditing: false,
-    },
-    insuredInfo: {
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      emailId: "",
-      countryCode: "",
-      phoneNumber: "",
-      website: "",
-      isEditing: false,
-    },
-    // Prefill functionality states
-    prefillLoading: false,
-    isLoading: false,
-    dynamicQuestions: [],
-    hasGenerated: false,
-    // Active section state
-    activeSection: 'policyInfo',
-  });
-
-  // Functions to update global state
-  const updateGlobalState = (updates) => {
-    setGlobalFormState(prev => ({
-      ...prev,
-      ...updates
-    }));
+  // Lift state up to App level for persistence across navigation
+  const defaultBasicInfo = {
+    orgName: "",
+    orgType: "",
+    dba: "",
+    fein: "",
+    tin: "",
+    businessActivity: "",
+    sicCode: "",
+    sicDescription: "",
+    naics: "",
+    naicsDescription: "",
+    yearsInBusiness: "",
+    status: "active",
+    isEditing: false,
   };
 
-  const updateBasicInfo = (updates) => {
-    setGlobalFormState(prev => ({
-      ...prev,
-      basicInfo: {
-        ...prev.basicInfo,
-        ...updates
-      }
-    }));
+  const defaultLocationInfo = {
+    pinCode: "",
+    addressLine1: "",
+    addressLine2: "",
+    county: "",
+    city: "",
+    state: "",
+    country: "",
+    isEditing: false,
   };
 
-  const updateLocationInfo = (updates) => {
-    setGlobalFormState(prev => ({
-      ...prev,
-      locationInfo: {
-        ...prev.locationInfo,
-        ...updates
-      }
-    }));
+  const defaultInsuredInfo = {
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    emailId: "",
+    countryCode: "",
+    phoneNumber: "",
+    website: "",
+    isEditing: false,
   };
 
-  const updateInsuredInfo = (updates) => {
-    setGlobalFormState(prev => ({
-      ...prev,
-      insuredInfo: {
-        ...prev.insuredInfo,
-        ...updates
-      }
-    }));
-  };
+  // Global state for form data
+  const [basicInfo, setBasicInfo] = useState(defaultBasicInfo);
+  const [locationInfo, setLocationInfo] = useState(defaultLocationInfo);
+  const [insuredInfo, setInsuredInfo] = useState(defaultInsuredInfo);
 
+  // Global state for loading states
+  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Global state for UW Questions
+  const [dynamicQuestions, setDynamicQuestions] = useState([]);
+  const [hasGenerated, setHasGenerated] = useState(false);
+
+  // Global state for dashboard data to prevent reloading
+  const [dashboardData, setDashboardData] = useState(null);
+  const [dashboardLoaded, setDashboardLoaded] = useState(false);
+const [questionLoading, setQuestionLoading] = useState(false);
+const [answerLoading, setAnswerLoading] = useState(false);
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
@@ -266,49 +235,82 @@ const AppLayout = () => {
     };
   }, [location.pathname, navigate]);
 
-  // Context value to provide to all components
-  const contextValue = {
-    globalFormState,
-    updateGlobalState,
-    updateBasicInfo,
-    updateLocationInfo,
-    updateInsuredInfo,
-  };
-
   return (
-    <AppContext.Provider value={contextValue}>
+    <Layout>
       <Layout>
-        <Layout>
-          {!isLoginPage && <HeaderDesign />}
-          <Content
-            style={{
-              margin: '5px 9px',
-              padding: 24,
-              minHeight: 560,
-              background: colorBgContainer,
-              borderRadius: borderRadiusLG,
-            }}
-          >
-            <Routes>
-              <Route exact path="/" element={<Login />} />
-              <Route path="dashboard" element={<Dashboard />} />
-              <Route path="createsubmission" element={<Sublob2 />} />
-              <Route path="audit-trail" element={<AuditTrail />} />
-              <Route path="accountdashboard" element={<AccountDashboard />} />
-              <Route path="accountinfo" element={<AccountInfo />} />
-              <Route path="documentscreen" element={<DocumentScreen />} />
-              <Route path="clearancescreen" element={<ClearanceScreen />} />
-              <Route path="searchinsured" element={<SearchInsured />} />
-              <Route path="dashboardAdmin" element={<DashboardAdmin />} />
-              <Route path="report" element={<Report />} />
-            </Routes>
-          </Content>
-          {!isLoginPage && (
-            <PrivateFooter />
-          )}
-        </Layout>
+        {!isLoginPage && <HeaderDesign />}
+        <Content
+          style={{
+            margin: '5px 9px',
+            padding: 24,
+            minHeight: 560,
+            background: colorBgContainer,
+            borderRadius: borderRadiusLG,
+          }}
+        >
+          <Routes>
+            <Route exact path="/" element={<Login />} />
+            <Route
+              path="dashboard"
+              element={
+                <Dashboard
+                  dashboardData={dashboardData}
+                  setDashboardData={setDashboardData}
+                  dashboardLoaded={dashboardLoaded}
+                  setDashboardLoaded={setDashboardLoaded}
+                />
+              }
+            />
+            <Route
+              path="createsubmission"
+              element={
+                <Sublob2
+                  basicInfo={basicInfo}
+                  setBasicInfo={setBasicInfo}
+                  locationInfo={locationInfo}
+                  setLocationInfo={setLocationInfo}
+                  insuredInfo={insuredInfo}
+                  setInsuredInfo={setInsuredInfo}
+                  prefillLoading={prefillLoading}
+                  setPrefillLoading={setPrefillLoading}
+                  isLoading={isLoading}
+                  setIsLoading={setIsLoading}
+                  dynamicQuestions={dynamicQuestions}
+                  setDynamicQuestions={setDynamicQuestions}
+                  hasGenerated={hasGenerated}
+                  setHasGenerated={setHasGenerated}
+                  questionLoading={questionLoading}
+                  setQuestionLoading={setQuestionLoading}
+                  answerLoading={answerLoading}
+                  setAnswerLoading={setAnswerLoading}
+                />
+              }
+            />
+            <Route path="audit-trail" element={<AuditTrail />} />
+            <Route path="accountdashboard" element={<AccountDashboard />} />
+            <Route path="accountinfo" element={<AccountInfo />} />
+            <Route path="documentscreen" element={<DocumentScreen />} />
+            <Route path="clearancescreen" element={<ClearanceScreen />} />
+            <Route path="searchinsured" element={<SearchInsured />} />
+            <Route
+              path="dashboardAdmin"
+              element={
+                <DashboardAdmin
+                  dashboardData={dashboardData}
+                  setDashboardData={setDashboardData}
+                  dashboardLoaded={dashboardLoaded}
+                  setDashboardLoaded={setDashboardLoaded}
+                />
+              }
+            />
+            <Route path="report" element={<Report />} />
+          </Routes>
+        </Content>
+        {!isLoginPage && (
+          <PrivateFooter />
+        )}
       </Layout>
-    </AppContext.Provider>
+    </Layout>
   );
 };
 
@@ -320,6 +322,4 @@ const App = () => {
   );
 };
 
-// Export the context for use in other components
-export { AppContext };
 export default App;

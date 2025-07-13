@@ -9,6 +9,15 @@ import pl from "../assets/img/pl-icon.png"
 export function PolicyCards() {
   // State to keep track of the active policy
   const [activePolicy, setActivePolicy] = useState("Commercial Property");
+  
+  // Add all the required state variables for Sublob2
+  const [basicInfo, setBasicInfo] = useState({});
+  const [locationInfo, setLocationInfo] = useState({});
+  const [insuredInfo, setInsuredInfo] = useState({});
+  const [prefillLoading, setPrefillLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [dynamicQuestions, setDynamicQuestions] = useState([]);
+  const [hasGenerated, setHasGenerated] = useState(false);
 
   const policies = [
     {
@@ -33,20 +42,33 @@ export function PolicyCards() {
     switch (activePolicy) {
       case "Commercial Property":
         return (
-          <Sublob2 />
+          <Sublob2 
+            basicInfo={basicInfo}
+            setBasicInfo={setBasicInfo}
+            locationInfo={locationInfo}
+            setLocationInfo={setLocationInfo}
+            insuredInfo={insuredInfo}
+            setInsuredInfo={setInsuredInfo}
+            prefillLoading={prefillLoading}
+            setPrefillLoading={setPrefillLoading}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
+            dynamicQuestions={dynamicQuestions}
+            setDynamicQuestions={setDynamicQuestions}
+            hasGenerated={hasGenerated}
+            setHasGenerated={setHasGenerated}
+          />
         );
       case "General Liability":
         return (
           <div className="policy-content">
             <h3>General Liability Insurance</h3>
-
           </div>
         );
       case "Professional Liability":
         return (
           <div className="policy-content">
             <h3>Professional Liability Insurance</h3>
-
           </div>
         );
       default:
@@ -152,8 +174,6 @@ export function PolicyCards() {
       {/* Policy Content */}
       <div style={{
         marginTop: "30px",
-
-
       }}>
         {renderPolicyComponent()}
       </div>
