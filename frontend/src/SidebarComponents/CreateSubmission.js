@@ -75,6 +75,8 @@ const CreateSubmission = ({ onNext,
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
+  const [file, setFile] = useState(null);
+  const [status, setStatus] = useState("");
 
   // Separate state for each widget section's form data and editing state
 
@@ -291,6 +293,104 @@ const CreateSubmission = ({ onNext,
     event.target.value = '';
   };
 
+  const handleUploadFiles = async (event) => {
+    event.preventDefault();
+
+    const selectedFile = event.target.files?.[0];
+
+    if (!selectedFile) {
+      setStatus("Select a file first");
+      return;
+    }
+
+    console.log("Starting upload for file:", selectedFile.name);
+
+    // Validate file type
+    if (selectedFile.type !== "application/pdf") {
+      message.error("Please upload a valid PDF file");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      setUploadProgress(0);
+      setStatus("Uploading & extracting...");
+
+      // Simulate upload progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 100);
+
+      // Simulate delay before fetch
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Prepare form data
+      const form = new FormData();
+      form.append("pdf", selectedFile);
+
+      // Upload to backend
+      const res = await fetch("http://localhost:5000/process", {
+        method: "POST",
+        body: form
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || "Process failed");
+
+      // Finalize progress
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      // Save file to state
+      setUploadedFile(selectedFile);
+      setFileList([selectedFile]);
+
+      // Set status with backend response
+      setStatus(`Uploaded: ${data.s3_url}\nExtracted: ${data.extracted_text}`);
+
+      // Show notification
+      notification.success({
+        message: 'Upload Successful',
+        description: `${selectedFile.name} has been uploaded successfully. Click 'Prefill' to process the document.`,
+        duration: 4,
+        placement: 'topRight'
+      });
+
+      // Close modal after delay
+      setTimeout(() => {
+        setIsModalOpen(false);
+        setUploadProgress(0);
+        setIsUploading(false);
+      }, 1000);
+
+    } catch (error) {
+      console.error("Upload Error:", error);
+      setStatus("Error: " + error.message);
+      setUploadProgress(0);
+      setIsUploading(false);
+      message.error(`Upload failed: ${error.message}`);
+    }
+
+    // Reset input
+    if (event.target && event.target.files) {
+      event.target.value = '';
+    }
+  };
+
+
+  const handleClick = (e) => {
+    e.preventDefault();
+    onUpload();
+    handleUploadFiles(e);
+  };
+
+
   // Function to handle file upload (if you need this for other purposes)
   const handleUploadFile = ({ file, fileList }) => {
     setFileList(fileList);
@@ -360,7 +460,14 @@ const CreateSubmission = ({ onNext,
           <Col flex="none">
             <HeaderContainer>
               <ButtonGroup>
-                <ActionButton onClick={onUpload}>Upload</ActionButton>
+                <ActionButton
+                  onClick={onUpload}
+                >
+                  Upload
+                </ActionButton>
+
+
+
                 <ActionButton onClick={handlePrefill} disabled={prefillLoading}>
                   {prefillLoading ? "Loading..." : "Prefill"}
                 </ActionButton>
@@ -779,7 +886,7 @@ const CreateSubmission = ({ onNext,
                   <input
                     type="file"
                     accept=".pdf"
-                    onChange={handleUpload}
+                    onChange={handleClick}
                     style={{
                       position: 'absolute',
                       top: 0,

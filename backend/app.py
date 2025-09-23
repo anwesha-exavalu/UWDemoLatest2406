@@ -1,4 +1,4 @@
-from fastapi import FastAPI, File, UploadFile, Request
+from fastapi import FastAPI, File, UploadFile, Request,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import pandas as pd
@@ -7,14 +7,27 @@ import os
 import json
 import uuid
 import logging
+import boto3
+import tempfile
 from dotenv import load_dotenv
 from typing import List
 from google_vision import extract_data_from_gemini_vision
+from tesseract_extractor import extract_text_from_pdf 
 from utils.lossRun import extract_loss_run_data
 from utils.prefill import match_extracted_with_template
 from utils.readEmail import read_email_data
 
+
 load_dotenv()
+
+s3 = boto3.client(
+    "s3",
+    region_name=os.getenv("AWS_REGION"),
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY")
+)
+
+BUCKET_NAME = os.getenv("S3_BUCKET")
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -216,6 +229,36 @@ async def get_llm_answers(questions: List[str] = Body(...)):
     except Exception as e:
         logger.error(f"Error generating answers: {str(e)}", exc_info=True)
         return JSONResponse(status_code=500, content={"error": str(e)})
+
+
+@app.post("/process")
+async def process_file(pdf: UploadFile = File(...)):
+    print(f"[API] Received file: {pdf.filename}")
+    # Save temporarily
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp:
+        tmp.write(await pdf.read())
+        tmp_path = tmp.name
+    print(f"[API] Saved temp file at {tmp_path}")  
+    # Upload to S3
+    s3_key = pdf.filename
+    s3.upload_file(tmp_path, BUCKET_NAME, s3_key)
+    s3_url = f"https://{BUCKET_NAME}.s3.amazonaws.com/{s3_key}"
+    print(f"[API] Uploaded to S3 as {s3_key}") 
+
+    # Extract text
+    extracted_text = extract_text_from_pdf(tmp_path)
+    print(f"[API] Extracted text length: {len(extracted_text)} chars")
+
+    # Clean up temp file
+    os.remove(tmp_path)
+
+    return JSONResponse({
+        "s3_url": s3_url,
+        "extracted_text": extracted_text
+    })
+        
+
+    
 
 if __name__ == '__main__':
     uvicorn.run("app:app", host="0.0.0.0", port=5000, reload=True)
