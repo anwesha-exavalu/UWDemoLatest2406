@@ -12,7 +12,7 @@ import tempfile
 from dotenv import load_dotenv
 from typing import List
 from google_vision import extract_data_from_gemini_vision
-from tesseract_extractor import extract_text_from_pdf 
+from tesseract_extractor import extract_text_with_line_boxes
 from utils.lossRun import extract_loss_run_data
 from utils.prefill import match_extracted_with_template
 from utils.readEmail import read_email_data
@@ -246,15 +246,15 @@ async def process_file(pdf: UploadFile = File(...)):
     print(f"[API] Uploaded to S3 as {s3_key}") 
 
     # Extract text
-    extracted_text = extract_text_from_pdf(tmp_path)
-    print(f"[API] Extracted text length: {len(extracted_text)} chars")
+    ocr_result = extract_text_with_line_boxes(tmp_path)
+    
 
     # Clean up temp file
     os.remove(tmp_path)
 
     return JSONResponse({
         "s3_url": s3_url,
-        "extracted_text": extracted_text
+        "ocr": ocr_result
     })
         
 
