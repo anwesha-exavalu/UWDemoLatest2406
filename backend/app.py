@@ -13,6 +13,7 @@ from dotenv import load_dotenv
 from typing import List
 from google_vision import extract_data_from_gemini_vision
 from tesseract_extractor import extract_text_with_line_boxes
+from llm_extractor import extract_with_schema
 from utils.lossRun import extract_loss_run_data
 from utils.prefill import match_extracted_with_template
 from utils.readEmail import read_email_data
@@ -33,6 +34,8 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 app = FastAPI()
+
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -230,6 +233,9 @@ async def get_llm_answers(questions: List[str] = Body(...)):
         logger.error(f"Error generating answers: {str(e)}", exc_info=True)
         return JSONResponse(status_code=500, content={"error": str(e)})
 
+# Load schema from JSON file
+with open("DataExtractionJson.json", "r") as f:
+    policy_schema = json.load(f)
 
 @app.post("/process")
 async def process_file(pdf: UploadFile = File(...)):
@@ -247,14 +253,24 @@ async def process_file(pdf: UploadFile = File(...)):
 
     # Extract text
     ocr_result = extract_text_with_line_boxes(tmp_path)
+    print(f"[API] OCR extracted {sum(len(p['lines']) for p in ocr_result)} lines")
     
+     # Step 2: Pass OCR + Schema to LLM
+    structured_data = extract_with_schema(
+        ocr_result, 
+        policy_schema, 
+        doc_type="Insurance Policy"
+    )
+    print("[API] LLM structured extraction completed")
 
     # Clean up temp file
     os.remove(tmp_path)
 
+
     return JSONResponse({
         "s3_url": s3_url,
-        "ocr": ocr_result
+        "ocr": ocr_result,
+        "structured_data": structured_data
     })
         
 

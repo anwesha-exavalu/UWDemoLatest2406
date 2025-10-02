@@ -1,0 +1,65 @@
+{
+    "first_named_insured": "string",
+    "inspection_contact": "string",
+    "business_website": "string",
+    "inspection_email": "string",
+    "effective_date": "string",
+    "inspection_phone": "string",
+    "property_ownership": [
+        {
+            "1.Does any Named Insured": [
+                {
+                    "Act now, or in the past, as a developer, contractor, construction manager, or similar profession related to construction?": "boolean",
+                    "Perform real estate sales, property management, maintenance, consulting, or advisory services for properties they do not own?": "boolean",
+                    "Own other commercial, industrial, or residential properties that are not included in this submission? ": "boolean"
+                }
+            ],
+            "2.In the past five years, has any Named Insured": [
+                {
+                    "Had an insurance company cancel, non-renew, decline, or refuse to quote coverage for any locations in this submission? ": "boolean",
+                    "Carried property or liability insurance with a non-admitted insurance carrier for any locations in this submission? ": "boolean",
+                    "Had, or currently has pending, a foreclosure, bankruptcy, repossession, judgement, or delinquency in paying taxes? ": "boolean"
+                }
+            ],
+
+            "3.Were any evictions filed in the last 2 years or are there any planned, ongoing, or scheduled evictions in the next 12 months? ": "boolean",
+            "4.How long has Named Insured been in business as a property owner? ": "string",
+            "5.Do all locations and Named Insured entities share at least 51% common ownership? ": "boolean"
+        }
+    ],
+    "management_practices": [
+        {
+            "1.Does Named Insured perform background checks on prospective tenants?": "boolean",
+            "2.Does the lease or By-Laws require the residents to carry Liability Insurance with at least $100,000 limits? ": "boolean",
+            "3.Does an Owner, Manager, or Superintendent live full-time on the premises?": "boolean",
+            "4.Are tenants permitted to sublet or lease their apartment units as seasonal or short-term rentals to others? ": "boolean"
+           
+        }
+    ],
+    "property_management_firm": [
+        {
+            "1.Name of Property Management Company: ": "string",
+            "2.How long has the Property Management Firm managed the location(s) provided in this application? ": "string"
+           
+        }
+    ],
+    "hired_and_non_owned_auto_coverage": [
+        {
+            "1.How often are hired and non-owned autos used in the Named Insured's business?   ": "string",
+            "2.Are any vehicles rented or borrowed for use in the business other than private passenger vehicles or light trucks?  ": "boolean",
+            "3.Does Named Insured require employees to have personal auto liability insurance with at least $100K/$300K/$50K limits?  ": "boolean",
+            "4.Does Named Insured ever rent or hire vehicles that include a driver?": "boolean",
+            "5.Does Named Insured obtain motor vehicle records for all employee drivers? ": "boolean",
+            "6.Number of Employees for all locations (excluding owners, contractors, and hired property management firms): .": "string"
+           
+        }
+    ]
+}
+
+  
+
+
+  
+   
+    
+
