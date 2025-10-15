@@ -169,9 +169,9 @@ const CreateSubmission = ({ onNext,
         const formData = new FormData();
         formData.append("file", file);
 
-        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
-          method: "POST",
-          body: formData,
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_email`, {
+          method: "GET",
+          // body: formData,
         });
 
         if (!apiResponse.ok) {
@@ -192,9 +192,9 @@ const CreateSubmission = ({ onNext,
         const formData = new FormData();
         formData.append("file", uploadedFile);
 
-        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
-          method: "POST",
-          body: formData,
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_email`, {
+          method: "GET",
+          // body: formData,
         });
 
         if (!apiResponse.ok) {
