@@ -205,7 +205,7 @@ const LossInfo = ({ onNext }) => {
                     >
                       <TabPane tab="Prior Policies" key="1" />
                       <TabPane tab="Loss Summary" key="2" />
-                      <TabPane tab="Loss Runs - AI Insights" key="3" />
+                      {/* <TabPane tab="Loss Runs - AI Insights" key="3" /> */}
                     </StyledTabs>
                   </div>
                 </Col>

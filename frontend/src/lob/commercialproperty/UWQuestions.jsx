@@ -236,7 +236,7 @@ const UWQuestions = ({
               </UWQuestionsContainer>
 
               {/* Dynamic Section with Generate Button */}
-              <UWQuestionsContainer>
+              {/* <UWQuestionsContainer>
                 <Row justify="space-between" align="middle" style={{ marginBottom: "16px" }}>
                   <Col>
                     <h2 style={headerTextStyle}>UW Questions(AI)</h2>
@@ -246,7 +246,7 @@ const UWQuestions = ({
                       type="primary"
                       onClick={handleGenerateQuestions}
                       loading={questionLoading}
-                      disabled={questionLoading || answerLoading}  // disable when either is loading
+                      disabled={questionLoading || answerLoading}  
                       style={{
                         backgroundColor: "#054F7D",
                         borderColor: "#054F7D",
@@ -287,27 +287,7 @@ const UWQuestions = ({
                   </Col>
                 </Row>
 
-                {/* Loading State */}
-                {/* {isLoading && (
-                  <Row>
-                    <Col span={24}>
-                      <div style={{
-                        textAlign: "center",
-                        padding: "40px 0",
-                        backgroundColor: "#fafafa",
-                        borderRadius: "8px",
-                        border: "1px solid #e1e1e1"
-                      }}>
-                        <Spin size="large" />
-                        <div style={{ marginTop: "16px", ...normalTextStyle, color: "#666" }}>
-                          Dynamic responses are loading...
-                        </div>
-                      </div>
-                    </Col>
-                  </Row>
-                )} */}
-
-                {/* Dynamic Questions Table */}
+               
                 {questionLoading ? (
                   <Row>
                     <Col span={24}>
@@ -375,7 +355,7 @@ const UWQuestions = ({
                 )}
 
 
-                {/* Placeholder message */}
+                
                 {!questionLoading && !hasGenerated && (
                   <Row>
                     <Col span={24}>
@@ -393,7 +373,7 @@ const UWQuestions = ({
                     </Col>
                   </Row>
                 )}
-              </UWQuestionsContainer>
+              </UWQuestionsContainer> */}
 
               {/* Notes Section */}
               <Row style={{ marginBottom: '16px' }}>
