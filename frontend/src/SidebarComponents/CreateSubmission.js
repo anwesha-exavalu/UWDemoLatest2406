@@ -223,14 +223,17 @@ const CreateSubmission = ({ onNext,
     }
   };
 
-   const handleUploadPrefill = async () => {
+  const handleUploadPrefill = async (fileParam) => {
     try {
       setPrefillLoading(true);
       setError(null);
       setSuccess(false);
 
+      // Determine which file to use — either from argument or uploadedFile state
+      const fileToUse = fileParam || uploadedFile;
+
       // Check if a file has been uploaded
-      if (!uploadedFile) {
+      if (!fileToUse) {
         // If no file uploaded, use the default PDF
         const pdfResponse = await fetch(pdfData);
         if (!pdfResponse.ok) {
@@ -264,9 +267,9 @@ const CreateSubmission = ({ onNext,
 
         updateFormStates(responseData.application_details[0]);
       } else {
-        // Use uploaded file for API call
+        // Use uploaded file (either from argument or state) for API call
         const formData = new FormData();
-        formData.append("file", uploadedFile);
+        formData.append("file", fileToUse);
 
         const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
           method: "POST",
@@ -298,6 +301,7 @@ const CreateSubmission = ({ onNext,
       setPrefillLoading(false);
     }
   };
+
 
   // Handle file upload (only upload, no API processing)
   const handleUpload = async (event) => {
@@ -348,6 +352,9 @@ const CreateSubmission = ({ onNext,
         duration: 4,
         placement: 'topRight'
       });
+
+      // ✅ Automatically call handleUploadPrefill after successful upload
+      await handleUploadPrefill(file);
 
       // Close modal after a short delay
       setTimeout(() => {
