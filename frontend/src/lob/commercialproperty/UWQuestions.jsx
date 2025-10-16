@@ -27,50 +27,71 @@ import Uwicon from "../../assets/img/Uwicon.png"
 const PRODUCTIONURL = process.env.REACT_APP_PROD_URL;
 const uwquestionsData = [
   {
-    question: "Is the applicant a subsidiary of another entity?",
+    question: "Has the business or any principal of the business declared bankruptcy in the last 7 years?",
     response: "no",
     comment:
       "The applicant operates independently and is not owned by another entity.",
   },
   {
-    question: "Does the applicant have any subsidiaries?",
-    response: "yes",
+    question: "Does the applicant have any property/tax liens?",
+    response: "no",
     comment:
       "The applicant has subsidiaries, which may affect risk assessment.",
   },
   {
-    question: "Is a formal safety program in operation?",
+    question: "Does the building contain any manufacturing, woodworking, warehousing, auto repair or service occupancy?",
     response: "no",
     comment: "There is no formal safety program in place to mitigate risks.",
   },
   {
-    question: "Any exposure to flammables, explosives, and chemicals?",
-    response: "no",
+    question: "Has the applicant been in business for more than 5 years?",
+    response: "yes",
     comment:
       "Not applicable; the applicant does not engage in activities involving flammables or explosives.",
   },
   {
-    question: "Any other insurance with this company?",
+    question: "What the property built prior to 2001?",
     response: "no",
     comment:
       "The applicant does not hold any additional policies with our company.",
   },
   {
     question:
-      "Any policy or coverage declined, canceled, or non-renewed during the prior 3 years?",
+      "Is there a swimming pool on the premises?",
     response: "no",
     comment:
       "can't be determined; no relevant history of declined or canceled policies.",
   },
   {
-    question: "Any uncorrected fire code violations?",
+    question: "Is there a working fire alarm system?",
     response: "yes",
     comment:
       "There are existing fire code violations that need to be addressed.",
   },
   {
     question:
-      "Has the applicant had a foreclosure, repossession, or bankruptcy during the last five years?",
+      "Does the building comply with current fire and safety codes?",
+    response: "yes",
+    comment:
+      "The applicant has not faced any financial setbacks in the past five years.",
+  },
+  {
+    question:
+      "Are there active sprinkler or suppression systems, alarms, and security devices installed?",
+    response: "yes",
+    comment:
+      "The applicant has not faced any financial setbacks in the past five years.",
+  },
+  {
+    question:
+      "Has the property undergone structural or major renovations in the previous 10 years?",
+    response: "no",
+    comment:
+      "The applicant has not faced any financial setbacks in the past five years.",
+  },
+  {
+    question:
+      "Any Individual losses greater than $20,000 in the last 3 full years ?",
     response: "no",
     comment:
       "The applicant has not faced any financial setbacks in the past five years.",
