@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 // import './LossInfo.css';  // Import the CSS file
 // import FormInput from '../../components/FormInput'
-import { Button, Card, Col, Modal, Row, Input, DatePicker, Collapse, Table } from 'antd';
+import { Button, Card, Col, Modal, Row, Input, DatePicker, Collapse, Table, Tooltip } from 'antd';
+import { EditOutlined, SaveOutlined, FileTextOutlined } from '@ant-design/icons';
 import Documents from '../../layout/Documents';
 import NextArrow from "../../assets/img/nextArrow.png";
 import LossRun from "./LossRun";
@@ -11,28 +12,34 @@ import {
 import { Container } from "../../styles/components/Layout";
 import {
   MainContainer, NextButtonContainer,
-  NextButton,
+  NextButton, IconButton
 } from '../../styles/pages/CreateSubmission/InsuredInfoStyle';
 import { RoundedAddButton } from "../../styles/index";
 import { StyledTabs, TabPane } from '../../styles/pages/RiskInformation/index'; // Import the styled component
 
 // Import dummy data
-import { 
-  initialPolicies, 
-  initialLossData, 
-  initialClaimsData, 
-  tableColumns, 
-  initialFormStates 
+import {
+  initialPolicies,
+  initialLossData,
+  initialClaimsData,
+  tableColumns,
+  initialFormStates
 } from './dummyLossData';
 
 const { Panel } = Collapse;
 
 const LossInfo = ({ onNext }) => {
+  const [editingPriorPolicy, setEditingPriorPolicy] = useState(false);
+  const [editingLossDetails, setEditingLossDetails] = useState(false);
+  // Remove these lines:
+  // const [editing, setEditing] = useState(false);
+  // const toggleEditing = () => setEditing(!editing);
+  // const toggleEditing = () => setEditing(!editing);
   const [activeTab, setActiveTab] = useState("1");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLossSummaryModalVisible, setIsLossSummaryModalVisible] = useState(false);
   const [isLossDetailModalVisible, setIsLossDetailModalVisible] = useState(false);
-  
+
   const [newPolicy, setNewPolicy] = useState(initialFormStates.newPolicy);
   const [newLossSummary, setNewLossSummary] = useState(initialFormStates.newLossSummary);
   const [newLossDetail, setNewLossDetail] = useState(initialFormStates.newLossDetail);
@@ -43,7 +50,7 @@ const LossInfo = ({ onNext }) => {
   const [selectedClaim, setSelectedClaim] = useState(null);
   const [lossSummaries, setLossSummaries] = useState(initialLossData);
   const [lossDetails, setLossDetails] = useState(initialClaimsData);
-  
+
   // Font styles
   const fontFamily = 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
   const headerTextStyle = {
@@ -59,7 +66,7 @@ const LossInfo = ({ onNext }) => {
     align: 'center',
   };
 
-  
+
   const rowSelection = {
     type: 'radio',
     selectedRowKeys: selectedPolicies,
@@ -109,7 +116,7 @@ const LossInfo = ({ onNext }) => {
     setNewLossSummary(initialFormStates.newLossSummary);
     setIsLossSummaryModalVisible(false);
   };
-  
+
   const handleLossSummaryModalCancel = () => {
     setIsLossSummaryModalVisible(false);
   };
@@ -118,13 +125,13 @@ const LossInfo = ({ onNext }) => {
   const showLossDetailModal = () => {
     setIsLossDetailModalVisible(true);
   };
-  
+
   const handleLossDetailModalOk = () => {
     setLossDetails([...lossDetails, newLossDetail]);
     setNewLossDetail(initialFormStates.newLossDetail);
     setIsLossDetailModalVisible(false);
   };
-  
+
   const handleLossDetailModalCancel = () => {
     setIsLossDetailModalVisible(false);
   };
@@ -167,10 +174,52 @@ const LossInfo = ({ onNext }) => {
     }));
   };
 
+  // define this component above the return statement (outside the JSX)
+  const EditableCell = ({
+    editable,
+    children,
+    dataIndex,
+    record,
+    handleSave,
+    ...restProps
+  }) => {
+    const [value, setValue] = useState(record?.[dataIndex] || '');
+
+    const save = () => {
+      if (handleSave && record) {
+        handleSave({ ...record, [dataIndex]: value });
+      }
+    };
+
+    // Update value when record changes
+    React.useEffect(() => {
+      if (record && dataIndex) {
+        setValue(record[dataIndex] || '');
+      }
+    }, [record, dataIndex]);
+
+    return (
+      <td {...restProps}>
+        {editable && record ? (
+          <Input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            onBlur={save}
+            onPressEnter={save}
+            style={{ border: "1px solid #ccc" }}
+          />
+        ) : (
+          children
+        )}
+      </td>
+    );
+  };
+
   const getCurrentTabButton = () => {
     switch (activeTab) {
       case "1":
         return (
+
           <RoundedAddButton onClick={showAddPolicyModal} style={normalTextStyle}>
             <span className="icon">+</span>
             Add Policy
@@ -209,12 +258,33 @@ const LossInfo = ({ onNext }) => {
                     </StyledTabs>
                   </div>
                 </Col>
-                
+
                 <Col xs={24} sm={24} md={6} lg={6} xl={6}>
                   <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', height: '100%' }}>
                     {getCurrentTabButton()}
+                    <div style={{ marginBottom: '20px', marginLeft: '10px' }}>
+                      {activeTab === "1" && (
+                        <div style={{  marginLeft: '10px' }}>
+                          <Tooltip title={editingPriorPolicy ? "Save" : "Edit"}>
+                            <IconButton onClick={() => setEditingPriorPolicy(!editingPriorPolicy)}>
+                              {editingPriorPolicy ? <SaveOutlined /> : <EditOutlined />}
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      )}
+                      {activeTab === "2" && (
+                        <div style={{  marginLeft: '10px' }}>
+                          <Tooltip title={editingLossDetails ? "Save" : "Edit"}>
+                            <IconButton onClick={() => setEditingLossDetails(!editingLossDetails)}>
+                              {editingLossDetails ? <SaveOutlined /> : <EditOutlined />}
+                            </IconButton>
+                          </Tooltip>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Col>
+
               </Row>
 
               {/* Tab Content */}
@@ -232,40 +302,45 @@ const LossInfo = ({ onNext }) => {
                             >
                               Delete
                             </Button>
+
                           </Col>
                         )}
-                        
+
                         <Col span={24}>
-                          <WorkSection style={{marginLeft:'2px', marginRight:'10px'}}>
+                          <WorkSection style={{ marginLeft: '2px', marginRight: '10px' }}>
                             <div className="work-header" style={headerTextStyle}>Prior Policies Details</div>
                             <div className="work-content">
                               <div className="modern-table">
                                 <Table
-                                  // rowSelection={rowSelection}
-                                  columns={tableColumns.priorPolicy}
+                                  
+                                  columns={
+                                    editingPriorPolicy
+                                      ? tableColumns.priorPolicy.map((col) => ({
+                                        ...col,
+                                        onCell: (record, rowIndex) => ({
+                                          record,
+                                          rowIndex,
+                                          editable: true,
+                                          dataIndex: col.dataIndex,
+                                          title: col.title,
+                                          handleSave: (row) => {
+                                            const newData = [...policies];
+                                            newData[rowIndex] = row;
+                                            setPolicies(newData);
+                                          },
+                                        }),
+                                      }))
+                                      : tableColumns.priorPolicy
+                                  }
+                                  components={editingPriorPolicy ? { body: { cell: EditableCell } } : {}}
                                   dataSource={policies.map((item, index) => ({ key: index, ...item }))}
                                   pagination={{ pageSize: 4 }}
-                                  scroll={{ x: 'max-content' }}
-                                  style={{ width: '100%', ...normalTextStyle }}
+                                  scroll={{ x: "max-content" }}
+                                  style={{ width: "100%", ...normalTextStyle }}
                                   className="custom-table-header"
                                   tableLayout="fixed"
-                                  summary={(pageData) => {
-                                    const total = pageData.reduce((sum, row) => {
-                                      const cleaned = parseFloat((row.totalLosses || '').replace(/[^0-9.-]+/g, '')) || 0;
-                                      return sum + cleaned;
-                                    }, 0);
-                                    return (
-                                      <Table.Summary.Row>
-                                        <Table.Summary.Cell index={0} colSpan={8} style={{ textAlign: 'right', fontWeight: 600, ...normalTextStyle }}>
-                                          Sum:
-                                        </Table.Summary.Cell>
-                                        <Table.Summary.Cell index={8} style={normalTextStyle}>
-                                          ${total.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                                        </Table.Summary.Cell>
-                                      </Table.Summary.Row>
-                                    );
-                                  }}
                                 />
+
                               </div>
                             </div>
                           </WorkSection>
@@ -273,7 +348,7 @@ const LossInfo = ({ onNext }) => {
 
                         <Col xs={24} sm={20} md={16} lg={16} xl={16}></Col>
                         <Col xs={24} sm={6} md={8} lg={8} xl={8}>
-                          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight:'2px' }}>
+                          <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginRight: '2px' }}>
                             <NextButtonContainer>
                               <NextButton onClick={nextTab} style={normalTextStyle}>
                                 <div className="step-content-box">
@@ -299,14 +374,37 @@ const LossInfo = ({ onNext }) => {
 
                   {activeTab === "2" && (
                     <Row gutter={[16, 16]}>
+                     
                       <Col span={24}>
-                        <WorkSection style={{marginLeft:'2px', marginRight:'10px', marginBottom:'5px'}}>
+                        <WorkSection style={{ marginLeft: '2px', marginRight: '10px', marginBottom: '5px' }}>
                           <div className="work-header" style={headerTextStyle}>Loss Details</div>
                           <div className="work-content">
                             <div className="modern-table">
                               <Table
                                 rowSelection={rowSelectionClaims}
-                                columns={tableColumns.lossDetail}
+                                columns={
+                                  editingLossDetails
+                                    ? tableColumns.lossDetail.map((col) => ({
+                                      ...col,
+                                      onCell: (record, rowIndex) => ({
+                                        record,
+                                        rowIndex,
+                                        editable: true,
+                                        dataIndex: col.dataIndex,
+                                        title: col.title,
+                                        handleSave: (row) => {
+                                          const newData = [...lossDetails];
+                                          const index = newData.findIndex(item => item.claimNumber === record.claimNumber);
+                                          if (index > -1) {
+                                            newData[index] = row;
+                                            setLossDetails(newData);
+                                          }
+                                        },
+                                      }),
+                                    }))
+                                    : tableColumns.lossDetail
+                                }
+                                components={editingLossDetails ? { body: { cell: EditableCell } } : {}}
                                 dataSource={lossDetails.map((item) => ({ key: item.claimNumber, ...item }))}
                                 pagination={{ pageSize: 4 }}
                                 style={{ width: '100%', ...normalTextStyle }}
@@ -320,7 +418,7 @@ const LossInfo = ({ onNext }) => {
 
                       {lossDetails && (
                         <Col span={24}>
-                          <WorkSection  style={{marginLeft:'2px', marginRight:'10px'}}>
+                          <WorkSection style={{ marginLeft: '2px', marginRight: '10px' }}>
                             <div className="work-header" style={headerTextStyle}>Claim Notes History</div>
                             <div className="work-content">
                               {selectedClaim ? (

@@ -27,7 +27,7 @@ import Uwicon from "../../assets/img/Uwicon.png"
 const PRODUCTIONURL = process.env.REACT_APP_PROD_URL;
 const uwquestionsData = [
   {
-    question: "Has the business or any principal of the business declared bankruptcy in the last 7 years?",
+    question: "Has the declared bankruptcy in the last 7 years?",
     response: "no",
     comment:
       "",
@@ -91,7 +91,7 @@ const uwquestionsData = [
   },
   {
     question:
-      "Any Individual losses greater than $20,000 in the last 3 full years ?",
+      "Any Individual losses greater than $200,000 in the last 3 full years ?",
     response: "no",
     comment:
       "",
