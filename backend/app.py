@@ -76,6 +76,11 @@ async def document_processing_email():
     upload_folder = os.path.join(UPLOAD_FOLDER, submission_id)
     os.makedirs(upload_folder, exist_ok=True)
     file_path = read_email_data(upload_dir=upload_folder)
+    if not file_path:
+        return JSONResponse(status_code=404, content={
+            "message": "No attachment found in the email.",
+            "submission_id": submission_id
+        })
     response = match_extracted_with_template(file_path=file_path, submission_id=submission_id)
     if not response:
         return JSONResponse(status_code=404, content={

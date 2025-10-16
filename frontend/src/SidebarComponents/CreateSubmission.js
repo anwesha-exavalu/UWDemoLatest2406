@@ -223,6 +223,82 @@ const CreateSubmission = ({ onNext,
     }
   };
 
+   const handleUploadPrefill = async () => {
+    try {
+      setPrefillLoading(true);
+      setError(null);
+      setSuccess(false);
+
+      // Check if a file has been uploaded
+      if (!uploadedFile) {
+        // If no file uploaded, use the default PDF
+        const pdfResponse = await fetch(pdfData);
+        if (!pdfResponse.ok) {
+          throw new Error("Failed to load PDF file");
+        }
+
+        const pdfBlob = await pdfResponse.blob();
+        const file = new File([pdfBlob], "DocumentForExtraction02.pdf", {
+          type: "application/pdf",
+        });
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          throw new Error(errorData.message || "Failed to process PDF");
+        }
+
+        const responseData = await apiResponse.json();
+        console.log("API Response:", responseData);
+
+        if (!responseData.application_details) {
+          throw new Error("Invalid response data received");
+        }
+
+        updateFormStates(responseData.application_details[0]);
+      } else {
+        // Use uploaded file for API call
+        const formData = new FormData();
+        formData.append("file", uploadedFile);
+
+        const apiResponse = await fetch(`${BASE_URL}/api/prefill_upload`, {
+          method: "POST",
+          body: formData,
+        });
+
+        if (!apiResponse.ok) {
+          const errorData = await apiResponse.json();
+          throw new Error(errorData.message || "Failed to process PDF");
+        }
+
+        const responseData = await apiResponse.json();
+        console.log("API Response:", responseData);
+
+        if (!responseData.application_details) {
+          throw new Error("Invalid response data received");
+        }
+
+        updateFormStates(responseData.application_details[0]);
+      }
+
+      setSuccess(true);
+      message.success("Form prefilled successfully");
+    } catch (error) {
+      console.error("Prefill Error:", error);
+      setError(error.message);
+      message.error(`Failed to prefill form: ${error.message}`);
+    } finally {
+      setPrefillLoading(false);
+    }
+  };
+
   // Handle file upload (only upload, no API processing)
   const handleUpload = async (event) => {
     const file = event.target.files[0];
@@ -362,7 +438,7 @@ const CreateSubmission = ({ onNext,
               <ButtonGroup>
                 <ActionButton onClick={onUpload}>Upload</ActionButton>
                 <ActionButton onClick={handlePrefill} disabled={prefillLoading}>
-                  {prefillLoading ? "Loading..." : "Prefill"}
+                  {prefillLoading ? "Loading..." : "Email Prefill"}
                 </ActionButton>
                 <Tooltip title={isEditMode ? "Save" : "Edit"}>
                   <IconButton onClick={handleEditInsured}>
