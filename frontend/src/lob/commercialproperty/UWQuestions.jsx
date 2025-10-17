@@ -50,7 +50,7 @@ const uwquestionsData = [
       "",
   },
   {
-    question: "What the property built prior to 2001?",
+    question: "Was the property built prior to 2001?",
     response: "no",
     comment:
       "",
