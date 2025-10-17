@@ -348,7 +348,7 @@ const CreateSubmission = ({ onNext,
       // Show success notification
       notification.success({
         message: 'Upload Successful',
-        description: `${file.name} has been uploaded successfully. Click 'Prefill' to process the document.`,
+        description: `${file.name} has been uploaded successfully. Please wait it is being processed.`,
         duration: 4,
         placement: 'topRight'
       });
@@ -443,7 +443,7 @@ const CreateSubmission = ({ onNext,
           <Col flex="none">
             <HeaderContainer>
               <ButtonGroup>
-                <ActionButton onClick={onUpload}>Upload</ActionButton>
+                <ActionButton onClick={onUpload}>Upload & Prefill</ActionButton>
                 <ActionButton onClick={handlePrefill} disabled={prefillLoading}>
                   {prefillLoading ? "Loading..." : "Email Prefill"}
                 </ActionButton>
@@ -877,7 +877,7 @@ const CreateSubmission = ({ onNext,
               ) : (
                 <div style={{ padding: '20px', textAlign: 'center' }}>
                   <div className="upload-text" style={{ marginBottom: '16px' }}>
-                    Uploading PDF...
+                    Processing Document...
                   </div>
                   <Progress
                     percent={uploadProgress}
@@ -896,7 +896,7 @@ const CreateSubmission = ({ onNext,
               )}
               <div style={{ textAlign: 'right', marginTop: '16px' }}>
                 <ActionButton onClick={handleCancel} disabled={isUploading}>
-                  {isUploading ? 'Uploading...' : 'Cancel'}
+                  {isUploading ? 'Processing...' : 'Cancel'}
                 </ActionButton>
               </div>
             </ModalContent>
